@@ -1,0 +1,39 @@
+{
+    "name": "cultuurnet/movie-api-fetcher",
+    "description": "fetch data from Kinepolis API",
+    "type": "project",
+    "license": "Apache-2.0",
+    "authors": [],
+    "require": {
+        "silex/silex": "~1.3",
+        "deralex/yaml-config-service-provider": "~1.0",
+        "knplabs/console-service-provider": "~1.0",
+        "monolog/monolog": "~1.11",
+        "cultuurnet/valueobjects": "~3.0",
+        "cultuurnet/culturefeed-php": "~1.6"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~5.7",
+        "escapestudios/symfony2-coding-standard": "~2.9",
+        "squizlabs/php_codesniffer": "~2.5.1",
+        "phing/phing": "~2.14",
+        "satooshi/php-coveralls": "~1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "CultuurNet\\MovieApiFetcher\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "CultuurNet\\MovieApiFetcher\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.x-dev"
+        }
+    }
+}

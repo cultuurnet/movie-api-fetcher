@@ -1,0 +1,7 @@
+debug: false
+
+kinepolis:
+  authentication:
+    key: foo
+    secret: bar
+  url: https://url.com/nl/api/index.html
