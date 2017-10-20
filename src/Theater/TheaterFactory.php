@@ -1,0 +1,28 @@
+<?php
+
+namespace CultuurNet\MovieApiFetcher\Theater;
+
+class TheaterFactory implements TheaterFactoryInterface
+{
+    /**
+     * @var array
+     */
+    private $theaters;
+
+    /**
+     * TheaterFactory constructor.
+     * @param $theaters
+     */
+    public function __construct($theaters)
+    {
+        $this->theaters = $theaters;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function mapTheater($kinepolisTid)
+    {
+        return $this->theaters[$kinepolisTid];
+    }
+}

@@ -2,6 +2,8 @@
 
 namespace CultuurNet\MovieApiFetcher\Parser;
 
+use CultuurNet\MovieApiFetcher\Term\TermFactoryInterface;
+use CultuurNet\MovieApiFetcher\Theater\TheaterFactoryInterface;
 use CultuurNet\MovieApiFetcher\Url\UrlFactoryInterface;
 
 class Parser implements ParserInterface
@@ -12,12 +14,29 @@ class Parser implements ParserInterface
     private $urlFactory;
 
     /**
+     * @var TermFactoryInterface
+     */
+    private $termFactory;
+
+    /**
+     * @var TheaterFactoryInterface
+     */
+    private $theaterFactory;
+
+    /**
      * Parser constructor.
      * @param UrlFactoryInterface $urlFactory
+     * @param TermFactoryInterface $termFactory
+     * @param TheaterFactoryInterface $theaterFactory
      */
-    public function __construct(UrlFactoryInterface $urlFactory)
-    {
+    public function __construct(
+        UrlFactoryInterface $urlFactory,
+        TermFactoryInterface $termFactory,
+        TheaterFactoryInterface $theaterFactory
+    ) {
         $this->urlFactory = $urlFactory;
+        $this->termFactory = $termFactory;
+        $this->theaterFactory = $theaterFactory;
     }
 
     /**
@@ -40,5 +59,11 @@ class Parser implements ParserInterface
         $image = $this->urlFactory->generateMediaUrl($movie['poster']);
         $nativeImage = (string) $image;
         $title = $movie['title'];
+        $genres = $movie['genre'];
+        foreach ($genres as $genre) {
+            $mappedGenre = $this->termFactory->mapTerm($genre);
+            var_dump($mappedGenre);
+
+        }
     }
 }

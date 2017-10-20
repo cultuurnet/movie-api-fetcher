@@ -3,6 +3,8 @@
 use CultuurNet\MovieApiFetcher\Authentication\Authentication;
 use CultuurNet\MovieApiFetcher\Fetcher\Fetcher;
 use CultuurNet\MovieApiFetcher\Parser\Parser;
+use CultuurNet\MovieApiFetcher\Term\TermFactory;
+use CultuurNet\MovieApiFetcher\Theater\TheaterFactory;
 use CultuurNet\MovieApiFetcher\Url\UrlFactory;
 use DerAlex\Silex\YamlConfigServiceProvider;
 use Silex\Application;
@@ -14,6 +16,8 @@ if (!isset($appConfigLocation)) {
     $appConfigLocation =  __DIR__;
 }
 $app->register(new YamlConfigServiceProvider($appConfigLocation . '/config.yml'));
+$app->register(new YamlConfigServiceProvider($appConfigLocation . '/kinepolis_terms.yml'));
+$app->register(new YamlConfigServiceProvider($appConfigLocation . '/kinepolis_theaters.yml'));
 
 /**
  * Turn debug on or off.
@@ -35,9 +39,25 @@ $app['authentication'] = $app->share(
     }
 );
 
+$app['terms'] = $app->share(
+    function (Application $app) {
+        return new TermFactory($app['config']['kinepolis_terms']);
+    }
+);
+
+$app['theaters'] = $app->share(
+    function (Application $app) {
+        return new TheaterFactory($app['config']['kinepolis_theaters']);
+    }
+);
+
 $app['parser'] = $app->share(
     function (Application $app) {
-        return new Parser($app['url_factory']);
+        return new Parser(
+            $app['url_factory'],
+            $app['terms'],
+            $app['theaters']
+        );
     }
 );
 
