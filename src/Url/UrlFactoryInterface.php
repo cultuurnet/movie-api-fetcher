@@ -15,4 +15,10 @@ interface UrlFactoryInterface
      * @return Url
      */
     public function generateMoviesUrl();
+
+    /**
+     * @param $mediaFile
+     * @return Url
+     */
+    public function generateMediaUrl($mediaFile);
 }

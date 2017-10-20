@@ -26,7 +26,7 @@ class UrlFactory implements UrlFactoryInterface
      */
     public function generateTokenUrl()
     {
-        return Url::fromNative($this->baseUrl->toNative() . 'jwt/1.0/token');
+        return Url::fromNative($this->baseUrl->toNative() . 'services/jwt/1.0/token');
     }
 
     /**
@@ -34,6 +34,13 @@ class UrlFactory implements UrlFactoryInterface
      */
     public function generateMoviesUrl()
     {
-        return Url::fromNative($this->baseUrl->toNative() . 'content/1.0/movies');
+        return Url::fromNative($this->baseUrl->toNative() . 'services/content/1.0/movies?progList=2');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function generateMediaUrl($mediaFile){
+        return Url::fromNative($this->baseUrl->toNative() .'sites/kinepolis.be.nl/files' . $mediaFile);
     }
 }

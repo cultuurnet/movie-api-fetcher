@@ -37,7 +37,7 @@ $app['authentication'] = $app->share(
 
 $app['parser'] = $app->share(
     function (Application $app) {
-        return new Parser();
+        return new Parser($app['url_factory']);
     }
 );
 

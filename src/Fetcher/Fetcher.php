@@ -65,6 +65,7 @@ class Fetcher implements FetcherInterface
         $token = $this->authentication->getToken($this->client, $this->secret);
         $body = $this->getBody($token);
         var_dump($body);
+        $this->parser->split($body['movies']);
 
     }
 
