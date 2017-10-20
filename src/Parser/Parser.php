@@ -25,15 +25,16 @@ class Parser implements ParserInterface
      */
     public function split($movies)
     {
-       foreach ($movies as $movie) {
-           $this->process($movie);
-       }
+        foreach ($movies as $movie) {
+            $this->process($movie);
+        }
     }
 
     /**
      * @inheritdoc
      */
-    public function process($movie) {
+    public function process($movie)
+    {
         $id = $movie['mid'];
         $dates = $movie['dates'];
         $image = $this->urlFactory->generateMediaUrl($movie['poster']);

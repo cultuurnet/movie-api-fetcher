@@ -40,7 +40,8 @@ class UrlFactory implements UrlFactoryInterface
     /**
      * @inheritdoc
      */
-    public function generateMediaUrl($mediaFile){
+    public function generateMediaUrl($mediaFile)
+    {
         return Url::fromNative($this->baseUrl->toNative() .'sites/kinepolis.be.nl/files' . $mediaFile);
     }
 }
