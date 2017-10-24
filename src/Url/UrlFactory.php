@@ -34,7 +34,7 @@ class UrlFactory implements UrlFactoryInterface
      */
     public function generateMoviesUrl()
     {
-        return Url::fromNative($this->baseUrl->toNative() . 'services/content/1.0/movies?progList=2');
+        return Url::fromNative($this->baseUrl->toNative() . 'services/content/1.1/movies?progList=2');
     }
 
     /**
@@ -42,7 +42,7 @@ class UrlFactory implements UrlFactoryInterface
      */
     public function generateMovieDetailUrl($mid)
     {
-        return Url::fromNative($this->baseUrl->toNative() . 'services/content/1.0/movies?mid=' . $mid);
+        return Url::fromNative($this->baseUrl->toNative() . 'services/content/1.1/movies/' . $mid);
     }
 
 

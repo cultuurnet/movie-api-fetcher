@@ -3,6 +3,7 @@
 namespace CultuurNet\MovieApiFetcher\Parser;
 
 use CultureFeed_Cdb_Item_Production;
+use CultuurNet\MovieApiFetcher\Date\DateFactoryInterface;
 use CultuurNet\MovieApiFetcher\Term\TermFactoryInterface;
 use CultuurNet\MovieApiFetcher\Theater\TheaterFactoryInterface;
 use CultuurNet\MovieApiFetcher\Url\UrlFactoryInterface;
@@ -10,9 +11,9 @@ use CultuurNet\MovieApiFetcher\Url\UrlFactoryInterface;
 class Parser implements ParserInterface
 {
     /**
-     * @var UrlFactoryInterface
+     * @var DateFactoryInterface
      */
-    private $urlFactory;
+    private $dateFactory;
 
     /**
      * @var TermFactoryInterface
@@ -25,19 +26,27 @@ class Parser implements ParserInterface
     private $theaterFactory;
 
     /**
+     * @var UrlFactoryInterface
+     */
+    private $urlFactory;
+
+    /**
      * Parser constructor.
-     * @param UrlFactoryInterface $urlFactory
+     * @param DateFactoryInterface $dateFactory
      * @param TermFactoryInterface $termFactory
      * @param TheaterFactoryInterface $theaterFactory
+     * @param UrlFactoryInterface $urlFactory
      */
     public function __construct(
-        UrlFactoryInterface $urlFactory,
+        DateFactoryInterface $dateFactory,
         TermFactoryInterface $termFactory,
-        TheaterFactoryInterface $theaterFactory
+        TheaterFactoryInterface $theaterFactory,
+        UrlFactoryInterface $urlFactory
     ) {
-        $this->urlFactory = $urlFactory;
+        $this->dateFactory =$dateFactory;
         $this->termFactory = $termFactory;
         $this->theaterFactory = $theaterFactory;
+        $this->urlFactory = $urlFactory;
     }
 
     /**
@@ -46,6 +55,20 @@ class Parser implements ParserInterface
     public function process($movie)
     {
         $movieData = $movie['movies'][0];
+
+        $title = $movieData['title'];
+        $image = $movieData['poster'];
+        $description = $movieData['desc'];
+        $dates = $movieData['dates'];
+        $genres = $movieData['genre'];
+
+        $this->dateFactory->processDates($dates);
+
+        foreach ($genres as $genre) {
+            $cnetId = $this->termFactory->mapTerm($genre);
+        }
+
+
 
         var_dump($movieData);
 //        $this->urlFactory->

@@ -3,6 +3,7 @@
 namespace CultuurNet\MovieApiFetcher\Fetcher;
 
 use CultuurNet\MovieApiFetcher\Authentication\AuthenticationInterface;
+use CultuurNet\MovieApiFetcher\Date\DateFactoryInterface;
 use CultuurNet\MovieApiFetcher\Parser\ParserInterface;
 use CultuurNet\MovieApiFetcher\Url\UrlFactoryInterface;
 use Guzzle\Http\Client;
@@ -46,6 +47,7 @@ class Fetcher implements FetcherInterface
      * @param StringLiteral $client
      * @param StringLiteral $secret
      * @param AuthenticationInterface $authentication
+     * @param DateFactoryInterface $dateFactory
      * @param UrlFactoryInterface $urlFactory
      * @param ParserInterface $parser
      * @param Logger $logger

@@ -1,6 +1,7 @@
 <?php
 
 use CultuurNet\MovieApiFetcher\Authentication\Authentication;
+use CultuurNet\MovieApiFetcher\Date\DateFactory;
 use CultuurNet\MovieApiFetcher\Fetcher\Fetcher;
 use CultuurNet\MovieApiFetcher\Parser\Parser;
 use CultuurNet\MovieApiFetcher\Term\TermFactory;
@@ -69,12 +70,19 @@ $app['theaters'] = $app->share(
     }
 );
 
+$app['date_factory'] = $app->share(
+    function (Application $app) {
+        return new DateFactory();
+    }
+);
+
 $app['parser'] = $app->share(
     function (Application $app) {
         return new Parser(
-            $app['url_factory'],
+            $app['date_factory'],
             $app['terms'],
-            $app['theaters']
+            $app['theaters'],
+            $app['url_factory']
         );
     }
 );
