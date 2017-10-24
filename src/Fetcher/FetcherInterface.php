@@ -9,5 +9,16 @@ interface FetcherInterface
      */
     public function start();
 
-    public function getBody($token);
+    /**
+     * @param $token
+     * @return mixed
+     */
+    public function getMovies($token);
+
+    /**
+     * @param $token
+     * @param $mid
+     * @return mixed
+     */
+    public function getMovieDetail($token, $mid);
 }

@@ -2,6 +2,7 @@
 
 namespace CultuurNet\MovieApiFetcher\Parser;
 
+use CultureFeed_Cdb_Item_Production;
 use CultuurNet\MovieApiFetcher\Term\TermFactoryInterface;
 use CultuurNet\MovieApiFetcher\Theater\TheaterFactoryInterface;
 use CultuurNet\MovieApiFetcher\Url\UrlFactoryInterface;
@@ -42,28 +43,28 @@ class Parser implements ParserInterface
     /**
      * @inheritdoc
      */
-    public function split($movies)
-    {
-        foreach ($movies as $movie) {
-            $this->process($movie);
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function process($movie)
     {
-        $id = $movie['mid'];
-        $dates = $movie['dates'];
-        $image = $this->urlFactory->generateMediaUrl($movie['poster']);
-        $nativeImage = (string) $image;
-        $title = $movie['title'];
-        $genres = $movie['genre'];
-        foreach ($genres as $genre) {
-            $mappedGenre = $this->termFactory->mapTerm($genre);
-            var_dump($mappedGenre);
+        $movieData = $movie['movies'][0];
 
-        }
+        var_dump($movieData);
+//        $this->urlFactory->
+//        $dates = $movie['dates'];
+//        foreach ($dates as $date => $dateData) {
+//            var_dump($date);
+//            foreach ($dateData as $info) {
+//                $theater = $this->theaterFactory->mapTheater($info['tid']);
+//            }
+//        }
+//        $image = $this->urlFactory->generateMediaUrl($movie['poster']);
+//        $nativeImage = (string) $image;
+//        $title = $movie['title'];
+//        $genres = $movie['genre'];
+//        foreach ($genres as $genre) {
+//            $mappedGenre = $this->termFactory->mapTerm($genre);
+//            var_dump($mappedGenre);
+//
+//        }
+//        $production = new CultureFeed_Cdb_Item_Production();
     }
 }

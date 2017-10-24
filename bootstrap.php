@@ -7,6 +7,8 @@ use CultuurNet\MovieApiFetcher\Term\TermFactory;
 use CultuurNet\MovieApiFetcher\Theater\TheaterFactory;
 use CultuurNet\MovieApiFetcher\Url\UrlFactory;
 use DerAlex\Silex\YamlConfigServiceProvider;
+use Monolog\Handler\RotatingFileHandler;
+use Monolog\Logger;
 use Silex\Application;
 use ValueObjects\StringLiteral\StringLiteral;
 
@@ -23,6 +25,22 @@ $app->register(new YamlConfigServiceProvider($appConfigLocation . '/kinepolis_th
  * Turn debug on or off.
  */
 $app['debug'] = $app['config']['debug'] === true;
+
+$app['log_handler'] = $app->share(
+    function (Application $app) {
+        return new RotatingFileHandler(
+            $app['config']['logging_folder'] . '/fetcher.log',
+            180,
+            Logger::DEBUG
+        );
+    }
+);
+
+$app['logger'] = $app->share(
+    function (Application $app) {
+        return new Logger('importer', array($app['log_handler']));
+    }
+);
 
 $app['url_factory'] = $app->share(
     function (Application $app) {
@@ -68,7 +86,8 @@ $app['fetcher'] = $app->share(
             new StringLiteral($app['config']['kinepolis']['authentication']['secret']),
             $app['authentication'],
             $app['url_factory'],
-            $app['parser']
+            $app['parser'],
+            $app['logger']
         );
     }
 );
