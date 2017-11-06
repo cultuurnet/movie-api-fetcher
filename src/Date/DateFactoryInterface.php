@@ -6,14 +6,15 @@ interface DateFactoryInterface
 {
     /**
      * @param $dates
+     * @param $length
      * @return mixed
      */
-    public function processDates($dates);
+    public function processDates($dates, $length);
 
     /**
      * @param $day
-     * @param $programmation
+     * @param $timeList
      * @return mixed
      */
-    public function processDay($day, $programmation);
+    public function processDay($day, $timeList);
 }

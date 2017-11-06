@@ -60,9 +60,10 @@ class Parser implements ParserInterface
         $image = $movieData['poster'];
         $description = $movieData['desc'];
         $dates = $movieData['dates'];
+        $length = $movieData['length'];
         $genres = $movieData['genre'];
 
-        $this->dateFactory->processDates($dates);
+        $processedDates = $this->dateFactory->processDates($dates, $length);
 
         foreach ($genres as $genre) {
             $cnetId = $this->termFactory->mapTerm($genre);

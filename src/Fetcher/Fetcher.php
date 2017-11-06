@@ -47,7 +47,6 @@ class Fetcher implements FetcherInterface
      * @param StringLiteral $client
      * @param StringLiteral $secret
      * @param AuthenticationInterface $authentication
-     * @param DateFactoryInterface $dateFactory
      * @param UrlFactoryInterface $urlFactory
      * @param ParserInterface $parser
      * @param Logger $logger
