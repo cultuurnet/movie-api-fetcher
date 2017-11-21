@@ -3,7 +3,6 @@
 namespace CultuurNet\MovieApiFetcher\Fetcher;
 
 use CultuurNet\MovieApiFetcher\Authentication\AuthenticationInterface;
-use CultuurNet\MovieApiFetcher\Date\DateFactoryInterface;
 use CultuurNet\MovieApiFetcher\Parser\ParserInterface;
 use CultuurNet\MovieApiFetcher\Url\UrlFactoryInterface;
 use Guzzle\Http\Client;

@@ -10,7 +10,8 @@
         "knplabs/console-service-provider": "~1.0",
         "monolog/monolog": "~1.11",
         "cultuurnet/valueobjects": "~3.0",
-        "cultuurnet/culturefeed-php": "~1.6"
+        "cultuurnet/culturefeed-php": "~1.6",
+        "cultuurnet/transform-entry-store": "dev-feature/IMP-56 as 0.1"
     },
     "require-dev": {
         "phpunit/phpunit": "~5.7",
