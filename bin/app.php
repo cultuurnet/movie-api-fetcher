@@ -2,6 +2,7 @@
 <?php
 
 use CultuurNet\MovieApiFetcher\Console\FetchCommand;
+use CultuurNet\MovieApiFetcher\Console\InstallCommand;
 use Knp\Provider\ConsoleServiceProvider;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -23,6 +24,10 @@ $consoleApp = $app['console'];
 
 $consoleApp->add(
     new FetchCommand($app['fetcher'])
+);
+
+$consoleApp->add(
+        new InstallCommand()
 );
 
 $consoleApp->run();
