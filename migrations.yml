@@ -1,0 +1,4 @@
+name: UDB3 IIS Migrations
+migrations_namespace: namespace CultuurNet\MovieApiFetcher\Migrations
+table_name: doctrine_migration_versions
+migrations_directory: src/Migrations
