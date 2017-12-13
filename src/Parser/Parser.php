@@ -4,10 +4,17 @@ namespace CultuurNet\MovieApiFetcher\Parser;
 
 use CultureFeed_Cdb_Item_Production;
 use CultuurNet\MovieApiFetcher\Date\DateFactoryInterface;
+use CultuurNet\MovieApiFetcher\EntryPoster\EntryPosterInterface;
+use CultuurNet\MovieApiFetcher\Formatter\FormatterInterface;
 use CultuurNet\MovieApiFetcher\Identification\IdentificationFactoryInterface;
 use CultuurNet\MovieApiFetcher\Term\TermFactoryInterface;
 use CultuurNet\MovieApiFetcher\Theater\TheaterFactoryInterface;
 use CultuurNet\MovieApiFetcher\Url\UrlFactoryInterface;
+use CultuurNet\TransformEntryStore\Stores\RepositoryInterface;
+use ValueObjects\DateTime\Date;
+use ValueObjects\DateTime\Time;
+use ValueObjects\Identity\UUID;
+use ValueObjects\StringLiteral\StringLiteral;
 
 class Parser implements ParserInterface
 {
@@ -15,6 +22,16 @@ class Parser implements ParserInterface
      * @var DateFactoryInterface
      */
     private $dateFactory;
+
+    /**
+     * @var EntryPosterInterface
+     */
+    private $entryPoster;
+
+    /**
+     * @var FormatterInterface
+     */
+    private $formatter;
 
     /**
      * @var IdentificationFactoryInterface
@@ -37,25 +54,39 @@ class Parser implements ParserInterface
     private $urlFactory;
 
     /**
+     * @var RepositoryInterface
+     */
+    private $repository;
+
+    /**
      * Parser constructor.
      * @param DateFactoryInterface $dateFactory
+     * @param EntryPosterInterface $entryPoster
+     * @param FormatterInterface $formatter
      * @param IdentificationFactoryInterface $identificationFactory
      * @param TermFactoryInterface $termFactory
      * @param TheaterFactoryInterface $theaterFactory
      * @param UrlFactoryInterface $urlFactory
+     * @param RepositoryInterface $repository
      */
     public function __construct(
         DateFactoryInterface $dateFactory,
+        EntryPosterInterface $entryPoster,
+        FormatterInterface $formatter,
         IdentificationFactoryInterface $identificationFactory,
         TermFactoryInterface $termFactory,
         TheaterFactoryInterface $theaterFactory,
-        UrlFactoryInterface $urlFactory
+        UrlFactoryInterface $urlFactory,
+        RepositoryInterface $repository
     ) {
         $this->dateFactory = $dateFactory;
+        $this->entryPoster = $entryPoster;
+        $this->formatter = $formatter;
         $this->identificationFactory = $identificationFactory;
         $this->termFactory = $termFactory;
         $this->theaterFactory = $theaterFactory;
         $this->urlFactory = $urlFactory;
+        $this->repository = $repository;
     }
 
     /**
@@ -74,26 +105,45 @@ class Parser implements ParserInterface
         $length = $movieData['length'];
         $genres = $movieData['genre'];
 
-        $filmScreenings = $this->dateFactory->processDates($dates, $length);
-
-        foreach ($filmScreenings as $filmScreeningTheater => $filmScreening) {
-            $externalId=$this->identificationFactory->generateMovieId($mid, $filmScreeningTheater);
-            foreach ($filmScreening as $day => $hours) {
-                foreach ($hours as $hour) {
-                    $start = $hour[0];
-                    $end = $hour[1];
-                }
-            }
-        }
-
         foreach ($genres as $genre) {
             $cnetId = $this->termFactory->mapTerm($genre);
         }
 
-        var_dump($movieData);
+        $filmScreenings = $this->dateFactory->processDates($dates, $length);
 
-        var_dump($movieData);
-        //        $production = new CultureFeed_Cdb_Item_Production();
+        foreach ($filmScreenings as $filmScreeningTheater => $filmScreening) {
+            $externalId = $this->identificationFactory->generateMovieId($mid, $filmScreeningTheater);
+            $cdbid = $this->repository->getCdbid($externalId);
+            if (isset($cdbid)) {
 
+            } else {
+                foreach ($filmScreening as $day => $hours) {
+                    foreach ($hours as $hour) {
+                        $timeStart = $hour[0];
+                        $timeEnd = $hour[1];
+                        $this->repository->saveCalendar(
+                            $externalId,
+                            $day,
+                            $timeStart,
+                            $timeEnd
+                        );
+                    }
+                }
+
+                $location = $this->theaterFactory->mapTheater($filmScreeningTheater);
+
+                $this->repository->saveName($externalId, new StringLiteral($title));
+                $this->repository->saveDescription($externalId, new StringLiteral($description));
+                $this->repository->saveTypeId($externalId, new StringLiteral('0.50.6.0.0'));
+                $this->repository->saveThemeId($externalId, new StringLiteral($cnetId));
+                $this->repository->saveLocationCdbid($externalId, new UUID($location['cdbid']));
+
+                $jsonMovie = $this->formatter->format($title, '0.50.6.0.0', $cnetId, $location['cdbid']);
+
+                $cdbid = $this->entryPoster->postMovie($jsonMovie);
+
+                $this->repository->saveCdbid($externalId, $cdbid);
+            }
+        }
     }
 }
