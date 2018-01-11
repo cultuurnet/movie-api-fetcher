@@ -115,9 +115,10 @@ class Parser implements ParserInterface
             $externalId = $this->identificationFactory->generateMovieId($mid, $filmScreeningTheater);
             $cdbid = $this->repository->getCdbid($externalId);
             if (isset($cdbid)) {
-                $hasUpdate = FALSE;
+                $hasUpdate = false;
                 if ($this->repository->getName($externalId) != $title) {
-
+                    $this->repository->updateName($externalId, $title);
+                    $this->entryPoster->updateName($cdbid, $title);
                 }
                 if ($this->repository->getDescription($externalId) != $description) {
 
