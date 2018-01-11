@@ -115,8 +115,17 @@ class Parser implements ParserInterface
             $externalId = $this->identificationFactory->generateMovieId($mid, $filmScreeningTheater);
             $cdbid = $this->repository->getCdbid($externalId);
             if (isset($cdbid)) {
+                $hasUpdate = FALSE;
+                if ($this->repository->getName($externalId) != $title) {
+
+                }
+                if ($this->repository->getDescription($externalId) != $description) {
+
+                }
+
 
             } else {
+                $calendarStr = '';
                 foreach ($filmScreening as $day => $hours) {
                     foreach ($hours as $hour) {
                         $timeStart = $hour[0];
@@ -127,8 +136,11 @@ class Parser implements ParserInterface
                             $timeStart,
                             $timeEnd
                         );
+                        $calendarStr .= '{ "start": "' . $day . 'T' . $timeStart . '+00:00", "end": "' . $day . 'T' . $timeEnd . '+00:00" }, ';
                     }
                 }
+
+                $calendarStr = substr($calendarStr, 0, -2);
 
                 $location = $this->theaterFactory->mapTheater($filmScreeningTheater);
 
@@ -138,7 +150,7 @@ class Parser implements ParserInterface
                 $this->repository->saveThemeId($externalId, new StringLiteral($cnetId));
                 $this->repository->saveLocationCdbid($externalId, new UUID($location['cdbid']));
 
-                $jsonMovie = $this->formatter->format($title, '0.50.6.0.0', $cnetId, $location['cdbid']);
+                $jsonMovie = $this->formatter->format($title, '0.50.6.0.0', $cnetId, $location['cdbid'], $calendarStr);
 
                 $cdbid = $this->entryPoster->postMovie($jsonMovie);
 

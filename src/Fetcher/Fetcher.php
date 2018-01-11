@@ -78,7 +78,10 @@ class Fetcher implements FetcherInterface
         foreach ($movies as $movie) {
             $mid = $movie['mid'];
             $movieDetail = $this->getMovieDetail($token, $mid);
-            $this->parser->process($movieDetail);
+            try {
+                $this->parser->process($movieDetail);
+            } catch (\Exception $e) {
+            }
         }
 
     }
