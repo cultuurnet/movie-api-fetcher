@@ -2,7 +2,8 @@
 
 namespace CultuurNet\MovieApiFetcher\EntryPoster;
 
-use CultuurNet\MovieApiFetcher\Url\UrlFactoryInterface;
+use CultuurNet\TransformEntryStore\ValueObjects\BookingInfo\BookingInfo;
+use CultuurNet\UDB3\Calendar;
 use Guzzle\Http\Client;
 use ValueObjects\Identity\UUID;
 use ValueObjects\StringLiteral\StringLiteral;
@@ -112,17 +113,64 @@ class EntryPoster implements EntryPosterInterface
         $this->url = $url;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function updateEventType(UUID $cdbid, StringLiteral $type)
     {
-        // TODO: Implement updateEventType() method.
+        $client = new Client();
+        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/type/' . $type->toNative();
+
+        $request = $client->put(
+            $uri,
+            [
+                'Authorization' => 'Bearer ' . $this->token,
+                'x-api-key' => $this->apiKey,
+            ],
+            []
+        );
+
+        $response = $request->send();
+
+        $bodyResponse = $response->getBody();
+
+        $resp = json_decode(utf8_encode($bodyResponse), true);
+        $commandId =  $resp['commandId'];
+
+        return $commandId;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function updateEventTheme(UUID $cdbid, StringLiteral $theme)
     {
-        // TODO: Implement updateEventTheme() method.
+        $client = new Client();
+        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/theme/' . $theme->toNative();
+
+        $request = $client->put(
+            $uri,
+            [
+                'Authorization' => 'Bearer ' . $this->token,
+                'x-api-key' => $this->apiKey,
+            ],
+            []
+        );
+
+        $response = $request->send();
+
+        $bodyResponse = $response->getBody();
+
+        $resp = json_decode(utf8_encode($bodyResponse), true);
+        $commandId =  $resp['commandId'];
+
+        return $commandId;
     }
 
-    public function updateCalendar()
+    /**
+     * @inheritdoc
+     */
+    public function updateCalendar(Calendar $calendar)
     {
         // TODO: Implement updateCalendar() method.
     }
@@ -160,7 +208,7 @@ class EntryPoster implements EntryPosterInterface
     public function updateTargetAudience(UUID $cdbid, $audience)
     {
         $client = new Client();
-        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/name/nl';
+        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/audience';
 
         $request = $client->put(
             $uri,
@@ -171,7 +219,7 @@ class EntryPoster implements EntryPosterInterface
             []
         );
 
-        $request->setBody('{ "name": "' . $name . '" }');
+        $request->setBody('{ "audience": "' . $audience . '" }');
         $response = $request->send();
 
         $bodyResponse = $response->getBody();
@@ -185,9 +233,40 @@ class EntryPoster implements EntryPosterInterface
     /**
      * @inheritdoc
      */
-    public function updateBookingInfo(UUID $cdbid, $bookingInfo)
+    public function updateBookingInfo(UUID $cdbid, BookingInfo $bookingInfo)
     {
-        // TODO: Implement updateBookingInfo() method.
+        $client = new Client();
+        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/bookingInfo';
+
+        $request = $client->put(
+            $uri,
+            [
+                'Authorization' => 'Bearer ' . $this->token,
+                'x-api-key' => $this->apiKey,
+            ],
+            []
+        );
+
+        $request->setBody(
+            '{' .
+                '"bookingInfo": {' .
+                '"url": "' . $bookingInfo . '",' .
+                '"urlLabel": "' . $bookingInfo . '",' .
+                '"email": "' . $bookingInfo . '",' .
+                '"phone": "' . $bookingInfo . '",' .
+                '"availabilityStarts": "' . $bookingInfo . '",' .
+                '"availabilityEnds": "' . $bookingInfo . '"' .
+                '}'.
+                '}'
+        );
+        $response = $request->send();
+
+        $bodyResponse = $response->getBody();
+
+        $resp = json_decode(utf8_encode($bodyResponse), true);
+        $commandId =  $resp['commandId'];
+
+        return $commandId;
     }
 
     /**
@@ -203,7 +282,26 @@ class EntryPoster implements EntryPosterInterface
      */
     public function addLabel(UUID $cdbid, StringLiteral $label)
     {
-        // TODO: Implement addLabel() method.
+        $client = new Client();
+        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/labels/' . $label->toNative();
+
+        $request = $client->put(
+            $uri,
+            [
+                'Authorization' => 'Bearer ' . $this->token,
+                'x-api-key' => $this->apiKey,
+            ],
+            []
+        );
+
+        $response = $request->send();
+
+        $bodyResponse = $response->getBody();
+
+        $resp = json_decode(utf8_encode($bodyResponse), true);
+        $commandId =  $resp['commandId'];
+
+        return $commandId;
     }
 
     /**
@@ -211,7 +309,26 @@ class EntryPoster implements EntryPosterInterface
      */
     public function deleteLabel(UUID $cdbid, StringLiteral $label)
     {
-        // TODO: Implement deleteLabel() method.
+        $client = new Client();
+        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/labels/' . $label->toNative();
+
+        $request = $client->delete(
+            $uri,
+            [
+                'Authorization' => 'Bearer ' . $this->token,
+                'x-api-key' => $this->apiKey,
+            ],
+            []
+        );
+
+        $response = $request->send();
+
+        $bodyResponse = $response->getBody();
+
+        $resp = json_decode(utf8_encode($bodyResponse), true);
+        $commandId =  $resp['commandId'];
+
+        return $commandId;
     }
 
     /**

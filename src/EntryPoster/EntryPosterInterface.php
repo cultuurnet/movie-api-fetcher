@@ -2,6 +2,8 @@
 
 namespace CultuurNet\MovieApiFetcher\EntryPoster;
 
+use CultuurNet\TransformEntryStore\ValueObjects\BookingInfo\BookingInfo;
+use CultuurNet\UDB3\Calendar;
 use ValueObjects\Identity\UUID;
 use ValueObjects\StringLiteral\StringLiteral;
 
@@ -27,7 +29,11 @@ interface EntryPosterInterface
      */
     public function updateEventTheme(UUID $cdbid, StringLiteral $theme);
 
-    public function updateCalendar();
+    /**
+     * @param Calendar $calendar
+     * @return string
+     */
+    public function updateCalendar(Calendar $calendar);
 
     /**
      * @param UUID $cdbid
@@ -61,10 +67,10 @@ interface EntryPosterInterface
 
     /**
      * @param UUID $cdbid
-     * @param $bookingInfo
+     * @param BookingInfo $bookingInfo
      * @return string
      */
-    public function updateBookingInfo(UUID $cdbid, $bookingInfo);
+    public function updateBookingInfo(UUID $cdbid, BookingInfo $bookingInfo);
 
     /**
      * @param UUID $cdbid
