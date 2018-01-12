@@ -11,6 +11,7 @@ use CultuurNet\MovieApiFetcher\Term\TermFactoryInterface;
 use CultuurNet\MovieApiFetcher\Theater\TheaterFactoryInterface;
 use CultuurNet\MovieApiFetcher\Url\UrlFactoryInterface;
 use CultuurNet\TransformEntryStore\Stores\RepositoryInterface;
+use GuzzleHttp\Tests\Psr7\Str;
 use ValueObjects\DateTime\Date;
 use ValueObjects\DateTime\Time;
 use ValueObjects\Identity\UUID;
@@ -94,6 +95,13 @@ class Parser implements ParserInterface
      */
     public function process($movie)
     {
+        $testId = new UUID('58d0a4d3-6334-4051-bf2d-cf4f4b00997e');
+        $rrr = $this->entryPoster->publishEvent($testId);
+        $sss = $this->entryPoster->updateName($testId, new StringLiteral('nieuwe naam'));
+        $ttt = $this->entryPoster->updateDescription($testId, new StringLiteral('nieuwe desc'));
+
+        var_dump($rrr);
+
         $movieData = $movie['movies'][0];
         $mid = $movieData['mid'];
         $externalIdProduction = $this->identificationFactory->generateMovieProductionId($mid);
@@ -154,8 +162,8 @@ class Parser implements ParserInterface
                 $jsonMovie = $this->formatter->format($title, '0.50.6.0.0', $cnetId, $location['cdbid'], $calendarStr);
 
                 $cdbid = $this->entryPoster->postMovie($jsonMovie);
-
                 $this->repository->saveCdbid($externalId, $cdbid);
+                $this->entryPoster->publishEvent($cdbid);
             }
         }
     }

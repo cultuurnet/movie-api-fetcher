@@ -13,13 +13,28 @@ interface EntryPosterInterface
      */
     public function postMovie(StringLiteral $jsonMovie);
 
+    /**
+     * @param UUID $cdbid
+     * @param StringLiteral $type
+     * @return string
+     */
     public function updateEventType(UUID $cdbid, StringLiteral $type);
 
+    /**
+     * @param UUID $cdbid
+     * @param StringLiteral $theme
+     * @return string
+     */
     public function updateEventTheme(UUID $cdbid, StringLiteral $theme);
 
     public function updateCalendar();
 
-    public function updateLocation();
+    /**
+     * @param UUID $cdbid
+     * @param UUID $locationId
+     * @return string
+     */
+    public function updateLocation(UUID $cdbid, UUID $locationId);
 
     /**
      * @param UUID $cdbid
@@ -82,7 +97,7 @@ interface EntryPosterInterface
     /**
      * @param UUID $cdbid
      * @param $priceInfo
-     * @return mixed
+     * @return string
      */
     public function updatePriceInfo(UUID $cdbid, $priceInfo);
 
