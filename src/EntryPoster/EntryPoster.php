@@ -205,6 +205,34 @@ class EntryPoster implements EntryPosterInterface
     /**
      * @inheritdoc
      */
+    public function addMediaObject($file, $description, $copyright)
+    {
+        $client = new Client();
+        $uri = (string) $this->url . 'images/';
+
+        $request = $client->post(
+            $uri,
+            [
+                'Authorization' => 'Bearer ' . $this->token,
+                'x-api-key' => $this->apiKey,
+            ],
+            []
+        );
+
+        $request->setBody('{ "file": "' . $file . '", "description": "' . $description . '", "copyrightHolder": "' . $copyright . '", "language": "nl" }');
+        $response = $request->send();
+
+        $bodyResponse = $response->getBody();
+
+        $resp = json_decode(utf8_encode($bodyResponse), true);
+        $imageId =  $resp['imageId'];
+
+        return $imageId;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function updateTargetAudience(UUID $cdbid, $audience)
     {
         $client = new Client();
@@ -332,7 +360,7 @@ class EntryPoster implements EntryPosterInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritdocc
      */
     public function updateOrganizer(UUID $cdbid, UUID $organizerId)
     {

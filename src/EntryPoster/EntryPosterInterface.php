@@ -56,7 +56,13 @@ interface EntryPosterInterface
      */
     public function updateDescription(UUID $cdbid, StringLiteral $description);
 
-    // TODO: Put image stuff here
+    /**
+     * @param $file
+     * @param $description
+     * @param $copyright
+     * @return string
+     */
+    public function addMediaObject($file, $description, $copyright);
 
     /**
      * @param UUID $cdbid
