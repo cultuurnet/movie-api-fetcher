@@ -5,6 +5,7 @@ namespace CultuurNet\MovieApiFetcher\EntryPoster;
 use CultuurNet\TransformEntryStore\ValueObjects\BookingInfo\BookingInfo;
 use CultuurNet\UDB3\Calendar;
 use Guzzle\Http\Client;
+use Guzzle\Http\EntityBody;
 use ValueObjects\Identity\UUID;
 use ValueObjects\StringLiteral\StringLiteral;
 
@@ -207,8 +208,46 @@ class EntryPoster implements EntryPosterInterface
      */
     public function addMediaObject($file, $description, $copyright)
     {
+        $ch = curl_init();
+
+        $postBody = array();
+        $curlFile = curl_file_create($file);
+        $postBody['file'] = $curlFile;
+        $postBody['description'] = $description;
+        $postBody['copyrightHolder'] = $copyright;
+        $postBody['language'] = 'nl';
+
+        curl_setopt($ch, CURLOPT_URL, "https://io-acc.uitdatabank.be/images/");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POST, 1);
+
+        $headers = array();
+        $headers[] = "Content-Type: multipart/form-data";
+        $headers[] = "Accept: application/json";
+        $headers[] = "Authorization: Bearer " . $this->token;
+        $headers[] = "X-Api-Key: deb306a6-6f46-4c98-89ce-b03ec4fd11e2";
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postBody);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        $bodyResponse = curl_exec($ch);
+        if (curl_errno($ch)) {
+            echo 'Error:' . curl_error($ch);
+        }
+        curl_close($ch);
+
+        $resp = json_decode(utf8_encode($bodyResponse), true);
+        $imageId =  $resp['imageId'];
+
+        return $imageId;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function addImage(UUID $cdbid, UUID $mediaObjectId)
+    {
         $client = new Client();
-        $uri = (string) $this->url . 'images/';
+        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/images/';
 
         $request = $client->post(
             $uri,
@@ -219,15 +258,98 @@ class EntryPoster implements EntryPosterInterface
             []
         );
 
-        $request->setBody('{ "file": "' . $file . '", "description": "' . $description . '", "copyrightHolder": "' . $copyright . '", "language": "nl" }');
+        $request->setBody('{ "mediaObjectId": "' . $mediaObjectId . '" }');
         $response = $request->send();
 
         $bodyResponse = $response->getBody();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
-        $imageId =  $resp['imageId'];
+        $commandId =  $resp['commandId'];
 
-        return $imageId;
+        return $commandId;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function updateImage(UUID $cdbid, UUID $mediaObjectId, StringLiteral $description, StringLiteral $copyrightHolder)
+    {
+        $client = new Client();
+        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/images/' . $mediaObjectId->toNative();
+
+        $request = $client->put(
+            $uri,
+            [
+                'Authorization' => 'Bearer ' . $this->token,
+                'x-api-key' => $this->apiKey,
+            ],
+            []
+        );
+
+        $request->setBody('{ "description": "' . $description . '", "copyrightHolder": "' . $copyrightHolder . '" }');
+        $response = $request->send();
+
+        $bodyResponse = $response->getBody();
+
+        $resp = json_decode(utf8_encode($bodyResponse), true);
+        $commandId =  $resp['commandId'];
+
+        return $commandId;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function deleteImage(UUID $cdbid, UUID $mediaObjectId)
+    {
+        $client = new Client();
+        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/images/' . $mediaObjectId->toNative();
+
+        $request = $client->delete(
+            $uri,
+            [
+                'Authorization' => 'Bearer ' . $this->token,
+                'x-api-key' => $this->apiKey,
+            ],
+            []
+        );
+
+        $response = $request->send();
+
+        $bodyResponse = $response->getBody();
+
+        $resp = json_decode(utf8_encode($bodyResponse), true);
+        $commandId =  $resp['commandId'];
+
+        return $commandId;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setMainImage(UUID $cdbid, UUID $mediaObjectId)
+    {
+        $client = new Client();
+        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/images/main';
+
+        $request = $client->put(
+            $uri,
+            [
+                'Authorization' => 'Bearer ' . $this->token,
+                'x-api-key' => $this->apiKey,
+            ],
+            []
+        );
+
+        $request->setBody('{ "mediaObjectId": "' . $mediaObjectId . '" }');
+        $response = $request->send();
+
+        $bodyResponse = $response->getBody();
+
+        $resp = json_decode(utf8_encode($bodyResponse), true);
+        $commandId =  $resp['commandId'];
+
+        return $commandId;
     }
 
     /**

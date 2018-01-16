@@ -66,6 +66,36 @@ interface EntryPosterInterface
 
     /**
      * @param UUID $cdbid
+     * @param UUID $mediaObjectId
+     * @return string
+     */
+    public function addImage(UUID $cdbid, UUID $mediaObjectId);
+
+    /**
+     * @param UUID $cdbid
+     * @param UUID $mediaObjectId
+     * @param StringLiteral $description
+     * @param StringLiteral $copyrightHolder
+     * @return string
+     */
+    public function updateImage(UUID $cdbid, UUID $mediaObjectId, StringLiteral $description, StringLiteral $copyrightHolder);
+
+    /**
+     * @param UUID $cdbid
+     * @param UUID $mediaObjectId
+     * @return string
+     */
+    public function deleteImage(UUID $cdbid, UUID $mediaObjectId);
+
+    /**
+     * @param UUID $cdbid
+     * @param UUID $mediaObjectId
+     * @return string
+     */
+    public function setMainImage(UUID $cdbid, UUID $mediaObjectId);
+
+    /**
+     * @param UUID $cdbid
      * @param $audience
      * @return string
      */

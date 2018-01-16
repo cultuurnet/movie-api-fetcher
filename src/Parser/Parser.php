@@ -95,12 +95,12 @@ class Parser implements ParserInterface
      */
     public function process($movie)
     {
-        $testId = new UUID('58d0a4d3-6334-4051-bf2d-cf4f4b00997e');
-        $rrr = $this->entryPoster->publishEvent($testId);
-        $sss = $this->entryPoster->updateName($testId, new StringLiteral('nieuwe naam'));
-        $ttt = $this->entryPoster->updateDescription($testId, new StringLiteral('nieuwe desc'));
+        $testF = '/Users/jonas/Downloads/yello-and-green.jpg';
+        $testD = 'beschrijving';
+        $testC = 'Mine';
+        $testId = $this->entryPoster->addMediaObject($testF, $testD, $testC);
 
-        var_dump($rrr);
+        var_dump($testId);
 
         $movieData = $movie['movies'][0];
         $mid = $movieData['mid'];
