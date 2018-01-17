@@ -5,7 +5,6 @@ namespace CultuurNet\MovieApiFetcher\EntryPoster;
 use CultuurNet\TransformEntryStore\ValueObjects\BookingInfo\BookingInfo;
 use CultuurNet\UDB3\Calendar;
 use Guzzle\Http\Client;
-use Guzzle\Http\EntityBody;
 use ValueObjects\Identity\UUID;
 use ValueObjects\StringLiteral\StringLiteral;
 
@@ -217,15 +216,15 @@ class EntryPoster implements EntryPosterInterface
         $postBody['copyrightHolder'] = $copyright;
         $postBody['language'] = 'nl';
 
-        curl_setopt($ch, CURLOPT_URL, "https://io-acc.uitdatabank.be/images/");
+        curl_setopt($ch, CURLOPT_URL,  $this->url .'images/');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POST, 1);
 
         $headers = array();
-        $headers[] = "Content-Type: multipart/form-data";
-        $headers[] = "Accept: application/json";
-        $headers[] = "Authorization: Bearer " . $this->token;
-        $headers[] = "X-Api-Key: deb306a6-6f46-4c98-89ce-b03ec4fd11e2";
+        $headers[] = 'Content-Type: multipart/form-data';
+        $headers[] = 'Accept: application/json';
+        $headers[] = 'Authorization: ' . 'Bearer ' . $this->token;
+        $headers[] = 'X-Api-Key: ' . $this->apiKey;
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postBody);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
