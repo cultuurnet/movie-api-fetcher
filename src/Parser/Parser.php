@@ -95,7 +95,7 @@ class Parser implements ParserInterface
      */
     public function process($movie)
     {
-        $testF = '/Users/jonas/Downloads/yello-and-green.jpg';
+        $testF = 'https://kinepolis.be/nl/sites/kinepolis.be.nl/files/posters/TED-miniposter_EURO.jpg';
         $testD = 'beschrijving';
         $testC = 'Mine';
         $testId = $this->entryPoster->addMediaObject($testF, $testD, $testC);

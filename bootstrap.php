@@ -178,7 +178,7 @@ $app['log_handler'] = $app->share(
     function (Application $app) {
         return new RotatingFileHandler(
             $app['config']['logging_folder'] . '/fetcher.log',
-            180,
+            365,
             Logger::DEBUG
         );
     }

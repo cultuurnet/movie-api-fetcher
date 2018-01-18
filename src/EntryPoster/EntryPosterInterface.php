@@ -30,10 +30,11 @@ interface EntryPosterInterface
     public function updateEventTheme(UUID $cdbid, StringLiteral $theme);
 
     /**
+     * @param UUID $cdbid
      * @param Calendar $calendar
      * @return string
      */
-    public function updateCalendar(Calendar $calendar);
+    public function updateCalendar(UUID $cdbid, Calendar $calendar);
 
     /**
      * @param UUID $cdbid

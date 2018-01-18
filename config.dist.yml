@@ -1,7 +1,25 @@
 debug: false
 
+logging_folder: '/Path/to/log/'
+files_folder: '/Path/to/files/'
+
 kinepolis:
   authentication:
     key: foo
     secret: bar
-  url: https://url.com/nl/api/index.html
+  url: https://foobar.dev/nl/
+
+publiq:
+  authentication:
+    token: foo
+    api_key: bar
+  url: https://io-acc.uitdatabank.be/
+  # http://jwtprovider-acc.uitdatabank.be/culturefeed/oauth/connect?destination=oob
+
+database:
+  driver: pdo_mysql
+  dbname: kinepolis
+  user: root
+  password: rootroot
+  host: 127.0.0.1
+

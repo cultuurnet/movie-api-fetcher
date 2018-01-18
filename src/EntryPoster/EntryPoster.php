@@ -170,9 +170,30 @@ class EntryPoster implements EntryPosterInterface
     /**
      * @inheritdoc
      */
-    public function updateCalendar(Calendar $calendar)
+    public function updateCalendar(UUID $cdbid, Calendar $calendar)
     {
         // TODO: Implement updateCalendar() method.
+
+        $client = new Client();
+        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/calendar';
+
+        $request = $client->put(
+            $uri,
+            [
+                'Authorization' => 'Bearer ' . $this->token,
+                'x-api-key' => $this->apiKey,
+            ],
+            []
+        );
+
+        $response = $request->send();
+
+        $bodyResponse = $response->getBody();
+
+        $resp = json_decode(utf8_encode($bodyResponse), true);
+        $commandId =  $resp['commandId'];
+
+        return $commandId;
     }
 
     /**
@@ -216,7 +237,7 @@ class EntryPoster implements EntryPosterInterface
         $postBody['copyrightHolder'] = $copyright;
         $postBody['language'] = 'nl';
 
-        curl_setopt($ch, CURLOPT_URL,  $this->url .'images/');
+        curl_setopt($ch, CURLOPT_URL, $this->url .'images/');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POST, 1);
 
