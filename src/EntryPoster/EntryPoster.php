@@ -16,6 +16,8 @@ class EntryPoster implements EntryPosterInterface
 
     private $url;
 
+    private $filesFolder;
+
     /**
      * @inheritdoc
      */
@@ -34,7 +36,12 @@ class EntryPoster implements EntryPosterInterface
         );
 
         $request->setBody($jsonMovie->toNative());
-        $response = $request->send();
+
+        try {
+            $response = $request->send();
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
 
         $bodyResponse = $response->getBody();
 
@@ -105,12 +112,14 @@ class EntryPoster implements EntryPosterInterface
      * @param $token
      * @param $apiKey
      * @param $url
+     * @param $filesFolder
      */
-    public function __construct($token, $apiKey, $url)
+    public function __construct($token, $apiKey, $url, $filesFolder)
     {
         $this->token = $token;
         $this->apiKey = $apiKey;
         $this->url = $url;
+        $this->filesFolder = $filesFolder;
     }
 
     /**
@@ -228,10 +237,12 @@ class EntryPoster implements EntryPosterInterface
      */
     public function addMediaObject($file, $description, $copyright)
     {
+        $savedFile = $this->downloadFile($file);
+
         $ch = curl_init();
 
         $postBody = array();
-        $curlFile = curl_file_create($file);
+        $curlFile = curl_file_create($savedFile);
         $postBody['file'] = $curlFile;
         $postBody['description'] = $description;
         $postBody['copyrightHolder'] = $copyright;
@@ -501,7 +512,7 @@ class EntryPoster implements EntryPosterInterface
         return $commandId;
     }
 
-    /**
+    /**§1§
      * @inheritdocc
      */
     public function updateOrganizer(UUID $cdbid, UUID $organizerId)
@@ -577,5 +588,13 @@ class EntryPoster implements EntryPosterInterface
         $commandId =  $resp['commandId'];
 
         return $commandId;
+    }
+
+    private function downloadFile($fileLocation)
+    {
+        $fileName = basename($fileLocation);
+        $savedFile = $this->filesFolder . $fileName;
+        file_put_contents($savedFile, file_get_contents($fileLocation));
+        return $savedFile;
     }
 }

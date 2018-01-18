@@ -95,19 +95,12 @@ class Parser implements ParserInterface
      */
     public function process($movie)
     {
-        $testF = 'https://kinepolis.be/nl/sites/kinepolis.be.nl/files/posters/TED-miniposter_EURO.jpg';
-        $testD = 'beschrijving';
-        $testC = 'Mine';
-        $testId = $this->entryPoster->addMediaObject($testF, $testD, $testC);
-
-        var_dump($testId);
-
         $movieData = $movie['movies'][0];
         $mid = $movieData['mid'];
         $externalIdProduction = $this->identificationFactory->generateMovieProductionId($mid);
 
         $title = $movieData['title'];
-        $image = $movieData['poster'];
+        $image = $this->urlFactory->generateMediaUrl($movieData['poster']);
         $description = $movieData['desc'];
         $dates = $movieData['dates'];
         $length = $movieData['length'];
@@ -164,6 +157,10 @@ class Parser implements ParserInterface
                 $cdbid = $this->entryPoster->postMovie($jsonMovie);
                 $this->repository->saveCdbid($externalId, $cdbid);
                 $this->entryPoster->publishEvent($cdbid);
+
+                $mediaId = $this->entryPoster->addMediaObject((string) $image, $title, 'Kinepolis');
+
+                echo $mediaId;
             }
         }
     }

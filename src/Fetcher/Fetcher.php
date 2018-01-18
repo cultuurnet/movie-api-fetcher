@@ -83,7 +83,6 @@ class Fetcher implements FetcherInterface
             } catch (\Exception $e) {
             }
         }
-
     }
 
     /**
@@ -108,6 +107,9 @@ class Fetcher implements FetcherInterface
         return json_decode($body, true);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getMovieDetail($token, $mid)
     {
         $client = new Client();

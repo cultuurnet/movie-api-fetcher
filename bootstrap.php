@@ -228,7 +228,8 @@ $app['entry_poster'] = $app->share(
         return new EntryPoster(
             $app['config']['publiq']['authentication']['token'],
             $app['config']['publiq']['authentication']['api_key'],
-            $app['config']['publiq']['url']
+            $app['config']['publiq']['url'],
+            $app['config']['files_folder']
         );
     }
 );
