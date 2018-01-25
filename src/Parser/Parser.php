@@ -159,13 +159,18 @@ class Parser implements ParserInterface
                 $this->repository->saveCdbid($externalId, $cdbid);
                 $this->entryPoster->publishEvent($cdbid);
 
-                $mediaId = $this->entryPoster->addMediaObject((string) $image, $title, Parser::KINEPOLIS_COPYRIGHT);
+                $mediaId = $this->entryPoster->addMediaObject((string) $image, new StringLiteral($title), $this->getDefaultCopyright());
                 $this->entryPoster->addImage($cdbid, $mediaId);
-                $this->repository->saveImage($externalId, $mediaId, $title, Parser::KINEPOLIS_COPYRIGHT, LanguageCode::NL());
+                $this->repository->saveImage($externalId, $mediaId, new StringLiteral($title), $this->getDefaultCopyright(), LanguageCode::NL());
 
                 echo $mediaId;
 
             }
         }
+    }
+
+    private function getDefaultCopyright()
+    {
+        return new StringLiteral(Parser::KINEPOLIS_COPYRIGHT);
     }
 }

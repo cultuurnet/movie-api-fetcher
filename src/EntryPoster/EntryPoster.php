@@ -235,7 +235,7 @@ class EntryPoster implements EntryPosterInterface
     /**
      * @inheritdoc
      */
-    public function addMediaObject($file, $description, $copyright)
+    public function addMediaObject($file, StringLiteral $description, StringLiteral $copyright)
     {
         $savedFile = $this->downloadFile($file);
 
@@ -269,7 +269,7 @@ class EntryPoster implements EntryPosterInterface
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $imageId =  $resp['imageId'];
 
-        return $imageId;
+        return new UUID($imageId);
     }
 
     /**
