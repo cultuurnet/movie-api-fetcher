@@ -5,6 +5,7 @@ namespace CultuurNet\MovieApiFetcher\EntryPoster;
 use CultuurNet\TransformEntryStore\ValueObjects\BookingInfo\BookingInfo;
 use CultuurNet\UDB3\Calendar;
 use Guzzle\Http\Client;
+use Monolog\Logger;
 use ValueObjects\Identity\UUID;
 use ValueObjects\StringLiteral\StringLiteral;
 
@@ -17,6 +18,11 @@ class EntryPoster implements EntryPosterInterface
     private $url;
 
     private $filesFolder;
+
+    /**
+     * @var Logger
+     */
+    private $logger;
 
     /**
      * @inheritdoc
@@ -75,6 +81,7 @@ class EntryPoster implements EntryPosterInterface
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $commandId =  $resp['commandId'];
+        $this->logger->log(Logger::DEBUG, 'Updated name for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
 
         return $commandId;
     }
@@ -103,6 +110,7 @@ class EntryPoster implements EntryPosterInterface
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $commandId =  $resp['commandId'];
+        $this->logger->log(Logger::DEBUG, 'Updated description for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
 
         return $commandId;
     }
@@ -113,13 +121,15 @@ class EntryPoster implements EntryPosterInterface
      * @param $apiKey
      * @param $url
      * @param $filesFolder
+     * @param Logger $logger
      */
-    public function __construct($token, $apiKey, $url, $filesFolder)
+    public function __construct($token, $apiKey, $url, $filesFolder, $logger)
     {
         $this->token = $token;
         $this->apiKey = $apiKey;
         $this->url = $url;
         $this->filesFolder = $filesFolder;
+        $this->logger = $logger;
     }
 
     /**
@@ -145,6 +155,7 @@ class EntryPoster implements EntryPosterInterface
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $commandId =  $resp['commandId'];
+        $this->logger->log(Logger::DEBUG, 'Updated eventtype for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
 
         return $commandId;
     }
@@ -172,6 +183,7 @@ class EntryPoster implements EntryPosterInterface
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $commandId =  $resp['commandId'];
+        $this->logger->log(Logger::DEBUG, 'Updated eventtheme for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
 
         return $commandId;
     }
@@ -201,6 +213,7 @@ class EntryPoster implements EntryPosterInterface
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $commandId =  $resp['commandId'];
+        $this->logger->log(Logger::DEBUG, 'Updated calendar for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
 
         return $commandId;
     }
@@ -228,6 +241,7 @@ class EntryPoster implements EntryPosterInterface
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $commandId =  $resp['commandId'];
+        $this->logger->log(Logger::DEBUG, 'Updated location for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
 
         return $commandId;
     }
@@ -268,6 +282,7 @@ class EntryPoster implements EntryPosterInterface
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $imageId =  $resp['imageId'];
+        $this->logger->log(Logger::DEBUG, 'Added media from ' . $file . '. Got  ' . $imageId);
 
         return new UUID($imageId);
     }
@@ -296,6 +311,7 @@ class EntryPoster implements EntryPosterInterface
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $commandId =  $resp['commandId'];
+        $this->logger->log(Logger::DEBUG, 'Added location for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
 
         return $commandId;
     }
@@ -324,6 +340,7 @@ class EntryPoster implements EntryPosterInterface
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $commandId =  $resp['commandId'];
+        $this->logger->log(Logger::DEBUG, 'Updated image for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
 
         return $commandId;
     }
@@ -351,6 +368,7 @@ class EntryPoster implements EntryPosterInterface
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $commandId =  $resp['commandId'];
+        $this->logger->log(Logger::DEBUG, 'Deleted image for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
 
         return $commandId;
     }
