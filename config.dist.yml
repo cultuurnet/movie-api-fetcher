@@ -22,4 +22,3 @@ database:
   user: root
   password: rootroot
   host: 127.0.0.1
-

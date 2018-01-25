@@ -11,14 +11,15 @@ use CultuurNet\MovieApiFetcher\Term\TermFactoryInterface;
 use CultuurNet\MovieApiFetcher\Theater\TheaterFactoryInterface;
 use CultuurNet\MovieApiFetcher\Url\UrlFactoryInterface;
 use CultuurNet\TransformEntryStore\Stores\RepositoryInterface;
-use GuzzleHttp\Tests\Psr7\Str;
-use ValueObjects\DateTime\Date;
-use ValueObjects\DateTime\Time;
+use CultuurNet\TransformEntryStore\ValueObjects\Language\LanguageCode;
 use ValueObjects\Identity\UUID;
 use ValueObjects\StringLiteral\StringLiteral;
 
 class Parser implements ParserInterface
 {
+    const KINEPOLIS_COPYRIGHT = 'Kinepolis';
+    const MOVIE_TYPE_ID = '0.50.6.0.0';
+
     /**
      * @var DateFactoryInterface
      */
@@ -148,19 +149,22 @@ class Parser implements ParserInterface
 
                 $this->repository->saveName($externalId, new StringLiteral($title));
                 $this->repository->saveDescription($externalId, new StringLiteral($description));
-                $this->repository->saveTypeId($externalId, new StringLiteral('0.50.6.0.0'));
+                $this->repository->saveTypeId($externalId, new StringLiteral(PARSER::MOVIE_TYPE_ID));
                 $this->repository->saveThemeId($externalId, new StringLiteral($cnetId));
                 $this->repository->saveLocationCdbid($externalId, new UUID($location['cdbid']));
 
-                $jsonMovie = $this->formatter->format($title, '0.50.6.0.0', $cnetId, $location['cdbid'], $calendarStr);
+                $jsonMovie = $this->formatter->format($title, PARSER::MOVIE_TYPE_ID, $cnetId, $location['cdbid'], $calendarStr);
 
                 $cdbid = $this->entryPoster->postMovie($jsonMovie);
                 $this->repository->saveCdbid($externalId, $cdbid);
                 $this->entryPoster->publishEvent($cdbid);
 
-                $mediaId = $this->entryPoster->addMediaObject((string) $image, $title, 'Kinepolis');
+                $mediaId = $this->entryPoster->addMediaObject((string) $image, $title, Parser::KINEPOLIS_COPYRIGHT);
+                $this->entryPoster->addImage($cdbid, $mediaId);
+                $this->repository->saveImage($externalId, $mediaId, $title, Parser::KINEPOLIS_COPYRIGHT, LanguageCode::NL());
 
                 echo $mediaId;
+
             }
         }
     }

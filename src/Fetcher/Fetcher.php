@@ -81,6 +81,7 @@ class Fetcher implements FetcherInterface
             try {
                 $this->parser->process($movieDetail);
             } catch (\Exception $e) {
+                var_dump($e);
             }
         }
     }
