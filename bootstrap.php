@@ -207,6 +207,22 @@ $app['logger_fetcher'] = $app->share(
     }
 );
 
+$app['log_handler_parser'] = $app->share(
+    function (Application $app) {
+        return new RotatingFileHandler(
+            $app['config']['logging_folder'] . '/parser.log',
+            365,
+            Logger::DEBUG
+        );
+    }
+);
+
+$app['logger_parser'] = $app->share(
+    function (Application $app) {
+        return new Logger('importer', array($app['log_handler_parser']));
+    }
+);
+
 $app['url_factory'] = $app->share(
     function (Application $app) {
         return new UrlFactory(
@@ -421,7 +437,8 @@ $app['parser'] = $app->share(
             $app['terms'],
             $app['theaters'],
             $app['url_factory'],
-            $app['repository']
+            $app['repository'],
+            $app['logger_parser']
         );
     }
 );

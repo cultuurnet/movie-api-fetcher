@@ -12,6 +12,7 @@ use CultuurNet\MovieApiFetcher\Theater\TheaterFactoryInterface;
 use CultuurNet\MovieApiFetcher\Url\UrlFactoryInterface;
 use CultuurNet\TransformEntryStore\Stores\RepositoryInterface;
 use CultuurNet\TransformEntryStore\ValueObjects\Language\LanguageCode;
+use Monolog\Logger;
 use ValueObjects\Identity\UUID;
 use ValueObjects\StringLiteral\StringLiteral;
 
@@ -61,6 +62,11 @@ class Parser implements ParserInterface
     private $repository;
 
     /**
+     * @var
+     */
+    private $logger;
+
+    /**
      * Parser constructor.
      * @param DateFactoryInterface $dateFactory
      * @param EntryPosterInterface $entryPoster
@@ -70,6 +76,7 @@ class Parser implements ParserInterface
      * @param TheaterFactoryInterface $theaterFactory
      * @param UrlFactoryInterface $urlFactory
      * @param RepositoryInterface $repository
+     * @param Logger $logger
      */
     public function __construct(
         DateFactoryInterface $dateFactory,
@@ -79,7 +86,8 @@ class Parser implements ParserInterface
         TermFactoryInterface $termFactory,
         TheaterFactoryInterface $theaterFactory,
         UrlFactoryInterface $urlFactory,
-        RepositoryInterface $repository
+        RepositoryInterface $repository,
+        Logger $logger
     ) {
         $this->dateFactory = $dateFactory;
         $this->entryPoster = $entryPoster;
@@ -89,6 +97,7 @@ class Parser implements ParserInterface
         $this->theaterFactory = $theaterFactory;
         $this->urlFactory = $urlFactory;
         $this->repository = $repository;
+        $this->logger =$logger;
     }
 
     /**
