@@ -59,11 +59,11 @@ interface EntryPosterInterface
 
     /**
      * @param $file
-     * @param $description
-     * @param $copyright
-     * @return string
+     * @param StringLiteral $description
+     * @param StringLiteral $copyright
+     * @return UUID
      */
-    public function addMediaObject($file, $description, $copyright);
+    public function addMediaObject($file, StringLiteral $description, StringLiteral $copyright);
 
     /**
      * @param UUID $cdbid

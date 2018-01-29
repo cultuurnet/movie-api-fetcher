@@ -12,6 +12,7 @@ use CultuurNet\MovieApiFetcher\Theater\TheaterFactoryInterface;
 use CultuurNet\MovieApiFetcher\Url\UrlFactoryInterface;
 use CultuurNet\TransformEntryStore\Stores\RepositoryInterface;
 use CultuurNet\TransformEntryStore\ValueObjects\Language\LanguageCode;
+use Monolog\Logger;
 use ValueObjects\Identity\UUID;
 use ValueObjects\StringLiteral\StringLiteral;
 
@@ -19,6 +20,7 @@ class Parser implements ParserInterface
 {
     const KINEPOLIS_COPYRIGHT = 'Kinepolis';
     const MOVIE_TYPE_ID = '0.50.6.0.0';
+    const UIV_MOVIE_KEYWORD = 'UiTinVlaanderenFilm';
 
     /**
      * @var DateFactoryInterface
@@ -61,6 +63,11 @@ class Parser implements ParserInterface
     private $repository;
 
     /**
+     * @var
+     */
+    private $logger;
+
+    /**
      * Parser constructor.
      * @param DateFactoryInterface $dateFactory
      * @param EntryPosterInterface $entryPoster
@@ -70,6 +77,7 @@ class Parser implements ParserInterface
      * @param TheaterFactoryInterface $theaterFactory
      * @param UrlFactoryInterface $urlFactory
      * @param RepositoryInterface $repository
+     * @param Logger $logger
      */
     public function __construct(
         DateFactoryInterface $dateFactory,
@@ -79,7 +87,8 @@ class Parser implements ParserInterface
         TermFactoryInterface $termFactory,
         TheaterFactoryInterface $theaterFactory,
         UrlFactoryInterface $urlFactory,
-        RepositoryInterface $repository
+        RepositoryInterface $repository,
+        Logger $logger
     ) {
         $this->dateFactory = $dateFactory;
         $this->entryPoster = $entryPoster;
@@ -89,6 +98,7 @@ class Parser implements ParserInterface
         $this->theaterFactory = $theaterFactory;
         $this->urlFactory = $urlFactory;
         $this->repository = $repository;
+        $this->logger =$logger;
     }
 
     /**
@@ -119,14 +129,13 @@ class Parser implements ParserInterface
             if (isset($cdbid)) {
                 $hasUpdate = false;
                 if ($this->repository->getName($externalId) != $title) {
-                    $this->repository->updateName($externalId, $title);
-                    $this->entryPoster->updateName($cdbid, $title);
+                    $this->repository->updateName($externalId, new StringLiteral($title));
+                    $this->entryPoster->updateName($cdbid, new StringLiteral($title));
                 }
                 if ($this->repository->getDescription($externalId) != $description) {
-
+                    $this->repository->updateDescription($externalId, new StringLiteral($description));
+                    $this->entryPoster->updateDescription($cdbid, new StringLiteral($description));
                 }
-
-
             } else {
                 $calendarStr = '';
                 foreach ($filmScreening as $day => $hours) {
@@ -143,8 +152,6 @@ class Parser implements ParserInterface
                     }
                 }
 
-                $calendarStr = substr($calendarStr, 0, -2);
-
                 $location = $this->theaterFactory->mapTheater($filmScreeningTheater);
 
                 $this->repository->saveName($externalId, new StringLiteral($title));
@@ -153,19 +160,25 @@ class Parser implements ParserInterface
                 $this->repository->saveThemeId($externalId, new StringLiteral($cnetId));
                 $this->repository->saveLocationCdbid($externalId, new UUID($location['cdbid']));
 
-                $jsonMovie = $this->formatter->format($title, PARSER::MOVIE_TYPE_ID, $cnetId, $location['cdbid'], $calendarStr);
+                $jsonMovie = $this->formatter->formatEvent($externalId);
 
                 $cdbid = $this->entryPoster->postMovie($jsonMovie);
                 $this->repository->saveCdbid($externalId, $cdbid);
                 $this->entryPoster->publishEvent($cdbid);
 
-                $mediaId = $this->entryPoster->addMediaObject((string) $image, $title, Parser::KINEPOLIS_COPYRIGHT);
+                $mediaId = $this->entryPoster->addMediaObject((string) $image, new StringLiteral($title), $this->getDefaultCopyright());
                 $this->entryPoster->addImage($cdbid, $mediaId);
-                $this->repository->saveImage($externalId, $mediaId, $title, Parser::KINEPOLIS_COPYRIGHT, LanguageCode::NL());
+                $this->repository->saveImage($externalId, $mediaId, new StringLiteral($title), $this->getDefaultCopyright(), LanguageCode::NL());
 
-                echo $mediaId;
-
+                $this->repository->addLabel($externalId, new StringLiteral(Parser::UIV_MOVIE_KEYWORD));
+                $this->entryPoster->addLabel($cdbid, new StringLiteral(Parser::UIV_MOVIE_KEYWORD));
+                $this->entryPoster->updateDescription($cdbid, $description);
             }
         }
+    }
+
+    private function getDefaultCopyright()
+    {
+        return new StringLiteral(Parser::KINEPOLIS_COPYRIGHT);
     }
 }

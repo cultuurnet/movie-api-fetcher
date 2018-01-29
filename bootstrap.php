@@ -175,7 +175,23 @@ $app['database.installer'] = $app->share(
     }
 );
 
-$app['log_handler'] = $app->share(
+$app['log_handler_entry'] = $app->share(
+    function (Application $app) {
+        return new RotatingFileHandler(
+            $app['config']['logging_folder'] . '/entry.log',
+            365,
+            Logger::DEBUG
+        );
+    }
+);
+
+$app['logger_entry'] = $app->share(
+    function (Application $app) {
+        return new Logger('importer', array($app['log_handler_entry']));
+    }
+);
+
+$app['log_handler_fetcher'] = $app->share(
     function (Application $app) {
         return new RotatingFileHandler(
             $app['config']['logging_folder'] . '/fetcher.log',
@@ -185,9 +201,25 @@ $app['log_handler'] = $app->share(
     }
 );
 
-$app['logger'] = $app->share(
+$app['logger_fetcher'] = $app->share(
     function (Application $app) {
-        return new Logger('importer', array($app['log_handler']));
+        return new Logger('importer', array($app['log_handler_fetcher']));
+    }
+);
+
+$app['log_handler_parser'] = $app->share(
+    function (Application $app) {
+        return new RotatingFileHandler(
+            $app['config']['logging_folder'] . '/parser.log',
+            365,
+            Logger::DEBUG
+        );
+    }
+);
+
+$app['logger_parser'] = $app->share(
+    function (Application $app) {
+        return new Logger('importer', array($app['log_handler_parser']));
     }
 );
 
@@ -230,14 +262,15 @@ $app['entry_poster'] = $app->share(
             $app['config']['publiq']['authentication']['token'],
             $app['config']['publiq']['authentication']['api_key'],
             $app['config']['publiq']['url'],
-            $app['config']['files_folder']
+            $app['config']['files_folder'],
+            $app['logger_entry']
         );
     }
 );
 
 $app['formatter'] = $app->share(
     function (Application $app) {
-        return new Formatter();
+        return new Formatter($app['repository']);
     }
 );
 
@@ -404,7 +437,8 @@ $app['parser'] = $app->share(
             $app['terms'],
             $app['theaters'],
             $app['url_factory'],
-            $app['repository']
+            $app['repository'],
+            $app['logger_parser']
         );
     }
 );
@@ -417,7 +451,7 @@ $app['fetcher'] = $app->share(
             $app['authentication'],
             $app['url_factory'],
             $app['parser'],
-            $app['logger']
+            $app['logger_fetcher']
         );
     }
 );
