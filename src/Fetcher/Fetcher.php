@@ -75,13 +75,15 @@ class Fetcher implements FetcherInterface
         $body = $this->getMovies($token);
 
         $movies = $body['movies'];
+        $this->logger->log(Logger::DEBUG, 'Found  ' . count($movies) . ' movies.');
         foreach ($movies as $movie) {
             $mid = $movie['mid'];
+            $this->logger->log(Logger::DEBUG, 'Will parse movie  ' . $mid);
             $movieDetail = $this->getMovieDetail($token, $mid);
             try {
                 $this->parser->process($movieDetail);
             } catch (\Exception $e) {
-                $this->logger->log(Logger::DEBUG, 'Failed to Process movie ' . $e->getMessage());
+                $this->logger->log(Logger::ERROR, 'Failed to Process movie ' . $e->getMessage());
             }
         }
     }

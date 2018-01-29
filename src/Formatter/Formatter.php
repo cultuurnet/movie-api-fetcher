@@ -16,36 +16,48 @@ class Formatter implements FormatterInterface
     /**
      * @inheritdoc
      */
-    public function format($name, $type, $theme, $location, $calendar)
-    {
-        return new StringLiteral(
-            '{  "name": {    "nl": "' . $name .
-               '"  },  "type": {    "id": "' . $type .
-               '",    "label": "Film",    "domain": "eventtype"  },  "theme": {    "id": "' . $theme .
-               '",    "label": "' . $this->getThemeName($theme) . '",    "domain": "theme"  },  "location": {    "id": "' . $location .
-               '",    "name": "Kinepolis",    "address": {     ' . $this->getAddress($location) . '    }  }, "calendarType": "multiple", "timeSpans": [ ' . $calendar   .  ' ],  "startDate": "2019-05-07T12:02:53+00:00",  "endDate": "2019-05-09T14:02:53+00:00"}'
-        );
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function formatEvent($externalId)
     {
         $name = $this->repository->getName($externalId);
         $typeId = $this->repository->getTypeId($externalId);
         $themeId = $this->repository->getThemeId($externalId);
         $locationId = $this->repository->getLocationCdbid($externalId);
+        $address = $this->getAddress($locationId);
         $calendar = $this->repository->getCalendar($externalId);
-        $calendarString = $this->getCalendarString($calendar);
+        sort($calendar);
+        $playCount = count($calendar);
 
-        return new StringLiteral(
-            '{  "name": {    "nl": "' . $name .
-            '"  },  "type": {    "id": "' . $typeId .
-            '",    "label": "Film",    "domain": "eventtype"  },  "theme": {    "id": "' . $themeId .
-            '",    "label": "' . $themeId . '",    "domain": "theme"  },  "location": {    "id": "' . $locationId .
-            '",    "name": "Kinepolis",    "address": {     ' . $this->getAddress($locationId) . '    }  }, ' . $calendarString . '}'
-        );
+        $arr = array();
+        $arr['name']['nl'] = $name->toNative();
+
+        $arr['type']['id'] = $typeId->toNative();
+        $arr['type']['label'] = 'Film';
+        $arr['type']['domain'] = 'eventtype';
+
+        if (isset($themeId)) {
+            $arr['theme']['id'] = $themeId->toNative();
+            $arr['theme']['label'] = $this->getThemeName($themeId);
+            $arr['theme']['domain'] = 'theme';
+        }
+
+        $arr['location']['id'] = $locationId->toNative();
+        $arr['location']['name'] = $address['name'];
+        $arr['location']['address']['addressCountry'] = $address['addressCountry'];
+        $arr['location']['address']['addressLocality'] = $address['addressLocality'];
+        $arr['location']['address']['postalCode'] = $address['postalCode'];
+        $arr['location']['address']['streetAddress'] = $address['streetAddress'];
+
+        $arr['calendartype'] = 'multiple';
+
+        for ($i = 0; $i < $playCount; $i++) {
+            $arr['timespans'][$i]['start'] = $this->formatStart($calendar[$i]);
+            $arr['timespans'][$i]['end'] = $this->formatEnd($calendar[$i]);
+        }
+
+        $arr['startDate'] = $this->formatStart($calendar[0]);
+        $arr['endDate'] = $this->formatStart($calendar[$playCount - 1]);
+
+        return new StringLiteral(json_encode($arr));
     }
 
     /**
@@ -112,37 +124,35 @@ class Formatter implements FormatterInterface
 
         $place = json_decode($body, true);
 
-        if (isset($place['address']['nl'])) {
-            $country = $place['address']['nl']['addressCountry'];
-            $locality = $place['address']['nl']['addressLocality'];
-            $postalCode = $place['address']['nl']['postalCode'];
-            $streetAddress = $place['address']['nl']['streetAddress'];
+        $address = array();
+
+        if(isset($place['name']['nl'])) {
+            $address['name'] = $place['name']['nl'];
         } else {
-            $country = $place['address']['addressCountry'];
-            $locality = $place['address']['addressLocality'];
-            $postalCode = $place['address']['postalCode'];
-            $streetAddress = $place['address']['streetAddress'];
+            $address['name'] = $place['name'];
+        }
+        if (isset($place['address']['nl'])) {
+            $address['addressCountry'] = $place['address']['nl']['addressCountry'];
+            $address['addressLocality'] = $place['address']['nl']['addressLocality'];
+            $address['postalCode'] = $place['address']['nl']['postalCode'];
+            $address['streetAddress'] = $place['address']['nl']['streetAddress'];
+        } else {
+            $address['addressCountry'] = $place['address']['addressCountry'];
+            $address['addressLocality'] = $place['address']['addressLocality'];
+            $address['postalCode'] = $place['address']['postalCode'];
+            $address['streetAddress'] = $place['address']['streetAddress'];
         }
 
-        return '"addressCountry": "' . $country .'",      "addressLocality": "' . $locality . '",      "postalCode": "' . $postalCode . '",      "streetAddress": "' . $streetAddress . '"';
-
+        return $address;
     }
 
-    private function getCalendarString($calendarArray)
+    private function formatStart($playTime)
     {
-        sort($calendarArray);
-        $total = count($calendarArray);
+        return $playTime['date'] . 'T' . $playTime['time_start'] . '+00:00';
+    }
 
-        $calendar = '"calendarType": "multiple", "timeSpans": [ ';
-        foreach ($calendarArray as $timeStamp) {
-            $calendar .= '{ "start": "' .
-                $timeStamp['date'] . 'T' . $timeStamp['time_start'] . '+00:00' .
-                '", "end": "' . $timeStamp['date'] . 'T' . $timeStamp['time_end'] . '+00:00' . '" },';
-        }
-        $calendar = substr($calendar, 0, -1);
-        $calendar .= '], "startDate": "' . $calendarArray[0]['date'] . 'T' . $timeStamp['time_start'] . '+00:00' .
-            '", "endDate": "' . $calendarArray[$total - 1]['date'] . 'T' . $timeStamp['time_end'] . '+00:00' . '"';
-
-        return $calendar;
+    private function formatEnd($playTime)
+    {
+        return $playTime['date'] . 'T' . $playTime['time_end'] . '+00:00';
     }
 }
