@@ -53,7 +53,7 @@ class EntryPoster implements EntryPosterInterface
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $cdbid =  $resp['eventId'];
-        $this->logger->log(Logger::DEBUG, 'Posted movie ' . $cdbid->toNative());
+        $this->logger->log(Logger::DEBUG, 'Posted movie ' . $cdbid);
 
         return new UUID($cdbid);
     }
@@ -284,6 +284,7 @@ class EntryPoster implements EntryPosterInterface
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $imageId =  $resp['imageId'];
         $this->logger->log(Logger::DEBUG, 'Added media from ' . $file . '. Got  ' . $imageId);
+
 
         return new UUID($imageId);
     }

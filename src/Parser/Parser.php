@@ -20,6 +20,7 @@ class Parser implements ParserInterface
 {
     const KINEPOLIS_COPYRIGHT = 'Kinepolis';
     const MOVIE_TYPE_ID = '0.50.6.0.0';
+    const UIV_MOVIE_KEYWORD = 'UiTinVlaanderenFilm';
 
     /**
      * @var DateFactoryInterface
@@ -128,14 +129,13 @@ class Parser implements ParserInterface
             if (isset($cdbid)) {
                 $hasUpdate = false;
                 if ($this->repository->getName($externalId) != $title) {
-                    $this->repository->updateName($externalId, $title);
-                    $this->entryPoster->updateName($cdbid, $title);
+                    $this->repository->updateName($externalId, new StringLiteral($title));
+                    $this->entryPoster->updateName($cdbid, new StringLiteral($title));
                 }
                 if ($this->repository->getDescription($externalId) != $description) {
-
+                    $this->repository->updateDescription($externalId, new StringLiteral($description));
+                    $this->entryPoster->updateDescription($cdbid, new StringLiteral($description));
                 }
-
-
             } else {
                 $calendarStr = '';
                 foreach ($filmScreening as $day => $hours) {
@@ -152,8 +152,6 @@ class Parser implements ParserInterface
                     }
                 }
 
-                $calendarStr = substr($calendarStr, 0, -2);
-
                 $location = $this->theaterFactory->mapTheater($filmScreeningTheater);
 
                 $this->repository->saveName($externalId, new StringLiteral($title));
@@ -162,7 +160,7 @@ class Parser implements ParserInterface
                 $this->repository->saveThemeId($externalId, new StringLiteral($cnetId));
                 $this->repository->saveLocationCdbid($externalId, new UUID($location['cdbid']));
 
-                $jsonMovie = $this->formatter->format($title, PARSER::MOVIE_TYPE_ID, $cnetId, $location['cdbid'], $calendarStr);
+                $jsonMovie = $this->formatter->formatEvent($externalId);
 
                 $cdbid = $this->entryPoster->postMovie($jsonMovie);
                 $this->repository->saveCdbid($externalId, $cdbid);
@@ -172,8 +170,9 @@ class Parser implements ParserInterface
                 $this->entryPoster->addImage($cdbid, $mediaId);
                 $this->repository->saveImage($externalId, $mediaId, new StringLiteral($title), $this->getDefaultCopyright(), LanguageCode::NL());
 
-                echo $mediaId;
-
+                $this->repository->addLabel($externalId, new StringLiteral(Parser::UIV_MOVIE_KEYWORD));
+                $this->entryPoster->addLabel($cdbid, new StringLiteral(Parser::UIV_MOVIE_KEYWORD));
+                $this->entryPoster->updateDescription($cdbid, $description);
             }
         }
     }
