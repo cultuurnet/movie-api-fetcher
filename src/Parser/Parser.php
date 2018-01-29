@@ -117,8 +117,10 @@ class Parser implements ParserInterface
         $length = $movieData['length'];
         $genres = $movieData['genre'];
 
-        foreach ($genres as $genre) {
-            $cnetId = $this->termFactory->mapTerm($genre);
+        if (isset($genres)) {
+            foreach ($genres as $genre) {
+                $cnetId = $this->termFactory->mapTerm($genre);
+            }
         }
 
         $filmScreenings = $this->dateFactory->processDates($dates, $length);
@@ -136,8 +138,10 @@ class Parser implements ParserInterface
                     $this->repository->updateDescription($externalId, new StringLiteral($description));
                     $this->entryPoster->updateDescription($cdbid, new StringLiteral($description));
                 }
+                if (false) {
+
+                }
             } else {
-                $calendarStr = '';
                 foreach ($filmScreening as $day => $hours) {
                     foreach ($hours as $hour) {
                         $timeStart = $hour[0];
@@ -148,7 +152,6 @@ class Parser implements ParserInterface
                             $timeStart,
                             $timeEnd
                         );
-                        $calendarStr .= '{ "start": "' . $day . 'T' . $timeStart . '+00:00", "end": "' . $day . 'T' . $timeEnd . '+00:00" }, ';
                     }
                 }
 
@@ -157,22 +160,26 @@ class Parser implements ParserInterface
                 $this->repository->saveName($externalId, new StringLiteral($title));
                 $this->repository->saveDescription($externalId, new StringLiteral($description));
                 $this->repository->saveTypeId($externalId, new StringLiteral(PARSER::MOVIE_TYPE_ID));
-                $this->repository->saveThemeId($externalId, new StringLiteral($cnetId));
+                if (isset($cnetId)) {
+                    $this->repository->saveThemeId($externalId, new StringLiteral($cnetId));
+                }
                 $this->repository->saveLocationCdbid($externalId, new UUID($location['cdbid']));
 
                 $jsonMovie = $this->formatter->formatEvent($externalId);
 
                 $cdbid = $this->entryPoster->postMovie($jsonMovie);
-                $this->repository->saveCdbid($externalId, $cdbid);
-                $this->entryPoster->publishEvent($cdbid);
+                if (isset($cdbid)) {
+                    $this->repository->saveCdbid($externalId, $cdbid);
+                    $this->entryPoster->publishEvent($cdbid);
 
-                $mediaId = $this->entryPoster->addMediaObject((string) $image, new StringLiteral($title), $this->getDefaultCopyright());
-                $this->entryPoster->addImage($cdbid, $mediaId);
-                $this->repository->saveImage($externalId, $mediaId, new StringLiteral($title), $this->getDefaultCopyright(), LanguageCode::NL());
+                    $mediaId = $this->entryPoster->addMediaObject((string)$image, new StringLiteral($title), $this->getDefaultCopyright());
+                    $this->entryPoster->addImage($cdbid, $mediaId);
+                    $this->repository->saveImage($externalId, $mediaId, new StringLiteral($title), $this->getDefaultCopyright(), LanguageCode::NL());
 
-                $this->repository->addLabel($externalId, new StringLiteral(Parser::UIV_MOVIE_KEYWORD));
-                $this->entryPoster->addLabel($cdbid, new StringLiteral(Parser::UIV_MOVIE_KEYWORD));
-                $this->entryPoster->updateDescription($cdbid, $description);
+                    $this->repository->addLabel($externalId, new StringLiteral(Parser::UIV_MOVIE_KEYWORD));
+                    $this->entryPoster->addLabel($cdbid, new StringLiteral(Parser::UIV_MOVIE_KEYWORD));
+                    $this->entryPoster->updateDescription($cdbid, new StringLiteral($description));
+                }
             }
         }
     }

@@ -47,6 +47,7 @@ class EntryPoster implements EntryPosterInterface
             $response = $request->send();
         } catch (\Exception $e) {
             $this->logger->log(Logger::ERROR, 'Failed to post movie, message:  ' . $e->getMessage());
+            return null;
         }
 
         $bodyResponse = $response->getBody();
@@ -74,8 +75,10 @@ class EntryPoster implements EntryPosterInterface
             ],
             []
         );
+        $requestBody = array();
+        $requestBody['name'] = $name->toNative();
 
-        $request->setBody('{ "name": "' . $name . '" }');
+        $request->setBody(json_encode($requestBody));
         $response = $request->send();
 
         $bodyResponse = $response->getBody();
@@ -103,8 +106,10 @@ class EntryPoster implements EntryPosterInterface
             ],
             []
         );
+        $requestBody = array();
+        $requestBody['description'] = $description->toNative();
 
-        $request->setBody('{ "description": "' . $description . '" }');
+        $request->setBody(json_encode($requestBody));
         $response = $request->send();
 
         $bodyResponse = $response->getBody();
@@ -305,8 +310,10 @@ class EntryPoster implements EntryPosterInterface
             ],
             []
         );
+        $requestBody = array();
+        $requestBody['mediaObjectId'] = $mediaObjectId->toNative();
 
-        $request->setBody('{ "mediaObjectId": "' . $mediaObjectId . '" }');
+        $request->setBody(json_encode($requestBody));
         $response = $request->send();
 
         $bodyResponse = $response->getBody();
@@ -334,8 +341,11 @@ class EntryPoster implements EntryPosterInterface
             ],
             []
         );
+        $requestBody = array();
+        $requestBody['description'] = $description->toNative();
+        $requestBody['copyrightHolder'] = $copyrightHolder->toNative();
 
-        $request->setBody('{ "description": "' . $description . '", "copyrightHolder": "' . $copyrightHolder . '" }');
+        $request->setBody(json_encode($requestBody));
         $response = $request->send();
 
         $bodyResponse = $response->getBody();
@@ -391,8 +401,10 @@ class EntryPoster implements EntryPosterInterface
             ],
             []
         );
+        $requestBody = array();
+        $requestBody['mediaObjectId'] = $mediaObjectId->toNative();
 
-        $request->setBody('{ "mediaObjectId": "' . $mediaObjectId . '" }');
+        $request->setBody(json_encode($requestBody));
         $response = $request->send();
 
         $bodyResponse = $response->getBody();
@@ -420,8 +432,10 @@ class EntryPoster implements EntryPosterInterface
             ],
             []
         );
+        $requestBody = array();
+        $requestBody['audience'] = $audience;
 
-        $request->setBody('{ "audience": "' . $audience . '" }');
+        $request->setBody(json_encode($requestBody));
         $response = $request->send();
 
         $bodyResponse = $response->getBody();
@@ -449,19 +463,15 @@ class EntryPoster implements EntryPosterInterface
             ],
             []
         );
+        $requestBody = array();
+        $requestBody['bookingInfo']['url'] = $bookingInfo;
+        $requestBody['bookingInfo']['urlLabel'] = $bookingInfo;
+        $requestBody['bookingInfo']['email'] = $bookingInfo;
+        $requestBody['bookingInfo']['phone'] = $bookingInfo;
+        $requestBody['bookingInfo']['availabilityStarts'] = $bookingInfo;
+        $requestBody['bookingInfo']['availabilityEnds'] = $bookingInfo;
 
-        $request->setBody(
-            '{' .
-                '"bookingInfo": {' .
-                '"url": "' . $bookingInfo . '",' .
-                '"urlLabel": "' . $bookingInfo . '",' .
-                '"email": "' . $bookingInfo . '",' .
-                '"phone": "' . $bookingInfo . '",' .
-                '"availabilityStarts": "' . $bookingInfo . '",' .
-                '"availabilityEnds": "' . $bookingInfo . '"' .
-                '}'.
-                '}'
-        );
+        $request->setBody(json_encode($requestBody));
         $response = $request->send();
 
         $bodyResponse = $response->getBody();
