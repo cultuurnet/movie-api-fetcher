@@ -138,9 +138,9 @@ class Parser implements ParserInterface
                     $this->repository->updateDescription($externalId, new StringLiteral($description));
                     $this->entryPoster->updateDescription($cdbid, new StringLiteral($description));
                 }
-                if (false) {
+                $oldCalendar = $this->repository->getCalendar($externalId);
 
-                }
+                
             } else {
                 foreach ($filmScreening as $day => $hours) {
                     foreach ($hours as $hour) {
@@ -172,7 +172,7 @@ class Parser implements ParserInterface
                     $this->repository->saveCdbid($externalId, $cdbid);
                     $this->entryPoster->publishEvent($cdbid);
 
-                    $mediaId = $this->entryPoster->addMediaObject((string)$image, new StringLiteral($title), $this->getDefaultCopyright());
+                    $mediaId = $this->entryPoster->addMediaObject((string) $image, new StringLiteral($title), $this->getDefaultCopyright());
                     $this->entryPoster->addImage($cdbid, $mediaId);
                     $this->repository->saveImage($externalId, $mediaId, new StringLiteral($title), $this->getDefaultCopyright(), LanguageCode::NL());
 

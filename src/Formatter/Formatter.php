@@ -55,7 +55,7 @@ class Formatter implements FormatterInterface
         }
 
         $arr['startDate'] = $this->formatStart($calendar[0]);
-        $arr['endDate'] = $this->formatStart($calendar[$playCount - 1]);
+        $arr['endDate'] = $this->formatEnd($calendar[$playCount - 1]);
 
         return new StringLiteral(json_encode($arr));
     }
@@ -126,7 +126,7 @@ class Formatter implements FormatterInterface
 
         $address = array();
 
-        if(isset($place['name']['nl'])) {
+        if (isset($place['name']['nl'])) {
             $address['name'] = $place['name']['nl'];
         } else {
             $address['name'] = $place['name'];
@@ -153,6 +153,13 @@ class Formatter implements FormatterInterface
 
     private function formatEnd($playTime)
     {
-        return $playTime['date'] . 'T' . $playTime['time_end'] . '+00:00';
+        $dateString = $playTime['date'];
+        if ($playTime['time_end'] < $playTime['time_start']) {
+            $d = \DateTime::createFromFormat('Y-m-d', $playTime['date']);
+            $di = new \DateInterval('P1D');
+            $d->add($di);
+            $dateString = $d->format('Y-m-d');
+        }
+        return $dateString . 'T' . $playTime['time_end'] . '+00:00';
     }
 }

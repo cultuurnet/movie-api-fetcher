@@ -55,6 +55,7 @@ class EntryPoster implements EntryPosterInterface
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $cdbid =  $resp['eventId'];
         $this->logger->log(Logger::DEBUG, 'Posted movie ' . $cdbid);
+        $this->logger->log(Logger::DEBUG, $jsonMovie->toNative());
 
         return new UUID($cdbid);
     }
