@@ -31,10 +31,10 @@ interface EntryPosterInterface
 
     /**
      * @param UUID $cdbid
-     * @param Calendar $calendar
+     * @param StringLiteral $calendar
      * @return string
      */
-    public function updateCalendar(UUID $cdbid, Calendar $calendar);
+    public function updateCalendar(UUID $cdbid, StringLiteral $calendar);
 
     /**
      * @param UUID $cdbid

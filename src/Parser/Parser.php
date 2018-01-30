@@ -134,13 +134,34 @@ class Parser implements ParserInterface
                     $this->repository->updateName($externalId, new StringLiteral($title));
                     $this->entryPoster->updateName($cdbid, new StringLiteral($title));
                 }
+
                 if ($this->repository->getDescription($externalId) != $description) {
                     $this->repository->updateDescription($externalId, new StringLiteral($description));
                     $this->entryPoster->updateDescription($cdbid, new StringLiteral($description));
                 }
-                $oldCalendar = $this->repository->getCalendar($externalId);
 
-                
+                $oldCalendar = $this->repository->getCalendar($externalId);
+                foreach ($filmScreening as $day => $hours) {
+                    foreach ($hours as $hour) {
+                        $timeStart = $hour[0];
+                        $timeEnd = $hour[1];
+                        $newDate = array();
+                        $newDate['date'] = $day;
+                        $newDate['time_start'] = $timeStart;
+                        $newDate['time_end'] = $timeEnd;
+                        if (!in_array($newDate, $oldCalendar)) {
+                            $this->repository->saveCalendar(
+                            $externalId,
+                            $day,
+                            $timeStart,
+                            $timeEnd
+                            );
+                        }
+                    }
+                }
+
+                $jsonCalendar = $this->formatter->formatCalendar($externalId);
+                $this->entryPoster->updateCalendar($cdbid, $jsonCalendar);
             } else {
                 foreach ($filmScreening as $day => $hours) {
                     foreach ($hours as $hour) {

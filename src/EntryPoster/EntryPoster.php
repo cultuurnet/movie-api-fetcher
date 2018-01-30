@@ -3,7 +3,6 @@
 namespace CultuurNet\MovieApiFetcher\EntryPoster;
 
 use CultuurNet\TransformEntryStore\ValueObjects\BookingInfo\BookingInfo;
-use CultuurNet\UDB3\Calendar;
 use Guzzle\Http\Client;
 use Monolog\Logger;
 use ValueObjects\Identity\UUID;
@@ -198,10 +197,8 @@ class EntryPoster implements EntryPosterInterface
     /**
      * @inheritdoc
      */
-    public function updateCalendar(UUID $cdbid, Calendar $calendar)
+    public function updateCalendar(UUID $cdbid, StringLiteral $calendar)
     {
-        // TODO: Implement updateCalendar() method.
-
         $client = new Client();
         $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/calendar';
 
@@ -214,6 +211,7 @@ class EntryPoster implements EntryPosterInterface
             []
         );
 
+        $request->setBody(json_encode($calendar->toNative()));
         $response = $request->send();
 
         $bodyResponse = $response->getBody();
@@ -221,6 +219,7 @@ class EntryPoster implements EntryPosterInterface
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $commandId =  $resp['commandId'];
         $this->logger->log(Logger::DEBUG, 'Updated calendar for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
+        $this->logger->log(Logger::DEBUG, $calendar->toNative());
 
         return $commandId;
     }

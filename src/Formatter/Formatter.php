@@ -61,6 +61,30 @@ class Formatter implements FormatterInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function formatCalendar($externalId)
+    {
+        $calendar = $this->repository->getCalendar($externalId);
+        sort($calendar);
+        $playCount = count($calendar);
+
+        $arr = array();
+
+        $arr['calendartype'] = 'multiple';
+
+        for ($i = 0; $i < $playCount; $i++) {
+            $arr['timespans'][$i]['start'] = $this->formatStart($calendar[$i]);
+            $arr['timespans'][$i]['end'] = $this->formatEnd($calendar[$i]);
+        }
+
+        $arr['startDate'] = $this->formatStart($calendar[0]);
+        $arr['endDate'] = $this->formatEnd($calendar[$playCount - 1]);
+
+        return new StringLiteral(json_encode($arr));
+    }
+
+    /**
      * Formatter constructor.
      * @param RepositoryInterface $repository
      */
