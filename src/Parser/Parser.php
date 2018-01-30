@@ -151,10 +151,10 @@ class Parser implements ParserInterface
                         $newDate['time_end'] = $timeEnd;
                         if (!in_array($newDate, $oldCalendar)) {
                             $this->repository->saveCalendar(
-                            $externalId,
-                            $day,
-                            $timeStart,
-                            $timeEnd
+                                $externalId,
+                                $day,
+                                $timeStart,
+                                $timeEnd
                             );
                         }
                     }
