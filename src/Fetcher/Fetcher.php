@@ -86,6 +86,7 @@ class Fetcher implements FetcherInterface
                 $this->logger->log(Logger::ERROR, 'Failed to Process movie ' . $e->getMessage());
             }
         }
+        $this->logger->log(Logger::DEBUG, 'Fetched all movies');
     }
 
     /**

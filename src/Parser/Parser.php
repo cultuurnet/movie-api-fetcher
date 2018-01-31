@@ -98,7 +98,7 @@ class Parser implements ParserInterface
         $this->theaterFactory = $theaterFactory;
         $this->urlFactory = $urlFactory;
         $this->repository = $repository;
-        $this->logger =$logger;
+        $this->logger = $logger;
     }
 
     /**
@@ -201,6 +201,7 @@ class Parser implements ParserInterface
                     $this->entryPoster->addLabel($cdbid, new StringLiteral(Parser::UIV_MOVIE_KEYWORD));
                     $this->entryPoster->updateDescription($cdbid, new StringLiteral($description));
                 }
+                //if ()
             }
         }
     }

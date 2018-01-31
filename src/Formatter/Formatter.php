@@ -47,11 +47,11 @@ class Formatter implements FormatterInterface
         $arr['location']['address']['postalCode'] = $address['postalCode'];
         $arr['location']['address']['streetAddress'] = $address['streetAddress'];
 
-        $arr['calendartype'] = 'multiple';
+        $arr['calendarType'] = 'multiple';
 
         for ($i = 0; $i < $playCount; $i++) {
-            $arr['timespans'][$i]['start'] = $this->formatStart($calendar[$i]);
-            $arr['timespans'][$i]['end'] = $this->formatEnd($calendar[$i]);
+            $arr['timeSpans'][$i]['start'] = $this->formatStart($calendar[$i]);
+            $arr['timeSpans'][$i]['end'] = $this->formatEnd($calendar[$i]);
         }
 
         $arr['startDate'] = $this->formatStart($calendar[0]);
@@ -71,11 +71,11 @@ class Formatter implements FormatterInterface
 
         $arr = array();
 
-        $arr['calendartype'] = 'multiple';
+        $arr['calendarType'] = 'multiple';
 
         for ($i = 0; $i < $playCount; $i++) {
-            $arr['timespans'][$i]['start'] = $this->formatStart($calendar[$i]);
-            $arr['timespans'][$i]['end'] = $this->formatEnd($calendar[$i]);
+            $arr['timeSpans'][$i]['start'] = $this->formatStart($calendar[$i]);
+            $arr['timeSpans'][$i]['end'] = $this->formatEnd($calendar[$i]);
         }
 
         $arr['startDate'] = $this->formatStart($calendar[0]);
