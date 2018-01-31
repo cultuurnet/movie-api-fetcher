@@ -17,4 +17,10 @@ interface FormatterInterface
      * @return StringLiteral
      */
     public function formatCalendar($externalId);
+
+    /**
+     * @param $externalId
+     * @return StringLiteral
+     */
+    public function formatPrice($externalId);
 }

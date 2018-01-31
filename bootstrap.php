@@ -8,6 +8,7 @@ use CultuurNet\MovieApiFetcher\Fetcher\Fetcher;
 use CultuurNet\MovieApiFetcher\Formatter\Formatter;
 use CultuurNet\MovieApiFetcher\Identification\IdentificationFactory;
 use CultuurNet\MovieApiFetcher\Parser\Parser;
+use CultuurNet\MovieApiFetcher\Price\PriceFactory;
 use CultuurNet\MovieApiFetcher\Term\TermFactory;
 use CultuurNet\MovieApiFetcher\Theater\TheaterFactory;
 use CultuurNet\MovieApiFetcher\Url\UrlFactory;
@@ -40,6 +41,7 @@ use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreLabelDBALRepository;
 use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreLocationDBALRepository;
 use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreNameDBALRepository;
 use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreOrganizerDBALRepository;
+use CultuurNet\TransformEntryStore\Stores\Doctrine\StorePriceDBALRepository;
 use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreRelationDBALRepository;
 use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreTargetAudienceDBALRepository;
 use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreThemeDBALRepository;
@@ -370,6 +372,15 @@ $app['dbal_store.organizer'] = $app->share(
     }
 );
 
+$app['dbal_store.price_info'] = $app->share(
+    function (Application $app) {
+        return new StorePriceDBALRepository(
+            $app['dbal_connection'],
+            new StringLiteral('price_info')
+        );
+    }
+);
+
 $app['dbal_store.relation'] = $app->share(
     function (Application $app) {
         return new StoreRelationDBALRepository(
@@ -419,6 +430,7 @@ $app['repository'] = $app->share(
             $app['dbal_store.location'],
             $app['dbal_store.name'],
             $app['dbal_store.organizer'],
+            $app['dbal_store.price_info'],
             $app['dbal_store.relation'],
             $app['dbal_store.target_audience'],
             $app['dbal_store.theme'],
@@ -443,6 +455,13 @@ $app['parser'] = $app->share(
     }
 );
 
+$app['price_factory'] = $app->share(
+    function () {
+        return new PriceFactory();
+
+    }
+);
+
 $app['fetcher'] = $app->share(
     function (Application $app) {
         return new Fetcher(
@@ -451,6 +470,7 @@ $app['fetcher'] = $app->share(
             $app['authentication'],
             $app['url_factory'],
             $app['parser'],
+            $app['price_factory'],
             $app['logger_fetcher']
         );
     }

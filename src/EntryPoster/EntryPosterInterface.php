@@ -139,10 +139,10 @@ interface EntryPosterInterface
 
     /**
      * @param UUID $cdbid
-     * @param $priceInfo
+     * @param StringLiteral $priceInfo
      * @return string
      */
-    public function updatePriceInfo(UUID $cdbid, $priceInfo);
+    public function updatePriceInfo(UUID $cdbid, StringLiteral $priceInfo);
 
     /**
      * @param UUID $cdbid

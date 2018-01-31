@@ -104,8 +104,14 @@ class Parser implements ParserInterface
     /**
      * @inheritdoc
      */
-    public function process($movie)
+    public function process($movie, $priceMatrix)
     {
+        // Kinepolis:tKBRAIm34868
+        $xID = new StringLiteral('Kinepolis:tKBRAIm34868');
+        $tC = new UUID('f5bfa320-093c-4fad-ab79-0473a42acf66');
+        $jsonPrice2 = $this->formatter->formatPrice($xID);
+        $this->entryPoster->updatePriceInfo($tC, $jsonPrice2);
+        //
         $movieData = $movie['movies'][0];
         $mid = $movieData['mid'];
         $externalIdProduction = $this->identificationFactory->generateMovieProductionId($mid);
@@ -129,7 +135,6 @@ class Parser implements ParserInterface
             $externalId = $this->identificationFactory->generateMovieId($mid, $filmScreeningTheater);
             $cdbid = $this->repository->getCdbid($externalId);
             if (isset($cdbid)) {
-                $hasUpdate = false;
                 if ($this->repository->getName($externalId) != $title) {
                     $this->repository->updateName($externalId, new StringLiteral($title));
                     $this->entryPoster->updateName($cdbid, new StringLiteral($title));
@@ -200,8 +205,20 @@ class Parser implements ParserInterface
                     $this->repository->addLabel($externalId, new StringLiteral(Parser::UIV_MOVIE_KEYWORD));
                     $this->entryPoster->addLabel($cdbid, new StringLiteral(Parser::UIV_MOVIE_KEYWORD));
                     $this->entryPoster->updateDescription($cdbid, new StringLiteral($description));
+
+                    $price = $this->getPrice($filmScreeningTheater, $priceMatrix, $length);
+                    foreach ($price as $priceName => $amount) {
+                        $this->repository->savePrice(
+                            $externalId,
+                            $priceName == 'base',
+                            $priceName,
+                            $amount,
+                            'EUR'
+                        );
+                    }
+                    $jsonPrice = $this->formatter->formatPrice($externalId);
+                    $this->entryPoster->updatePriceInfo($cdbid, $jsonPrice);
                 }
-                //if ()
             }
         }
     }
@@ -209,5 +226,22 @@ class Parser implements ParserInterface
     private function getDefaultCopyright()
     {
         return new StringLiteral(Parser::KINEPOLIS_COPYRIGHT);
+    }
+
+    private function getPrice($tid, $priceMatrix, $length)
+    {
+        $theatrePrices =  $priceMatrix[$tid];
+
+        $moviePrice = array();
+        if ($length >= 135 && isset($theatrePrices['long_movies'])) {
+            $moviePrice['base'] = $theatrePrices['base'] + $theatrePrices['long_movies'];
+            $moviePrice['Kortingstarief'] = $theatrePrices['Kortingstarief'] + $theatrePrices['long_movies'];
+            $moviePrice['Kinepolis Student Card'] = $theatrePrices['Kinepolis Student Card'] + $theatrePrices['long_movies'];
+        } else {
+            $moviePrice['base'] = $theatrePrices['base'];
+            $moviePrice['Kortingstarief'] = $theatrePrices['Kortingstarief'];
+            $moviePrice['Kinepolis Student Card'] = $theatrePrices['Kinepolis Student Card'];
+        }
+        return $moviePrice;
     }
 }

@@ -27,4 +27,9 @@ interface UrlFactoryInterface
      * @return Url
      */
     public function generateMediaUrl($mediaFile);
+
+    /**
+     * @return Url
+     */
+    public function generateTheatreUrl();
 }

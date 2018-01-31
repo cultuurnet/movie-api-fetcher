@@ -85,6 +85,30 @@ class Formatter implements FormatterInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function formatPrice($externalId)
+    {
+        $price = $this->repository->getPrice($externalId);
+        $count = count($price);
+
+        $arr = array();
+
+        for ($i = 0; $i < $count; $i++) {
+            $tarif = array();
+
+            $tarif['category'] = $price[$i]['is_base_price'] == 1 ? 'base' : 'tariff';
+            $tarif['name'] = $price[$i]['name'] == 'base' ? 'Basistarief' : $price[$i]['name'];
+            $tarif['price'] = $price[$i]['price'];
+            $tarif['priceCurrency'] = $price[$i]['currency'];
+
+            $arr[] = $tarif;
+        }
+
+        return new StringLiteral(json_encode($arr));
+    }
+
+    /**
      * Formatter constructor.
      * @param RepositoryInterface $repository
      */

@@ -8,5 +8,5 @@ interface ParserInterface
      * @param array[] $movie
      * @return string[]
      */
-    public function process($movie);
+    public function process($movie, $priceMatrix);
 }

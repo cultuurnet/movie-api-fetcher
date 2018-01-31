@@ -53,4 +53,9 @@ class UrlFactory implements UrlFactoryInterface
     {
         return Url::fromNative($this->baseUrl->toNative() .'sites/kinepolis.be.nl/files' . $mediaFile);
     }
+
+    public function generateTheatreUrl()
+    {
+        return Url::fromNative($this->baseUrl->toNative() .'services/content/1.1/theaters');
+    }
 }

@@ -578,9 +578,31 @@ class EntryPoster implements EntryPosterInterface
     /**
      * @inheritdoc
      */
-    public function updatePriceInfo(UUID $cdbid, $priceInfo)
+    public function updatePriceInfo(UUID $cdbid, StringLiteral $priceInfo)
     {
-        // TODO: Implement updatePriceInfo() method.
+        $client = new Client();
+        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/priceInfo';
+
+        $request = $client->put(
+            $uri,
+            [
+                'Authorization' => 'Bearer ' . $this->token,
+                'x-api-key' => $this->apiKey,
+            ],
+            []
+        );
+
+        $request->setBody(json_encode($priceInfo->toNative()));
+        $response = $request->send();
+
+        $bodyResponse = $response->getBody();
+
+        $resp = json_decode(utf8_encode($bodyResponse), true);
+        $commandId =  $resp['commandId'];
+        $this->logger->log(Logger::DEBUG, 'Updated priceInfo for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
+        $this->logger->log(Logger::DEBUG, $priceInfo->toNative());
+
+        return $commandId;
     }
 
     /**
