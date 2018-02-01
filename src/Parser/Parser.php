@@ -113,6 +113,7 @@ class Parser implements ParserInterface
         $title = $movieData['title'];
         $image = $this->urlFactory->generateMediaUrl($movieData['poster']);
         $description = $movieData['desc'];
+
         $dates = $movieData['dates'];
         $length = $movieData['length'];
         $genres = $movieData['genre'];
@@ -178,7 +179,9 @@ class Parser implements ParserInterface
                 $location = $this->theaterFactory->mapTheater($filmScreeningTheater);
 
                 $this->repository->saveName($externalId, new StringLiteral($title));
-                $this->repository->saveDescription($externalId, new StringLiteral($description));
+                if (isset($description)) {
+                    $this->repository->saveDescription($externalId, new StringLiteral($description));
+                }
                 $this->repository->saveTypeId($externalId, new StringLiteral(PARSER::MOVIE_TYPE_ID));
                 if (isset($cnetId)) {
                     $this->repository->saveThemeId($externalId, new StringLiteral($cnetId));
@@ -198,7 +201,9 @@ class Parser implements ParserInterface
 
                     $this->repository->addLabel($externalId, new StringLiteral(Parser::UIV_MOVIE_KEYWORD));
                     $this->entryPoster->addLabel($cdbid, new StringLiteral(Parser::UIV_MOVIE_KEYWORD));
-                    $this->entryPoster->updateDescription($cdbid, new StringLiteral($description));
+                    if (isset($description)) {
+                        $this->entryPoster->updateDescription($cdbid, new StringLiteral($description));
+                    }
 
                     $price = $this->getPrice($filmScreeningTheater, $priceMatrix, $length);
                     foreach ($price as $priceName => $amount) {
