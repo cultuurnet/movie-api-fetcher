@@ -99,7 +99,7 @@ class Formatter implements FormatterInterface
 
             $tarif['category'] = $price[$i]['is_base_price'] == 1 ? 'base' : 'tariff';
             $tarif['name'] = $price[$i]['name'] == 'base' ? 'Basistarief' : $price[$i]['name'];
-            $tarif['price'] = $price[$i]['price'];
+            $tarif['price'] = (float) $price[$i]['price'];
             $tarif['priceCurrency'] = $price[$i]['currency'];
 
             $arr[] = $tarif;

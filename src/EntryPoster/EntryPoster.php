@@ -211,7 +211,7 @@ class EntryPoster implements EntryPosterInterface
             []
         );
 
-        $request->setBody(json_encode($calendar->toNative()));
+        $request->setBody($calendar->toNative());
         $response = $request->send();
 
         $bodyResponse = $response->getBody();
@@ -592,7 +592,7 @@ class EntryPoster implements EntryPosterInterface
             []
         );
 
-        $request->setBody(json_encode($priceInfo->toNative()));
+        $request->setBody($priceInfo->toNative());
         $response = $request->send();
 
         $bodyResponse = $response->getBody();

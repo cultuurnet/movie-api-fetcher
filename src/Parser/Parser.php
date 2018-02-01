@@ -106,12 +106,6 @@ class Parser implements ParserInterface
      */
     public function process($movie, $priceMatrix)
     {
-        // Kinepolis:tKBRAIm34868
-        $xID = new StringLiteral('Kinepolis:tKBRAIm34868');
-        $tC = new UUID('f5bfa320-093c-4fad-ab79-0473a42acf66');
-        $jsonPrice2 = $this->formatter->formatPrice($xID);
-        $this->entryPoster->updatePriceInfo($tC, $jsonPrice2);
-        //
         $movieData = $movie['movies'][0];
         $mid = $movieData['mid'];
         $externalIdProduction = $this->identificationFactory->generateMovieProductionId($mid);
