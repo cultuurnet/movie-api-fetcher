@@ -162,7 +162,7 @@ class Parser implements ParserInterface
 
                 $jsonCalendar = $this->formatter->formatCalendar($externalId);
                 $this->entryPoster->updateCalendar($cdbid, $jsonCalendar);
-            } else {
+            } elseif (isset($title) && !empty($title)) {
                 foreach ($filmScreening as $day => $hours) {
                     foreach ($hours as $hour) {
                         $timeStart = $hour[0];
@@ -189,8 +189,8 @@ class Parser implements ParserInterface
                 $this->repository->saveLocationCdbid($externalId, new UUID($location['cdbid']));
 
                 $jsonMovie = $this->formatter->formatEvent($externalId);
-
                 $cdbid = $this->entryPoster->postMovie($jsonMovie);
+
                 if (isset($cdbid)) {
                     $this->repository->saveCdbid($externalId, $cdbid);
                     $this->entryPoster->publishEvent($cdbid);
