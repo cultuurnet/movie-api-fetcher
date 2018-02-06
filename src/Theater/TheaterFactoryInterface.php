@@ -2,11 +2,13 @@
 
 namespace CultuurNet\MovieApiFetcher\Theater;
 
+use ValueObjects\Identity\UUID;
+
 interface TheaterFactoryInterface
 {
     /**
      * @param $kinepolisTid
-     * @return string
+     * @return UUID
      */
     public function mapTheater($kinepolisTid);
 }

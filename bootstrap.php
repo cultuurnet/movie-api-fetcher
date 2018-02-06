@@ -272,7 +272,10 @@ $app['entry_poster'] = $app->share(
 
 $app['formatter'] = $app->share(
     function (Application $app) {
-        return new Formatter($app['repository']);
+        return new Formatter(
+            $app['repository'],
+            $app['config']['publiq']['url']
+        );
     }
 );
 

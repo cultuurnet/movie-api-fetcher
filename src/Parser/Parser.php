@@ -128,6 +128,8 @@ class Parser implements ParserInterface
 
         foreach ($filmScreenings as $filmScreeningTheater => $filmScreening) {
             $externalId = $this->identificationFactory->generateMovieId($mid, $filmScreeningTheater);
+            $location = $this->theaterFactory->mapTheater($filmScreeningTheater);
+
             $cdbid = $this->repository->getCdbid($externalId);
             if (isset($cdbid)) {
                 if ($this->repository->getName($externalId) != $title) {
@@ -138,6 +140,11 @@ class Parser implements ParserInterface
                 if ($this->repository->getDescription($externalId) != $description) {
                     $this->repository->updateDescription($externalId, new StringLiteral($description));
                     $this->entryPoster->updateDescription($cdbid, new StringLiteral($description));
+                }
+
+                if ($this->repository->getLocationCdbid($externalId) != $location) {
+                    $this->repository->updateLocationCdbid($externalId, $location);
+                    $this->entryPoster->updateLocation($cdbid, $location);
                 }
 
                 $oldCalendar = $this->repository->getCalendar($externalId);
@@ -176,8 +183,6 @@ class Parser implements ParserInterface
                     }
                 }
 
-                $location = $this->theaterFactory->mapTheater($filmScreeningTheater);
-
                 $this->repository->saveName($externalId, new StringLiteral($title));
                 if (isset($description)) {
                     $this->repository->saveDescription($externalId, new StringLiteral($description));
@@ -186,7 +191,7 @@ class Parser implements ParserInterface
                 if (isset($cnetId)) {
                     $this->repository->saveThemeId($externalId, new StringLiteral($cnetId));
                 }
-                $this->repository->saveLocationCdbid($externalId, new UUID($location['cdbid']));
+                $this->repository->saveLocationCdbid($externalId, $location);
 
                 $jsonMovie = $this->formatter->formatEvent($externalId);
                 $cdbid = $this->entryPoster->postMovie($jsonMovie);

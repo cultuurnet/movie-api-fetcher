@@ -2,6 +2,8 @@
 
 namespace CultuurNet\MovieApiFetcher\Theater;
 
+use ValueObjects\Identity\UUID;
+
 class TheaterFactory implements TheaterFactoryInterface
 {
     /**
@@ -23,6 +25,6 @@ class TheaterFactory implements TheaterFactoryInterface
      */
     public function mapTheater($kinepolisTid)
     {
-        return $this->theaters[$kinepolisTid];
+        return new UUID($this->theaters[$kinepolisTid]['cdbid']);
     }
 }

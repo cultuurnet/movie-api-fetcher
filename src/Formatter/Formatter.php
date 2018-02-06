@@ -14,6 +14,11 @@ class Formatter implements FormatterInterface
     private $repository;
 
     /**
+     * @var string
+     */
+    private $url;
+
+    /**
      * @inheritdoc
      */
     public function formatEvent($externalId)
@@ -111,10 +116,12 @@ class Formatter implements FormatterInterface
     /**
      * Formatter constructor.
      * @param RepositoryInterface $repository
+     * @param $url
      */
-    public function __construct(RepositoryInterface $repository)
+    public function __construct(RepositoryInterface $repository, $url)
     {
         $this->repository = $repository;
+        $this->url = $url;
     }
 
     private function getThemeName($cnetId)
@@ -159,7 +166,7 @@ class Formatter implements FormatterInterface
     {
         $client = new Client();
         $request = $client->get(
-            'https://io.uitdatabank.be/place/' . $location,
+            $this->url . 'place/' . $location,
             [
                 'content-type' => 'application/json',
             ],
