@@ -3,7 +3,6 @@
 namespace CultuurNet\MovieApiFetcher\EntryPoster;
 
 use CultuurNet\TransformEntryStore\ValueObjects\BookingInfo\BookingInfo;
-use CultuurNet\UDB3\Calendar;
 use ValueObjects\Identity\UUID;
 use ValueObjects\StringLiteral\StringLiteral;
 
@@ -111,10 +110,10 @@ interface EntryPosterInterface
 
     /**
      * @param UUID $cdbid
-     * @param $contactPoint
+     * @param StringLiteral $contactPoint
      * @return string
      */
-    public function updateContactInfo(UUID $cdbid, $contactPoint);
+    public function updateContactInfo(UUID $cdbid, StringLiteral $contactPoint);
 
     /**
      * @param UUID $cdbid
@@ -146,17 +145,23 @@ interface EntryPosterInterface
 
     /**
      * @param UUID $cdbid
-     * @param $typicalAgeRange
+     * @param StringLiteral $typicalAgeRange
      * @return string
      */
-    public function updateAgeRange(UUID $cdbid, $typicalAgeRange);
+    public function updateAgeRange(UUID $cdbid, StringLiteral $typicalAgeRange);
 
     /**
      * @param UUID $cdbid
-     * @param $facilities
      * @return string
      */
-    public function updateFacilities(UUID $cdbid, $facilities);
+    public function deleteAgeRange(UUID $cdbid);
+
+    /**
+     * @param UUID $cdbid
+     * @param StringLiteral $facilities
+     * @return string
+     */
+    public function updateFacilities(UUID $cdbid, StringLiteral $facilities);
 
     /**
      * @param UUID $cdbid

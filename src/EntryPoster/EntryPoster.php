@@ -4,6 +4,7 @@ namespace CultuurNet\MovieApiFetcher\EntryPoster;
 
 use CultuurNet\TransformEntryStore\ValueObjects\BookingInfo\BookingInfo;
 use Guzzle\Http\Client;
+use GuzzleHttp\Tests\Psr7\Str;
 use Monolog\Logger;
 use ValueObjects\Identity\UUID;
 use ValueObjects\StringLiteral\StringLiteral;
@@ -486,9 +487,31 @@ class EntryPoster implements EntryPosterInterface
     /**
      * @inheritdoc
      */
-    public function updateContactInfo(UUID $cdbid, $contactPoint)
+    public function updateContactInfo(UUID $cdbid, StringLiteral $contactPoint)
     {
-        // TODO: Implement updateContactInfo() method.
+        $client = new Client();
+        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/contactPoint';
+
+        $request = $client->put(
+            $uri,
+            [
+                'Authorization' => 'Bearer ' . $this->token,
+                'x-api-key' => $this->apiKey,
+            ],
+            []
+        );
+
+        $request->setBody($contactPoint->toNative());
+        $response = $request->send();
+
+        $bodyResponse = $response->getBody();
+
+        $resp = json_decode(utf8_encode($bodyResponse), true);
+        $commandId =  $resp['commandId'];
+        $this->logger->log(Logger::DEBUG, 'Updated contactPoint for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
+        $this->logger->log(Logger::DEBUG, $contactPoint->toNative());
+
+        return $commandId;
     }
 
     /**
@@ -547,7 +570,7 @@ class EntryPoster implements EntryPosterInterface
         return $commandId;
     }
 
-    /**§1§
+    /**
      * @inheritdocc
      */
     public function updateOrganizer(UUID $cdbid, UUID $organizerId)
@@ -608,17 +631,89 @@ class EntryPoster implements EntryPosterInterface
     /**
      * @inheritdoc
      */
-    public function updateAgeRange(UUID $cdbid, $typicalAgeRange)
+    public function updateAgeRange(UUID $cdbid, StringLiteral $typicalAgeRange)
     {
-        // TODO: Implement updateAgeRange() method.
+        $client = new Client();
+        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/typicalAgeRange';
+
+        $request = $client->put(
+            $uri,
+            [
+                'Authorization' => 'Bearer ' . $this->token,
+                'x-api-key' => $this->apiKey,
+            ],
+            []
+        );
+
+        $request->setBody($typicalAgeRange->toNative());
+        $response = $request->send();
+
+        $bodyResponse = $response->getBody();
+
+        $resp = json_decode(utf8_encode($bodyResponse), true);
+        $commandId =  $resp['commandId'];
+        $this->logger->log(Logger::DEBUG, 'Updated typicalAgeRange for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
+        $this->logger->log(Logger::DEBUG, $typicalAgeRange->toNative());
+
+        return $commandId;
     }
 
     /**
      * @inheritdoc
      */
-    public function updateFacilities(UUID $cdbid, $facilities)
+    public function deleteAgeRange(UUID $cdbid)
     {
-        // TODO: Implement updateFacilities() method.
+        $client = new Client();
+        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/typicalAgeRange';
+
+        $request = $client->delete(
+            $uri,
+            [
+                'Authorization' => 'Bearer ' . $this->token,
+                'x-api-key' => $this->apiKey,
+            ],
+            []
+        );
+
+        $response = $request->send();
+
+        $bodyResponse = $response->getBody();
+
+        $resp = json_decode(utf8_encode($bodyResponse), true);
+        $commandId =  $resp['commandId'];
+        $this->logger->log(Logger::DEBUG, 'Deleted typicalAgeRange for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
+
+        return $commandId;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function updateFacilities(UUID $cdbid, StringLiteral $facilities)
+    {
+        $client = new Client();
+        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/facilities';
+
+        $request = $client->put(
+            $uri,
+            [
+                'Authorization' => 'Bearer ' . $this->token,
+                'x-api-key' => $this->apiKey,
+            ],
+            []
+        );
+
+        $request->setBody($facilities->toNative());
+        $response = $request->send();
+
+        $bodyResponse = $response->getBody();
+
+        $resp = json_decode(utf8_encode($bodyResponse), true);
+        $commandId =  $resp['commandId'];
+        $this->logger->log(Logger::DEBUG, 'Updated facilities for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
+        $this->logger->log(Logger::DEBUG, $facilities->toNative());
+
+        return $commandId;
     }
 
     /**
