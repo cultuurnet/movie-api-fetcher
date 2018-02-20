@@ -132,17 +132,17 @@ class Parser implements ParserInterface
 
             $cdbid = $this->repository->getCdbid($externalId);
             if (isset($cdbid)) {
-                if ($this->repository->getName($externalId) != $title) {
+                if ($this->repository->getName($externalId) !== $title) {
                     $this->repository->updateName($externalId, new StringLiteral($title));
                     $this->entryPoster->updateName($cdbid, new StringLiteral($title));
                 }
 
-                if ($this->repository->getDescription($externalId) != $description) {
+                if ($this->repository->getDescription($externalId) !== $description) {
                     $this->repository->updateDescription($externalId, new StringLiteral($description));
                     $this->entryPoster->updateDescription($cdbid, new StringLiteral($description));
                 }
 
-                if ($this->repository->getLocationCdbid($externalId) != $location) {
+                if ($this->repository->getLocationCdbid($externalId) !== $location) {
                     $this->repository->updateLocationCdbid($externalId, $location);
                     $this->entryPoster->updateLocation($cdbid, $location);
                 }
@@ -166,6 +166,19 @@ class Parser implements ParserInterface
                         }
                     }
                 }
+
+                $price = $this->getPrice($filmScreeningTheater, $priceMatrix, $length);
+                foreach ($price as $priceName => $amount) {
+                    $this->repository->updatePrice(
+                        $externalId,
+                        $priceName == 'base',
+                        $priceName,
+                        $amount,
+                        'EUR'
+                    );
+                }
+                $jsonPrice = $this->formatter->formatPrice($externalId);
+                $this->entryPoster->updatePriceInfo($cdbid, $jsonPrice);
 
                 $jsonCalendar = $this->formatter->formatCalendar($externalId);
                 $this->entryPoster->updateCalendar($cdbid, $jsonCalendar);
