@@ -126,106 +126,51 @@ class Parser implements ParserInterface
 
         $filmScreenings = $this->dateFactory->processDates($dates, $length);
 
-        foreach ($filmScreenings as $filmScreeningTheater => $filmScreening) {
-            $externalId = $this->identificationFactory->generateMovieId($mid, $filmScreeningTheater);
-            $location = $this->theaterFactory->mapTheater($filmScreeningTheater);
+        foreach ($filmScreenings as $filmScreeningTheater => $filmVersion) {
+            foreach ($filmVersion as $filmScreening) {
+                $externalId = $this->identificationFactory->generateMovieId($mid, $filmScreeningTheater);
+                $location = $this->theaterFactory->mapTheater($filmScreeningTheater);
 
-            $cdbid = $this->repository->getCdbid($externalId);
-            if (isset($cdbid)) {
-                if ($this->repository->getName($externalId) !== $title) {
-                    $this->repository->updateName($externalId, new StringLiteral($title));
-                    $this->entryPoster->updateName($cdbid, new StringLiteral($title));
-                }
-
-                if ($this->repository->getDescription($externalId) !== $description) {
-                    $this->repository->updateDescription($externalId, new StringLiteral($description));
-                    $this->entryPoster->updateDescription($cdbid, new StringLiteral($description));
-                }
-
-                if ($this->repository->getLocationCdbid($externalId) !== $location) {
-                    $this->repository->updateLocationCdbid($externalId, $location);
-                    $this->entryPoster->updateLocation($cdbid, $location);
-                }
-
-                $oldCalendar = $this->repository->getCalendar($externalId);
-                foreach ($filmScreening as $day => $hours) {
-                    foreach ($hours as $hour) {
-                        $timeStart = $hour[0];
-                        $timeEnd = $hour[1];
-                        $newDate = array();
-                        $newDate['date'] = $day;
-                        $newDate['time_start'] = $timeStart;
-                        $newDate['time_end'] = $timeEnd;
-                        if (!in_array($newDate, $oldCalendar)) {
-                            $this->repository->saveCalendar(
-                                $externalId,
-                                $day,
-                                $timeStart,
-                                $timeEnd
-                            );
-                        }
-                    }
-                }
-
-                $price = $this->getPrice($filmScreeningTheater, $priceMatrix, $length);
-                foreach ($price as $priceName => $amount) {
-                    $this->repository->updatePrice(
-                        $externalId,
-                        $priceName == 'base',
-                        $priceName,
-                        $amount,
-                        'EUR'
-                    );
-                }
-                $jsonPrice = $this->formatter->formatPrice($externalId);
-                $this->entryPoster->updatePriceInfo($cdbid, $jsonPrice);
-
-                $jsonCalendar = $this->formatter->formatCalendar($externalId);
-                $this->entryPoster->updateCalendar($cdbid, $jsonCalendar);
-            } elseif (isset($title) && !empty($title)) {
-                foreach ($filmScreening as $day => $hours) {
-                    foreach ($hours as $hour) {
-                        $timeStart = $hour[0];
-                        $timeEnd = $hour[1];
-                        $this->repository->saveCalendar(
-                            $externalId,
-                            $day,
-                            $timeStart,
-                            $timeEnd
-                        );
-                    }
-                }
-
-                $this->repository->saveName($externalId, new StringLiteral($title));
-                if (isset($description)) {
-                    $this->repository->saveDescription($externalId, new StringLiteral($description));
-                }
-                $this->repository->saveTypeId($externalId, new StringLiteral(PARSER::MOVIE_TYPE_ID));
-                if (isset($cnetId)) {
-                    $this->repository->saveThemeId($externalId, new StringLiteral($cnetId));
-                }
-                $this->repository->saveLocationCdbid($externalId, $location);
-
-                $jsonMovie = $this->formatter->formatEvent($externalId);
-                $cdbid = $this->entryPoster->postMovie($jsonMovie);
-
+                $cdbid = $this->repository->getCdbid($externalId);
                 if (isset($cdbid)) {
-                    $this->repository->saveCdbid($externalId, $cdbid);
-                    $this->entryPoster->publishEvent($cdbid);
+                    if ($this->repository->getName($externalId) !== $title) {
+                        $this->repository->updateName($externalId, new StringLiteral($title));
+                        $this->entryPoster->updateName($cdbid, new StringLiteral($title));
+                    }
 
-                    $mediaId = $this->entryPoster->addMediaObject((string) $image, new StringLiteral($title), $this->getDefaultCopyright());
-                    $this->entryPoster->addImage($cdbid, $mediaId);
-                    $this->repository->saveImage($externalId, $mediaId, new StringLiteral($title), $this->getDefaultCopyright(), LanguageCode::NL());
-
-                    $this->repository->addLabel($externalId, new StringLiteral(Parser::UIV_MOVIE_KEYWORD));
-                    $this->entryPoster->addLabel($cdbid, new StringLiteral(Parser::UIV_MOVIE_KEYWORD));
-                    if (isset($description)) {
+                    if ($this->repository->getDescription($externalId) !== $description) {
+                        $this->repository->updateDescription($externalId, new StringLiteral($description));
                         $this->entryPoster->updateDescription($cdbid, new StringLiteral($description));
+                    }
+
+                    if ($this->repository->getLocationCdbid($externalId) !== $location) {
+                        $this->repository->updateLocationCdbid($externalId, $location);
+                        $this->entryPoster->updateLocation($cdbid, $location);
+                    }
+
+                    $oldCalendar = $this->repository->getCalendar($externalId);
+                    foreach ($filmScreening as $day => $hours) {
+                        foreach ($hours as $hour) {
+                            $timeStart = $hour[0];
+                            $timeEnd = $hour[1];
+                            $newDate = array();
+                            $newDate['date'] = $day;
+                            $newDate['time_start'] = $timeStart;
+                            $newDate['time_end'] = $timeEnd;
+                            if (!in_array($newDate, $oldCalendar)) {
+                                $this->repository->saveCalendar(
+                                    $externalId,
+                                    $day,
+                                    $timeStart,
+                                    $timeEnd
+                                );
+                            }
+                        }
                     }
 
                     $price = $this->getPrice($filmScreeningTheater, $priceMatrix, $length);
                     foreach ($price as $priceName => $amount) {
-                        $this->repository->savePrice(
+                        $this->repository->updatePrice(
                             $externalId,
                             $priceName == 'base',
                             $priceName,
@@ -235,6 +180,63 @@ class Parser implements ParserInterface
                     }
                     $jsonPrice = $this->formatter->formatPrice($externalId);
                     $this->entryPoster->updatePriceInfo($cdbid, $jsonPrice);
+
+                    $jsonCalendar = $this->formatter->formatCalendar($externalId);
+                    $this->entryPoster->updateCalendar($cdbid, $jsonCalendar);
+                } elseif (isset($title) && !empty($title)) {
+                    foreach ($filmScreening as $day => $hours) {
+                        foreach ($hours as $hour) {
+                            $timeStart = $hour[0];
+                            $timeEnd = $hour[1];
+                            $this->repository->saveCalendar(
+                                $externalId,
+                                $day,
+                                $timeStart,
+                                $timeEnd
+                            );
+                        }
+                    }
+
+                    $this->repository->saveName($externalId, new StringLiteral($title));
+                    if (isset($description)) {
+                        $this->repository->saveDescription($externalId, new StringLiteral($description));
+                    }
+                    $this->repository->saveTypeId($externalId, new StringLiteral(PARSER::MOVIE_TYPE_ID));
+                    if (isset($cnetId)) {
+                        $this->repository->saveThemeId($externalId, new StringLiteral($cnetId));
+                    }
+                    $this->repository->saveLocationCdbid($externalId, $location);
+
+                    $jsonMovie = $this->formatter->formatEvent($externalId);
+                    $cdbid = $this->entryPoster->postMovie($jsonMovie);
+
+                    if (isset($cdbid)) {
+                        $this->repository->saveCdbid($externalId, $cdbid);
+                        $this->entryPoster->publishEvent($cdbid);
+
+                        $mediaId = $this->entryPoster->addMediaObject((string) $image, new StringLiteral($title), $this->getDefaultCopyright());
+                        $this->entryPoster->addImage($cdbid, $mediaId);
+                        $this->repository->saveImage($externalId, $mediaId, new StringLiteral($title), $this->getDefaultCopyright(), LanguageCode::NL());
+
+                        $this->repository->addLabel($externalId, new StringLiteral(Parser::UIV_MOVIE_KEYWORD));
+                        $this->entryPoster->addLabel($cdbid, new StringLiteral(Parser::UIV_MOVIE_KEYWORD));
+                        if (isset($description)) {
+                            $this->entryPoster->updateDescription($cdbid, new StringLiteral($description));
+                        }
+
+                        $price = $this->getPrice($filmScreeningTheater, $priceMatrix, $length);
+                        foreach ($price as $priceName => $amount) {
+                            $this->repository->savePrice(
+                                $externalId,
+                                $priceName == 'base',
+                                $priceName,
+                                $amount,
+                                'EUR'
+                            );
+                        }
+                        $jsonPrice = $this->formatter->formatPrice($externalId);
+                        $this->entryPoster->updatePriceInfo($cdbid, $jsonPrice);
+                    }
                 }
             }
         }

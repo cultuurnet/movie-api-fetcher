@@ -45,7 +45,6 @@ class UrlFactory implements UrlFactoryInterface
         return Url::fromNative($this->baseUrl->toNative() . 'services/content/1.1/movies/' . $mid);
     }
 
-
     /**
      * @inheritdoc
      */

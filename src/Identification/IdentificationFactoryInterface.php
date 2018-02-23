@@ -15,7 +15,8 @@ interface IdentificationFactoryInterface
     /**
      * @param $mid
      * @param $tid
+     * @param $version
      * @return StringLiteral
      */
-    public function generateMovieId($mid, $tid);
+    public function generateMovieId($mid, $tid, $version);
 }

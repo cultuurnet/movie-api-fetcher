@@ -17,8 +17,9 @@ class IdentificationFactory implements IdentificationFactoryInterface
     /**
      * @inheritdoc
      */
-    public function generateMovieId($mid, $tid)
+    public function generateMovieId($mid, $tid, $version)
     {
-        return new StringLiteral('Kinepolis:' . 't' . $tid . 'm' . $mid);
+        $v = $version === '3D' ? 'v3D' : '';
+        return new StringLiteral('Kinepolis:' . 't' . $tid . 'm' . $mid . $v);
     }
 }

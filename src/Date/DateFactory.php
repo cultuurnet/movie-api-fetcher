@@ -34,7 +34,9 @@ class DateFactory implements DateFactoryInterface
     public function processDay($day, $timeList)
     {
         foreach ($timeList as $info) {
-            $this->timeTableList[$info['tid']][$day][] = array($info['time'], $this->getEndDate($info['time']));
+            $format = $this->getFormat($info['format']);
+
+            $this->timeTableList[$info['tid']][$format][$day][] = array($info['time'], $this->getEndDate($info['time']));
         }
     }
 
@@ -43,5 +45,30 @@ class DateFactory implements DateFactoryInterface
         $dt = \DateTime::createFromFormat('H:i:s', $time);
         $dt->add(new \DateInterval('PT'. $this->length . 'M'));
         return $dt->format('H:i:s');
+    }
+
+    private function getFormat($formatArray)
+    {
+        $formats3D = array(
+            52,
+            53,
+            54,
+            740,
+            1033,
+            1035,
+            1036,
+            1037,
+            1045,
+            1070,
+            1093,
+            1145,
+            1147,
+        );
+        $is3D = array_intersect($formatArray, $formats3D);
+        if (!isset($formatArray) || empty($formatArray) || empty($is3D)) {
+            return '2D';
+        } else {
+            return '3D';
+        }
     }
 }
