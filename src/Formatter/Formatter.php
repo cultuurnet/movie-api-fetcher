@@ -3,6 +3,7 @@
 namespace CultuurNet\MovieApiFetcher\Formatter;
 
 use CultuurNet\TransformEntryStore\Stores\RepositoryInterface;
+use DOMDocument;
 use Guzzle\Http\Client;
 use ValueObjects\StringLiteral\StringLiteral;
 
@@ -111,6 +112,102 @@ class Formatter implements FormatterInterface
         }
 
         return new StringLiteral(json_encode($arr));
+    }
+
+    /**
+     * @param $externalId
+     * @return StringLiteral
+     */
+    public function formatProduction($externalId) {
+        //
+        $eventcats = array();
+        $relevents = array(); //$this->repository->get
+
+        //
+
+        $dom = new DOMDocument('1.0', 'utf-8');
+        $cdbxml = $dom->createElement('cdbxml');
+        $dom->appendChild($cdbxml);
+
+        $xmlns_xsi = $dom->createAttribute('xmlns:xsi');
+        $cdbxml->appendChild($xmlns_xsi);
+        $xmlns_xsi_value = $dom->createTextNode('http://www.w3.org/2001/XMLSchema-instance');
+        $xmlns_xsi->appendChild($xmlns_xsi_value);
+
+        $xmlns_xsd = $dom->createAttribute('xmlns:xsd');
+        $cdbxml->appendChild($xmlns_xsd);
+        $xmlns_xsd_value = $dom->createTextNode('http://www.w3.org/2001/XMLSchema');
+        $xmlns_xsd->appendChild($xmlns_xsd_value);
+
+        $xmlns = $dom->createAttribute('xmlns');
+        $cdbxml->appendChild($xmlns);
+        $xmlns_value = $dom->createTextNode('http://www.cultuurdatabank.com/XMLSchema/CdbXSD/3.3/FINAL');
+        $xmlns->appendChild($xmlns_value);
+
+        $production = $dom->createElement('production');
+
+        $categories = $dom->createElement('categories');
+        $categorytype = $dom->createElement('category');
+
+        $catid = $dom->createAttribute('catid');
+        $catid_value = $dom->createTextNode('0.50.6.0.0');
+        $catid->appendChild($catid_value);
+
+        $type = $dom->createAttribute('type');
+        $type_value = $dom->createTextNode('eventtype');
+        $type->appendChild($type_value);
+
+        $categorytype_value = $dom->createTextNode('Film');
+
+        $categorytype->appendChild($catid);
+        $categorytype->appendChild($type);
+        $categorytype->appendChild($categorytype_value);
+
+        $categories->appendChild($categorytype);
+
+        $production->appendChild($categories);
+
+        $productionDetails = $dom->createElement('productiondetails');
+
+
+        $productionDetail = $dom->createElement('productiondetail');
+        $lang = $dom->createAttribute('lang');
+        $lang_value = $dom->createTextNode('nl');
+        $lang->appendChild($lang_value);
+        $productionDetail->appendChild($lang);
+
+        // Media
+
+        $shortdescription = $dom->createElement('shortdescription');
+        $shortdescription_value = $dom->createTextNode('Neo thinks he \'s Superman!');
+        $shortdescription->appendChild($shortdescription_value);
+        $productionDetail->appendChild($shortdescription);
+
+        $title = $dom->createElement('title');
+        $title_value = $dom->createTextNode('The Matrix');
+        $title->appendChild($title_value);
+        $productionDetail->appendChild($title);
+
+        $productionDetails->appendChild($productionDetail);
+
+        $production->appendChild($productionDetails);
+
+        $relatedevents = $dom->createElement('relatedevents');
+        foreach ($relevents as $relevent) {
+            $id = $dom->createElement('id');
+            $cdbid = $dom->createAttribute('cdbid');
+            $cdbid_value = $dom->createTextNode($relevent);
+            $cdbid->appendChild($cdbid_value);
+            $id->appendChild($cdbid);
+            $relatedevents->appendChild($id);
+        }
+        $production->appendChild($relatedevents);
+
+        $cdbxml->appendChild($production);
+
+        return new StringLiteral($dom->saveXml());
+
+
     }
 
     /**

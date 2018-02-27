@@ -1,5 +1,10 @@
 {
     "name": "cultuurnet/movie-api-fetcher",
+    "config": {
+        "platform": {
+            "php": "7.1"
+        }
+    },
     "description": "fetch data from Kinepolis API",
     "type": "project",
     "license": "Apache-2.0",

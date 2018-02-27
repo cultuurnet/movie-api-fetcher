@@ -126,16 +126,21 @@ class Parser implements ParserInterface
 
         $filmScreenings = $this->dateFactory->processDates($dates, $length);
 
-        foreach ($filmScreenings as $filmScreeningTheater => $filmVersion) {
-            foreach ($filmVersion as $filmScreening) {
-                $externalId = $this->identificationFactory->generateMovieId($mid, $filmScreeningTheater);
+        foreach ($filmScreenings as $filmScreeningTheater => $filmVersions) {
+            foreach ($filmVersions as $filmVersion => $filmScreening) {
+                $externalId = $this->identificationFactory->generateMovieId($mid, $filmScreeningTheater, $filmVersion);
                 $location = $this->theaterFactory->mapTheater($filmScreeningTheater);
+                if ($filmVersion === '3D' && isset($title) && !empty($title)) {
+                    $movieTitle = $title . ' 3D';
+                } else {
+                    $movieTitle = $title;
+                }
 
                 $cdbid = $this->repository->getCdbid($externalId);
                 if (isset($cdbid)) {
-                    if ($this->repository->getName($externalId) !== $title) {
-                        $this->repository->updateName($externalId, new StringLiteral($title));
-                        $this->entryPoster->updateName($cdbid, new StringLiteral($title));
+                    if ($this->repository->getName($externalId) !== $movieTitle) {
+                        $this->repository->updateName($externalId, new StringLiteral($movieTitle));
+                        $this->entryPoster->updateName($cdbid, new StringLiteral($movieTitle));
                     }
 
                     if ($this->repository->getDescription($externalId) !== $description) {
@@ -183,7 +188,7 @@ class Parser implements ParserInterface
 
                     $jsonCalendar = $this->formatter->formatCalendar($externalId);
                     $this->entryPoster->updateCalendar($cdbid, $jsonCalendar);
-                } elseif (isset($title) && !empty($title)) {
+                } elseif (isset($movieTitle) && !empty($movieTitle)) {
                     foreach ($filmScreening as $day => $hours) {
                         foreach ($hours as $hour) {
                             $timeStart = $hour[0];
@@ -197,7 +202,7 @@ class Parser implements ParserInterface
                         }
                     }
 
-                    $this->repository->saveName($externalId, new StringLiteral($title));
+                    $this->repository->saveName($externalId, new StringLiteral($movieTitle));
                     if (isset($description)) {
                         $this->repository->saveDescription($externalId, new StringLiteral($description));
                     }
@@ -214,9 +219,9 @@ class Parser implements ParserInterface
                         $this->repository->saveCdbid($externalId, $cdbid);
                         $this->entryPoster->publishEvent($cdbid);
 
-                        $mediaId = $this->entryPoster->addMediaObject((string) $image, new StringLiteral($title), $this->getDefaultCopyright());
+                        $mediaId = $this->entryPoster->addMediaObject((string) $image, new StringLiteral($movieTitle), $this->getDefaultCopyright());
                         $this->entryPoster->addImage($cdbid, $mediaId);
-                        $this->repository->saveImage($externalId, $mediaId, new StringLiteral($title), $this->getDefaultCopyright(), LanguageCode::NL());
+                        $this->repository->saveImage($externalId, $mediaId, new StringLiteral($movieTitle), $this->getDefaultCopyright(), LanguageCode::NL());
 
                         $this->repository->addLabel($externalId, new StringLiteral(Parser::UIV_MOVIE_KEYWORD));
                         $this->entryPoster->addLabel($cdbid, new StringLiteral(Parser::UIV_MOVIE_KEYWORD));
