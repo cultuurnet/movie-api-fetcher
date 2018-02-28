@@ -118,7 +118,8 @@ class Formatter implements FormatterInterface
      * @param $externalId
      * @return StringLiteral
      */
-    public function formatProduction($externalId) {
+    public function formatProduction($externalId)
+    {
         //
         $eventcats = array();
         $relevents = array(); //$this->repository->get
@@ -129,20 +130,20 @@ class Formatter implements FormatterInterface
         $cdbxml = $dom->createElement('cdbxml');
         $dom->appendChild($cdbxml);
 
-        $xmlns_xsi = $dom->createAttribute('xmlns:xsi');
-        $cdbxml->appendChild($xmlns_xsi);
-        $xmlns_xsi_value = $dom->createTextNode('http://www.w3.org/2001/XMLSchema-instance');
-        $xmlns_xsi->appendChild($xmlns_xsi_value);
+        $xmlnsXsi = $dom->createAttribute('xmlns:xsi');
+        $cdbxml->appendChild($xmlnsXsi);
+        $xmlnsXsiValue = $dom->createTextNode('http://www.w3.org/2001/XMLSchema-instance');
+        $xmlnsXsi->appendChild($xmlnsXsiValue);
 
-        $xmlns_xsd = $dom->createAttribute('xmlns:xsd');
-        $cdbxml->appendChild($xmlns_xsd);
-        $xmlns_xsd_value = $dom->createTextNode('http://www.w3.org/2001/XMLSchema');
-        $xmlns_xsd->appendChild($xmlns_xsd_value);
+        $xmlnsXsd = $dom->createAttribute('xmlns:xsd');
+        $cdbxml->appendChild($xmlnsXsd);
+        $xmlnsXsdValue = $dom->createTextNode('http://www.w3.org/2001/XMLSchema');
+        $xmlnsXsd->appendChild($xmlnsXsdValue);
 
         $xmlns = $dom->createAttribute('xmlns');
         $cdbxml->appendChild($xmlns);
-        $xmlns_value = $dom->createTextNode('http://www.cultuurdatabank.com/XMLSchema/CdbXSD/3.3/FINAL');
-        $xmlns->appendChild($xmlns_value);
+        $xmlnsValue = $dom->createTextNode('http://www.cultuurdatabank.com/XMLSchema/CdbXSD/3.3/FINAL');
+        $xmlns->appendChild($xmlnsValue);
 
         $production = $dom->createElement('production');
 
@@ -150,18 +151,18 @@ class Formatter implements FormatterInterface
         $categorytype = $dom->createElement('category');
 
         $catid = $dom->createAttribute('catid');
-        $catid_value = $dom->createTextNode('0.50.6.0.0');
-        $catid->appendChild($catid_value);
+        $catidValue = $dom->createTextNode('0.50.6.0.0');
+        $catid->appendChild($catidValue);
 
         $type = $dom->createAttribute('type');
-        $type_value = $dom->createTextNode('eventtype');
-        $type->appendChild($type_value);
+        $typeValue = $dom->createTextNode('eventtype');
+        $type->appendChild($typeValue);
 
-        $categorytype_value = $dom->createTextNode('Film');
+        $categorytypeValue = $dom->createTextNode('Film');
 
         $categorytype->appendChild($catid);
         $categorytype->appendChild($type);
-        $categorytype->appendChild($categorytype_value);
+        $categorytype->appendChild($categorytypeValue);
 
         $categories->appendChild($categorytype);
 
@@ -172,20 +173,20 @@ class Formatter implements FormatterInterface
 
         $productionDetail = $dom->createElement('productiondetail');
         $lang = $dom->createAttribute('lang');
-        $lang_value = $dom->createTextNode('nl');
-        $lang->appendChild($lang_value);
+        $langValue = $dom->createTextNode('nl');
+        $lang->appendChild($langValue);
         $productionDetail->appendChild($lang);
 
         // Media
 
         $shortdescription = $dom->createElement('shortdescription');
-        $shortdescription_value = $dom->createTextNode('Neo thinks he \'s Superman!');
-        $shortdescription->appendChild($shortdescription_value);
+        $shortdescriptionValue = $dom->createTextNode('Neo thinks he \'s Superman!');
+        $shortdescription->appendChild($shortdescriptionValue);
         $productionDetail->appendChild($shortdescription);
 
         $title = $dom->createElement('title');
-        $title_value = $dom->createTextNode('The Matrix');
-        $title->appendChild($title_value);
+        $titleValue = $dom->createTextNode('The Matrix');
+        $title->appendChild($titleValue);
         $productionDetail->appendChild($title);
 
         $productionDetails->appendChild($productionDetail);
@@ -196,8 +197,8 @@ class Formatter implements FormatterInterface
         foreach ($relevents as $relevent) {
             $id = $dom->createElement('id');
             $cdbid = $dom->createAttribute('cdbid');
-            $cdbid_value = $dom->createTextNode($relevent);
-            $cdbid->appendChild($cdbid_value);
+            $cdbidValue = $dom->createTextNode($relevent);
+            $cdbid->appendChild($cdbidValue);
             $id->appendChild($cdbid);
             $relatedevents->appendChild($id);
         }
