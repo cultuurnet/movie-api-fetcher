@@ -36,6 +36,7 @@ use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreBookingInfoDBALRepositor
 use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreCalendarDBALRepository;
 use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreContactPointDBALRepository;
 use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreDescriptionDBALRepository;
+use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreEventProductionDBALRepository;
 use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreImageDBALRepository;
 use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreLabelDBALRepository;
 use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreLocationDBALRepository;
@@ -330,6 +331,15 @@ $app['dbal_store.description'] = $app->share(
     }
 );
 
+$app['dbal_store.event_production'] = $app->share(
+    function (Application $app) {
+        return new StoreEventProductionDBALRepository(
+            $app['dbal_connection'],
+            new StringLiteral('event_production')
+        );
+    }
+);
+
 $app['dbal_store.image'] = $app->share(
     function (Application $app) {
         return new StoreImageDBALRepository(
@@ -428,6 +438,7 @@ $app['repository'] = $app->share(
             $app['dbal_store.calendar'],
             $app['dbal_store.contact_point'],
             $app['dbal_store.description'],
+            $app['dbal_store.event_production'],
             $app['dbal_store.image'],
             $app['dbal_store.label'],
             $app['dbal_store.location'],

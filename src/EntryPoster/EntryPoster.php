@@ -47,6 +47,7 @@ class EntryPoster implements EntryPosterInterface
             $response = $request->send();
         } catch (\Exception $e) {
             $this->logger->log(Logger::ERROR, 'Failed to post movie, message:  ' . $e->getMessage());
+            $this->logger->log(Logger::DEBUG, $jsonMovie->toNative());
             return null;
         }
 
