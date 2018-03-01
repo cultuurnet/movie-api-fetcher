@@ -124,6 +124,11 @@ class Parser implements ParserInterface
             }
         }
 
+        if (!isset($length) || empty($length)) {
+            $this->logger->log(Logger::WARNING, $title . ' ' . $mid . ' does not have a length. Cannot process movie');
+            return;
+        }
+
         $filmScreenings = $this->dateFactory->processDates($dates, $length);
 
         foreach ($filmScreenings as $filmScreeningTheater => $filmVersions) {

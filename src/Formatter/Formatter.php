@@ -34,7 +34,8 @@ class Formatter implements FormatterInterface
         $playCount = count($calendar);
 
         $arr = array();
-        $arr['name']['nl'] = $name->toNative();
+        $arr['mainLanguage'] = 'nl';
+        $arr['name'] = $name->toNative();
 
         $arr['type']['id'] = $typeId->toNative();
         $arr['type']['label'] = 'Film';
