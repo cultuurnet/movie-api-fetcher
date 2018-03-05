@@ -9,6 +9,7 @@ use CultuurNet\MovieApiFetcher\Formatter\Formatter;
 use CultuurNet\MovieApiFetcher\Identification\IdentificationFactory;
 use CultuurNet\MovieApiFetcher\Parser\Parser;
 use CultuurNet\MovieApiFetcher\Price\PriceFactory;
+use CultuurNet\MovieApiFetcher\ProductionPoster\ProductionPoster;
 use CultuurNet\MovieApiFetcher\Term\TermFactory;
 use CultuurNet\MovieApiFetcher\Theater\TheaterFactory;
 use CultuurNet\MovieApiFetcher\Url\UrlFactory;
@@ -55,6 +56,7 @@ use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
 use Silex\Application;
 use ValueObjects\StringLiteral\StringLiteral;
+use ValueObjects\Web\Url;
 
 $app = new Application();
 
@@ -226,6 +228,22 @@ $app['logger_parser'] = $app->share(
     }
 );
 
+$app['log_handler_production'] = $app->share(
+    function (Application $app) {
+        return new RotatingFileHandler(
+            $app['config']['logging_folder'] . '/production.log',
+            365,
+            Logger::DEBUG
+        );
+    }
+);
+
+$app['logger_production'] = $app->share(
+    function (Application $app) {
+        return new Logger('importer', array($app['log_handler_production']));
+    }
+);
+
 $app['url_factory'] = $app->share(
     function (Application $app) {
         return new UrlFactory(
@@ -283,6 +301,15 @@ $app['formatter'] = $app->share(
 $app['identification_factory'] = $app->share(
     function () {
         return new IdentificationFactory();
+    }
+);
+
+$app['production_poster'] = $app->share(
+    function (Application $app) {
+        return new ProductionPoster(
+            $app['logger_production'],
+            Url::fromNative($app['config']['sapi2']['url'])
+        );
     }
 );
 
@@ -460,6 +487,7 @@ $app['parser'] = $app->share(
             $app['entry_poster'],
             $app['formatter'],
             $app['identification_factory'],
+            $app['production_poster'],
             $app['terms'],
             $app['theaters'],
             $app['url_factory'],

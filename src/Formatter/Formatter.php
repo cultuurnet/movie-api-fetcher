@@ -123,7 +123,8 @@ class Formatter implements FormatterInterface
     {
         //
         $eventcats = array();
-        $relevents = array(); //$this->repository->get
+        $relevents = array();
+        $this->repository->getCdbids($externalId);
 
         //
 

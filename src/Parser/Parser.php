@@ -7,6 +7,7 @@ use CultuurNet\MovieApiFetcher\Date\DateFactoryInterface;
 use CultuurNet\MovieApiFetcher\EntryPoster\EntryPosterInterface;
 use CultuurNet\MovieApiFetcher\Formatter\FormatterInterface;
 use CultuurNet\MovieApiFetcher\Identification\IdentificationFactoryInterface;
+use CultuurNet\MovieApiFetcher\ProductionPoster\ProductionPosterInterface;
 use CultuurNet\MovieApiFetcher\Term\TermFactoryInterface;
 use CultuurNet\MovieApiFetcher\Theater\TheaterFactoryInterface;
 use CultuurNet\MovieApiFetcher\Url\UrlFactoryInterface;
@@ -43,6 +44,11 @@ class Parser implements ParserInterface
     private $identificationFactory;
 
     /**
+     * @var ProductionPosterInterface
+     */
+    private $productionPoster;
+
+    /**
      * @var TermFactoryInterface
      */
     private $termFactory;
@@ -73,6 +79,7 @@ class Parser implements ParserInterface
      * @param EntryPosterInterface $entryPoster
      * @param FormatterInterface $formatter
      * @param IdentificationFactoryInterface $identificationFactory
+     * @param ProductionPosterInterface $productionPoster
      * @param TermFactoryInterface $termFactory
      * @param TheaterFactoryInterface $theaterFactory
      * @param UrlFactoryInterface $urlFactory
@@ -84,6 +91,7 @@ class Parser implements ParserInterface
         EntryPosterInterface $entryPoster,
         FormatterInterface $formatter,
         IdentificationFactoryInterface $identificationFactory,
+        ProductionPosterInterface $productionPoster,
         TermFactoryInterface $termFactory,
         TheaterFactoryInterface $theaterFactory,
         UrlFactoryInterface $urlFactory,
@@ -94,6 +102,7 @@ class Parser implements ParserInterface
         $this->entryPoster = $entryPoster;
         $this->formatter = $formatter;
         $this->identificationFactory = $identificationFactory;
+        $this->productionPoster = $productionPoster;
         $this->termFactory = $termFactory;
         $this->theaterFactory = $theaterFactory;
         $this->urlFactory = $urlFactory;
@@ -106,6 +115,9 @@ class Parser implements ParserInterface
      */
     public function process($movie, $priceMatrix)
     {
+        $this->productionPoster->postProduction(new StringLiteral(''));
+
+        return;
         $movieData = $movie['movies'][0];
         $mid = $movieData['mid'];
         $externalIdProduction = $this->identificationFactory->generateMovieProductionId($mid);
@@ -250,6 +262,17 @@ class Parser implements ParserInterface
                 }
             }
         }
+
+        $productionCdbid = $this->repository->getCdbid($externalIdProduction);
+        if (isset($productionCdbid)) {
+
+        } else {
+            $productionCdbid = UUID::generateAsString();
+            $this->repository->saveCdbid($externalIdProduction, new UUID($productionCdbid));
+            // TODO: save stuff
+        }
+        $productionXml = $this->formatter->formatProduction($externalIdProduction);
+        $this->productionPoster->postProduction($productionXml);
     }
 
     private function getDefaultCopyright()
