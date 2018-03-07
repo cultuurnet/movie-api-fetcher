@@ -4,7 +4,6 @@ namespace CultuurNet\MovieApiFetcher\ProductionPoster;
 
 use Guzzle\Http\Client;
 use Monolog\Logger;
-use ValueObjects\Identity\UUID;
 use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\Web\Url;
 

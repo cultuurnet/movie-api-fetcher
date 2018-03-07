@@ -4,7 +4,6 @@ namespace CultuurNet\MovieApiFetcher\EntryPoster;
 
 use CultuurNet\TransformEntryStore\ValueObjects\BookingInfo\BookingInfo;
 use Guzzle\Http\Client;
-use GuzzleHttp\Tests\Psr7\Str;
 use Monolog\Logger;
 use ValueObjects\Identity\UUID;
 use ValueObjects\StringLiteral\StringLiteral;

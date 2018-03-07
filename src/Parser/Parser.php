@@ -2,7 +2,6 @@
 
 namespace CultuurNet\MovieApiFetcher\Parser;
 
-use CultureFeed_Cdb_Item_Production;
 use CultuurNet\MovieApiFetcher\Date\DateFactoryInterface;
 use CultuurNet\MovieApiFetcher\EntryPoster\EntryPosterInterface;
 use CultuurNet\MovieApiFetcher\Formatter\FormatterInterface;
