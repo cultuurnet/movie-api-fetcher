@@ -116,17 +116,13 @@ class Formatter implements FormatterInterface
     }
 
     /**
-     * @param $externalId
+     * @param $externalIdProduction
      * @return StringLiteral
      */
-    public function formatProduction($externalId)
+    public function formatProduction($externalIdProduction)
     {
-        //
-        $eventcats = array();
-        $relevents = array();
-        $this->repository->getCdbids($externalId);
-
-        //
+        $relevents = $this->repository->getCdbids($externalIdProduction);
+        $themeId =$this->repository->getThemeId($externalIdProduction);
 
         $dom = new DOMDocument('1.0', 'utf-8');
         $cdbxml = $dom->createElement('cdbxml');
@@ -149,6 +145,22 @@ class Formatter implements FormatterInterface
 
         $production = $dom->createElement('production');
 
+        $cdbidProduction = $dom->createAttribute('cdbid');
+        $cdbidProductionValue =$dom->createTextNode($this->repository->getProductionCdbid($externalIdProduction)->toNative());
+        $cdbidProduction->appendChild($cdbidProductionValue);
+        $production->appendChild($cdbidProduction);
+
+
+        $createdBy = $dom->createAttribute('createdby');
+        $createdByValue =$dom->createTextNode('imports@cultuurnet.be');
+        $createdBy->appendChild($createdByValue);
+        $production->appendChild($createdBy);
+
+        $lastUpdatedBy = $dom->createAttribute('lastupdatedby');
+        $lastUpdatedByValue = $dom->createTextNode('imports@cultuurnet.be');
+        $lastUpdatedBy->appendChild($lastUpdatedByValue);
+        $production->appendChild($lastUpdatedBy);
+
         $categories = $dom->createElement('categories');
         $categorytype = $dom->createElement('category');
 
@@ -166,7 +178,28 @@ class Formatter implements FormatterInterface
         $categorytype->appendChild($type);
         $categorytype->appendChild($categorytypeValue);
 
+        if (isset($themeId)) {
+            $categorytheme = $dom->createElement('category');
+
+            $catidTheme = $dom->createAttribute('catid');
+            $catidThemeValue = $dom->createTextNode($themeId->toNative());
+            $catidTheme->appendChild($catidThemeValue);
+
+            $themeType = $dom->createAttribute('type');
+            $themeTypeValue = $dom->createTextNode('theme');
+            $themeType->appendChild($themeTypeValue);
+
+            $categorythemeValue = $dom->createTextNode($this->getThemeName($themeId));
+
+            $categorytheme->appendChild($catidTheme);
+            $categorytheme->appendChild($themeType);
+            $categorytheme->appendChild($categorythemeValue);
+        }
+
         $categories->appendChild($categorytype);
+        if (isset($themeId)) {
+            $categories->appendChild($categorytheme);
+        }
 
         $production->appendChild($categories);
 
@@ -182,12 +215,12 @@ class Formatter implements FormatterInterface
         // Media
 
         $shortdescription = $dom->createElement('shortdescription');
-        $shortdescriptionValue = $dom->createTextNode('Neo thinks he \'s Superman!');
+        $shortdescriptionValue = $dom->createTextNode($this->repository->getDescription($externalIdProduction)->toNative());
         $shortdescription->appendChild($shortdescriptionValue);
         $productionDetail->appendChild($shortdescription);
 
         $title = $dom->createElement('title');
-        $titleValue = $dom->createTextNode('The Matrix');
+        $titleValue = $dom->createTextNode($this->repository->getName($externalIdProduction)->toNative());
         $title->appendChild($titleValue);
         $productionDetail->appendChild($title);
 
@@ -199,7 +232,7 @@ class Formatter implements FormatterInterface
         foreach ($relevents as $relevent) {
             $id = $dom->createElement('id');
             $cdbid = $dom->createAttribute('cdbid');
-            $cdbidValue = $dom->createTextNode($relevent);
+            $cdbidValue = $dom->createTextNode($relevent['cdbid_event']);
             $cdbid->appendChild($cdbidValue);
             $id->appendChild($cdbid);
             $relatedevents->appendChild($id);

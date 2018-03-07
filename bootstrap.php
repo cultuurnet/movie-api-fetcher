@@ -44,6 +44,7 @@ use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreLocationDBALRepository;
 use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreNameDBALRepository;
 use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreOrganizerDBALRepository;
 use CultuurNet\TransformEntryStore\Stores\Doctrine\StorePriceDBALRepository;
+use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreProductionDBALRepository;
 use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreRelationDBALRepository;
 use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreTargetAudienceDBALRepository;
 use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreThemeDBALRepository;
@@ -421,6 +422,15 @@ $app['dbal_store.price_info'] = $app->share(
     }
 );
 
+$app['dbal_store.production'] = $app->share(
+    function (Application $app) {
+        return new StoreProductionDBALRepository(
+            $app['dbal_connection'],
+            new StringLiteral('production')
+        );
+    }
+);
+
 $app['dbal_store.relation'] = $app->share(
     function (Application $app) {
         return new StoreRelationDBALRepository(
@@ -472,6 +482,7 @@ $app['repository'] = $app->share(
             $app['dbal_store.name'],
             $app['dbal_store.organizer'],
             $app['dbal_store.price_info'],
+            $app['dbal_store.production'],
             $app['dbal_store.relation'],
             $app['dbal_store.target_audience'],
             $app['dbal_store.theme'],

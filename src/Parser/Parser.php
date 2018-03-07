@@ -115,9 +115,6 @@ class Parser implements ParserInterface
      */
     public function process($movie, $priceMatrix)
     {
-        $this->productionPoster->postProduction(new StringLiteral(''));
-
-        return;
         $movieData = $movie['movies'][0];
         $mid = $movieData['mid'];
         $externalIdProduction = $this->identificationFactory->generateMovieProductionId($mid);
@@ -258,18 +255,25 @@ class Parser implements ParserInterface
                         }
                         $jsonPrice = $this->formatter->formatPrice($externalId);
                         $this->entryPoster->updatePriceInfo($cdbid, $jsonPrice);
+
+                        $this->repository->saveEventProduction($externalId, $externalIdProduction, $cdbid);
                     }
                 }
             }
         }
 
-        $productionCdbid = $this->repository->getCdbid($externalIdProduction);
+        $productionCdbid = $this->repository->getProductionCdbid($externalIdProduction);
         if (isset($productionCdbid)) {
 
         } else {
             $productionCdbid = UUID::generateAsString();
-            $this->repository->saveCdbid($externalIdProduction, new UUID($productionCdbid));
-            // TODO: save stuff
+            $this->repository->saveProductionCdbid($externalIdProduction, new UUID($productionCdbid));
+            $this->repository->saveName($externalIdProduction, new StringLiteral($title));
+            $this->repository->saveDescription($externalIdProduction, new StringLiteral($description));
+            $this->repository->saveTypeId($externalIdProduction, new StringLiteral(PARSER::MOVIE_TYPE_ID));
+            if (isset($cnetId)) {
+                $this->repository->saveThemeId($externalIdProduction, new StringLiteral($cnetId));
+            }
         }
         $productionXml = $this->formatter->formatProduction($externalIdProduction);
         $this->productionPoster->postProduction($productionXml);
