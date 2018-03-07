@@ -228,16 +228,18 @@ class Formatter implements FormatterInterface
 
         $production->appendChild($productionDetails);
 
-        $relatedevents = $dom->createElement('relatedevents');
-        foreach ($relevents as $relevent) {
-            $id = $dom->createElement('id');
-            $cdbid = $dom->createAttribute('cdbid');
-            $cdbidValue = $dom->createTextNode($relevent['cdbid_event']);
-            $cdbid->appendChild($cdbidValue);
-            $id->appendChild($cdbid);
-            $relatedevents->appendChild($id);
+        if (isset($relevents)) {
+            $relatedevents = $dom->createElement('relatedevents');
+            foreach ($relevents as $relevent) {
+                $id = $dom->createElement('id');
+                $cdbid = $dom->createAttribute('cdbid');
+                $cdbidValue = $dom->createTextNode($relevent['cdbid_event']);
+                $cdbid->appendChild($cdbidValue);
+                $id->appendChild($cdbid);
+                $relatedevents->appendChild($id);
+            }
+            $production->appendChild($relatedevents);
         }
-        $production->appendChild($relatedevents);
 
         $cdbxml->appendChild($production);
 
