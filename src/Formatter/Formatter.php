@@ -116,10 +116,10 @@ class Formatter implements FormatterInterface
     }
 
     /**
-     * @param $externalIdProduction
+     * @param StringLiteral $externalIdProduction
      * @return StringLiteral
      */
-    public function formatProduction($externalIdProduction)
+    public function formatProduction(StringLiteral $externalIdProduction)
     {
         $relevents = $this->repository->getCdbids($externalIdProduction);
         $themeId =$this->repository->getThemeId($externalIdProduction);
@@ -215,7 +215,7 @@ class Formatter implements FormatterInterface
         // Media
 
         $shortdescription = $dom->createElement('shortdescription');
-        $shortdescriptionValue = $dom->createTextNode($this->repository->getDescription($externalIdProduction)->toNative());
+        $shortdescriptionValue = $dom->createTextNode($this->repository->getDescription($externalIdProduction));
         $shortdescription->appendChild($shortdescriptionValue);
         $productionDetail->appendChild($shortdescription);
 
