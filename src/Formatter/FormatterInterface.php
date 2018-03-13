@@ -25,8 +25,8 @@ interface FormatterInterface
     public function formatPrice($externalId);
 
     /**
-     * @param $externalIdProduction
+     * @param StringLiteral $externalIdProduction
      * @return StringLiteral
      */
-    public function formatProduction($externalIdProduction);
+    public function formatProduction(StringLiteral $externalIdProduction);
 }
