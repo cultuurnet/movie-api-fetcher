@@ -256,6 +256,10 @@ class Parser implements ParserInterface
                         $this->entryPoster->updatePriceInfo($cdbid, $jsonPrice);
 
                         $this->repository->saveEventProduction($externalId, $externalIdProduction, $cdbid);
+                        // temporary workaround till III-2501 is fixed
+                        $jsonCalendar = $this->formatter->formatCalendar($externalId);
+                        $this->entryPoster->updateCalendar($cdbid, $jsonCalendar);
+                        // end of temporary workaround
                     }
                 }
             }

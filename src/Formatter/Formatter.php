@@ -145,14 +145,33 @@ class Formatter implements FormatterInterface
 
         $production = $dom->createElement('production');
 
+        $availablefrom = $dom->createAttribute('availablefrom');
+        $availablefromValue = $dom->createTextNode('2018-01-01T00:00:00');
+        $availablefrom->appendChild($availablefromValue);
+        $production->appendChild($availablefrom);
+
+        $availableto = $dom->createAttribute('availableto');
+        $availabletoValue = $dom->createTextNode('2099-12-31T00:00:00');
+        $availableto->appendChild($availabletoValue);
+        $production->appendChild($availableto);
+
+        $creationdate = $dom->createAttribute('creationdate');
+        $creationdateValue = $dom->createTextNode('2018-01-01T00:00:00');
+        $creationdate->appendChild($creationdateValue);
+        $production->appendChild($creationdate);
+
         $cdbidProduction = $dom->createAttribute('cdbid');
-        $cdbidProductionValue =$dom->createTextNode($this->repository->getProductionCdbid($externalIdProduction)->toNative());
+        $cdbidProductionValue = $dom->createTextNode($this->repository->getProductionCdbid($externalIdProduction)->toNative());
         $cdbidProduction->appendChild($cdbidProductionValue);
         $production->appendChild($cdbidProduction);
 
+        $externalid = $dom->createAttribute('externalid');
+        $externalidValue = $dom->createTextNode($externalIdProduction->toNative());
+        $externalid->appendChild($externalidValue);
+        $production->appendChild($externalid);
 
         $createdBy = $dom->createAttribute('createdby');
-        $createdByValue =$dom->createTextNode('imports@cultuurnet.be');
+        $createdByValue = $dom->createTextNode('imports@cultuurnet.be');
         $createdBy->appendChild($createdByValue);
         $production->appendChild($createdBy);
 
