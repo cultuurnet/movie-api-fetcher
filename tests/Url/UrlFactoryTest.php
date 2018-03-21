@@ -27,7 +27,7 @@ class UrlFactoryTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_generates_an_token_url()
+    public function itGeneratesATokenUrl()
     {
         $url = $this->urlFactory->generateTokenUrl();
 
@@ -41,7 +41,7 @@ class UrlFactoryTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_generates_a_movies_url()
+    public function itGeneratesAMoviesUrl()
     {
         $url = $this->urlFactory->generateMoviesUrl();
 
@@ -55,7 +55,7 @@ class UrlFactoryTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_generates_a_moviedetail_url()
+    public function itGeneratesAMoviedetailUrl()
     {
         $mid = rand(1, 64000);
         $url = $this->urlFactory->generateMovieDetailUrl($mid);
@@ -70,7 +70,7 @@ class UrlFactoryTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_generates_a_media_url()
+    public function itGeneratesAMediaUrl()
     {
         $mediaLink = new StringLiteral('/test.jpg');
         $url = $this->urlFactory->generateMediaUrl($mediaLink);
@@ -85,7 +85,7 @@ class UrlFactoryTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_generates_a_theater_url()
+    public function itGeneratesATheaterUrl()
     {
         $url = $this->urlFactory->generateTheatreUrl();
 
