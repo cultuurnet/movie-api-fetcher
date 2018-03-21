@@ -133,8 +133,8 @@ class Parser implements ParserInterface
         }
 
         if (!isset($length) || empty($length)) {
-            $this->logger->log(Logger::WARNING, $title . ' ' . $mid . ' does not have a length. Cannot process movie');
-            return;
+            $this->logger->log(Logger::WARNING, $title . ' ' . $mid . ' does not have a length. Will set end equal to start');
+            $length = 0;
         }
 
         $filmScreenings = $this->dateFactory->processDates($dates, $length);

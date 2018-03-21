@@ -43,7 +43,11 @@ class DateFactory implements DateFactoryInterface
     private function getEndDate($time)
     {
         $dt = \DateTime::createFromFormat('H:i:s', $time);
-        $dt->add(new \DateInterval('PT'. $this->length . 'M'));
+        try {
+            $dt->add(new \DateInterval('PT' . $this->length . 'M'));
+        } catch (\Exception $ex) {
+
+        }
         return $dt->format('H:i:s');
     }
 
