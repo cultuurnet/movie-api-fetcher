@@ -20,8 +20,6 @@ class TermFactoryTest extends \PHPUnit_Framework_TestCase
         $this->termFactory = new TermFactory($terms);
     }
 
-
-
     /**
      * @test
      */
