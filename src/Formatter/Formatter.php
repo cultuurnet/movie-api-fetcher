@@ -262,7 +262,7 @@ class Formatter implements FormatterInterface
 
         $cdbxml->appendChild($production);
 
-        return new StringLiteral($dom->saveXml());
+        return new StringLiteral(trim($dom->saveXml()));
 
 
     }
