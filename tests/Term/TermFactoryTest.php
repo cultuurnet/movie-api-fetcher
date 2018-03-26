@@ -2,8 +2,6 @@
 
 namespace CultuurNet\MovieApiFetcher\Term;
 
-use ValueObjects\Identity\UUID;
-
 class TermFactoryTest extends \PHPUnit_Framework_TestCase
 {
     /**
