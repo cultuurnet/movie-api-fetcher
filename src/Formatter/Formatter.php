@@ -105,7 +105,7 @@ class Formatter implements FormatterInterface
             $tarif = array();
 
             $tarif['category'] = $price[$i]['is_base_price'] == 1 ? 'base' : 'tariff';
-            $tarif['name'] = $price[$i]['name'] == 'base' ? 'Basistarief' : $price[$i]['name'];
+            $tarif['name']['nl'] = $price[$i]['name'] == 'base' ? 'Basistarief' : $price[$i]['name'];
             $tarif['price'] = (float) $price[$i]['price'];
             $tarif['priceCurrency'] = $price[$i]['currency'];
 
