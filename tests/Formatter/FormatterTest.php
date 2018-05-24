@@ -52,7 +52,40 @@ class FormatterTest extends \PHPUnit_Framework_TestCase
      */
     public function testFormatPrice()
     {
+        $externalIdMovie = new StringLiteral('Testm4321');
 
+        $this->repository->expects($this->once())
+            ->method('getPrice')
+            ->with($externalIdMovie)
+            ->willReturn(
+                array(
+                        0 =>
+                        array(
+                            'is_base_price' => '1',
+                            'name' => 'base',
+                            'price' => '10.80',
+                            'currency' => 'EUR',
+                        ),
+                        1 =>
+                        array(
+                            'is_base_price' => '0',
+                            'name' => 'Kortingstarief',
+                            'price' => '9.80',
+                            'currency' => 'EUR',
+                        ),
+                        2 =>
+                        array(
+                            'is_base_price' => '0',
+                            'name' => 'Kinepolis Student Card',
+                            'price' => '8.10',
+                            'currency' => 'EUR',
+                        ),
+                )
+            );
+
+        $expected = new StringLiteral('[{"category":"base","name":{"nl":"Basistarief"},"price":10.8,"priceCurrency":"EUR"},{"category":"tariff","name":{"nl":"Kortingstarief"},"price":9.8,"priceCurrency":"EUR"},{"category":"tariff","name":{"nl":"Kinepolis Student Card"},"price":8.1,"priceCurrency":"EUR"}]');
+        $actual = $this->formatter->formatPrice($externalIdMovie);
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -62,17 +95,17 @@ class FormatterTest extends \PHPUnit_Framework_TestCase
     {
         $externalIdProduction = new StringLiteral('Testm4321');
 
-        $eventList = array (
+        $eventList = array(
             0 =>
-                array (
+                array(
                     'cdbid_event' => 'ba9d9202-d79d-44c0-ae16-edfbd4736d78',
                 ),
                 1 =>
-                array (
+                array(
                     'cdbid_event' => '0d47e21c-34e7-445c-aa6a-8b0ae5779fda',
                 ),
                 2 =>
-                array (
+                array(
                     'cdbid_event' => '9bb00339-0232-48cc-974b-5039a2b29fbb',
                 ),
         );
