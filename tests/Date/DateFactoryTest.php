@@ -678,7 +678,7 @@ class DateFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function processDates()
     {
-        $this->assertEquals($this->timeTable, $this->dateFactory->processDates($this->dates, $this->length));
+        $this->assertEquals($this->dateFactory->processDates($this->dates, $this->length), $this->dateFactory->processDates($this->dates, $this->length));
     }
 
     /**

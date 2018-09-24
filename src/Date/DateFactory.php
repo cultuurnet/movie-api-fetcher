@@ -34,9 +34,11 @@ class DateFactory implements DateFactoryInterface
     public function processDay($day, $timeList)
     {
         foreach ($timeList as $info) {
-            $format = $this->getFormat($info['format']);
+            if ($info['tid'] == 'KBRG') {
+                $format = $this->getFormat($info['format']);
 
-            $this->timeTableList[$info['tid']][$format][$day][] = array($info['time'], $this->getEndDate($info['time']));
+                $this->timeTableList[$info['tid']][$format][$day][] = array($info['time'], $this->getEndDate($info['time']));
+            }
         }
     }
 
