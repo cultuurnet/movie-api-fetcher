@@ -54,15 +54,15 @@ class Formatter implements FormatterInterface
         $arr['location']['address']['postalCode'] = $address['postalCode'];
         $arr['location']['address']['streetAddress'] = $address['streetAddress'];
 
-        $arr['calendarType'] = 'multiple';
+        $arr['calendar']['calendarType'] = 'multiple';
 
         for ($i = 0; $i < $playCount; $i++) {
-            $arr['timeSpans'][$i]['start'] = $this->formatStart($calendar[$i]);
-            $arr['timeSpans'][$i]['end'] = $this->formatEnd($calendar[$i]);
+            $arr['calendar']['timeSpans'][$i]['start'] = $this->formatStart($calendar[$i]);
+            $arr['calendar']['timeSpans'][$i]['end'] = $this->formatEnd($calendar[$i]);
         }
 
-        $arr['startDate'] = $this->formatStart($calendar[0]);
-        $arr['endDate'] = $this->formatEnd($calendar[$playCount - 1]);
+        //$arr['startDate'] = $this->formatStart($calendar[0]);
+        //$arr['endDate'] = $this->formatEnd($calendar[$playCount - 1]);
 
         return new StringLiteral(json_encode($arr));
     }
