@@ -22,8 +22,10 @@ class DateFactory implements DateFactoryInterface
         $this->timeTableList = array();
         $this->length = $length;
 
-        foreach ($dates as $day => $timeList) {
-            $this->processDay($day, $timeList);
+        if (isset($dates)) {
+            foreach ($dates as $day => $timeList) {
+                $this->processDay($day, $timeList);
+            }
         }
         return $this->timeTableList;
     }
