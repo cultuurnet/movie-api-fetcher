@@ -6,6 +6,7 @@ use CultuurNet\TransformEntryStore\Stores\RepositoryInterface;
 use DOMDocument;
 use Guzzle\Http\Client;
 use ValueObjects\StringLiteral\StringLiteral;
+use ValueObjects\Identity\UUID;
 
 class Formatter implements FormatterInterface
 {
@@ -122,7 +123,13 @@ class Formatter implements FormatterInterface
     public function formatProduction(StringLiteral $externalIdProduction)
     {
         $relevents = $this->repository->getCdbids($externalIdProduction);
-        $themeId =$this->repository->getThemeId($externalIdProduction);
+        $imageId = null;
+        if (isset($relatedevents) && count($relevents) > 0) {
+            $firstEvent = new UUID($relevents[0]);
+            $firstEventExternalId = $this->repository->getExternalId($firstEvent);
+            $imageId = $this->repository->getImageId($firstEventExternalId);
+        }
+        $themeId = $this->repository->getThemeId($externalIdProduction);
 
         $dom = new DOMDocument('1.0', 'utf-8');
         $cdbxml = $dom->createElement('cdbxml');
@@ -224,14 +231,50 @@ class Formatter implements FormatterInterface
 
         $productionDetails = $dom->createElement('productiondetails');
 
-
         $productionDetail = $dom->createElement('productiondetail');
         $lang = $dom->createAttribute('lang');
         $langValue = $dom->createTextNode('nl');
         $lang->appendChild($langValue);
         $productionDetail->appendChild($lang);
 
-        // Media
+        if (isset($imageId)) {
+            $media = $dom->createElement('media');
+
+            $file = $dom->createElement('file');
+            $mainFile = $dom->createAttribute('main');
+            $mainFileValue = $dom->createTextNode('true');
+            $mainFile->appendChild($mainFileValue);
+            $file->appendChild($mainFile);
+
+            $copyright = $dom->createElement('copyright');
+            $copyrightValue = $dom->createTextNode('Kinepolis');
+            $copyright->appendChild($copyrightValue);
+            $file->appendChild($copyright);
+
+            $filename = $dom->createElement('filename');
+            $filenameValue = $dom->createTextNode($this->formatImageName($imageId));
+            $filename->appendChild($filenameValue);
+            $file->appendChild($filename);
+
+            $filetype = $dom->createElement('filetype');
+            $filetypeValue = $dom->createTextNode('jpeg');
+            $filetype->appendChild($filetypeValue);
+            $file->appendChild($filetype);
+
+            $hlink = $dom->createElement('hlink');
+            $hlinkValue = $dom->createTextNode($this->formatImageUrl($imageId));
+            $hlink->appendChild($hlinkValue);
+            $file->appendChild($hlink);
+
+            $mediaType = $dom->createElement('mediatype');
+            $mediaTypeValue = $dom->createTextNode('photo');
+            $mediaType->appendChild($mediaTypeValue);
+            $file->appendChild($mediaType);
+
+            $media->appendChild($file);
+
+            $productionDetail->appendChild($media);
+        }
 
         $shortdescription = $dom->createElement('shortdescription');
         $shortdescriptionValue = $dom->createTextNode($this->repository->getDescription($externalIdProduction));
@@ -263,8 +306,6 @@ class Formatter implements FormatterInterface
         $cdbxml->appendChild($production);
 
         return new StringLiteral(trim($dom->saveXml()));
-
-
     }
 
     /**
@@ -370,5 +411,15 @@ class Formatter implements FormatterInterface
             $dateString = $d->format('Y-m-d');
         }
         return $dateString . 'T' . $playTime['time_end'] . '+00:00';
+    }
+
+    private function formatImageName(StringLiteral $imageId)
+    {
+        return (string) $imageId . '.jpeg';
+    }
+
+    private function formatImageUrl(StringLiteral $imageId)
+    {
+        return $this->url . 'images/' . $this->formatImageName($imageId);
     }
 }

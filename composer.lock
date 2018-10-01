@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
     "content-hash": "49f4eec93d0138858fb46397481d9c18",
@@ -838,12 +838,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cultuurnet/transform-entry-store.git",
-                "reference": "4f61c168296674f4c3aff8cfec001b3e60f3ae45"
+                "reference": "45a090acfd45c31a8abb79778898db22d899977f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cultuurnet/transform-entry-store/zipball/4f61c168296674f4c3aff8cfec001b3e60f3ae45",
-                "reference": "4f61c168296674f4c3aff8cfec001b3e60f3ae45",
+                "url": "https://api.github.com/repos/cultuurnet/transform-entry-store/zipball/45a090acfd45c31a8abb79778898db22d899977f",
+                "reference": "45a090acfd45c31a8abb79778898db22d899977f",
                 "shasum": ""
             },
             "require": {
@@ -874,7 +874,7 @@
                 "Apache-2.0"
             ],
             "description": "library to store data from external partners that is transformed to work with Entry API",
-            "time": "2018-03-07T14:45:40+00:00"
+            "time": "2018-10-01T09:36:23+00:00"
         },
         {
             "name": "cultuurnet/udb3",
@@ -3345,6 +3345,7 @@
             "keywords": [
                 "microframework"
             ],
+            "abandoned": "symfony/flex",
             "time": "2017-04-30T16:26:54+00:00"
         },
         {
@@ -5239,6 +5240,7 @@
                 "github",
                 "test"
             ],
+            "abandoned": "php-coveralls/php-coveralls",
             "time": "2017-12-06T23:17:56+00:00"
         },
         {

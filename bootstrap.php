@@ -305,11 +305,17 @@ $app['identification_factory'] = $app->share(
     }
 );
 
+
+
 $app['production_poster'] = $app->share(
     function (Application $app) {
+        $sapi2Urls = array();
+        foreach ($app['config']['sapi2']['urls'] as $sapi2Url) {
+            $sapi2Urls[] = Url::fromNative($sapi2Url);
+        }
         return new ProductionPoster(
             $app['logger_production'],
-            Url::fromNative($app['config']['sapi2']['url'])
+            $sapi2Urls
         );
     }
 );
