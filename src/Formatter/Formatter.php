@@ -123,6 +123,7 @@ class Formatter implements FormatterInterface
     public function formatProduction(StringLiteral $externalIdProduction)
     {
         $relevents = $this->repository->getCdbids($externalIdProduction);
+
         $imageId = null;
         if (isset($relatedevents) && count($relevents) > 0) {
             $firstEvent = new UUID($relevents[0]);
