@@ -2,6 +2,7 @@
 
 namespace CultuurNet\MovieApiFetcher\ProductionPoster;
 
+use CultuurNet\UDB3\Event\ReadModel\History\Log;
 use Guzzle\Http\Client;
 use Monolog\Logger;
 use ValueObjects\StringLiteral\StringLiteral;
@@ -41,7 +42,8 @@ class ProductionPoster implements ProductionPosterInterface
             try {
                 $response = $request->send();
             } catch (\Exception $e) {
-                $this->logger->log(Logger::ERROR, 'Failed to post movie, message:  ' . $e->getMessage());
+                $this->logger->log(Logger::ERROR, 'Failed to post production, message:  ' . $e->getMessage());
+                $this->logger->log(Logger::ERROR, 'xml is: ' . $productionXml->toNative());
                 return null;
             }
 
