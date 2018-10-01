@@ -38,12 +38,12 @@ class ProductionPoster implements ProductionPosterInterface
             );
 
             $request->setBody($productionXml->toNative());
+            $this->logger->log(Logger::DEBUG, 'xml is: ' . $productionXml->toNative());
 
             try {
                 $response = $request->send();
             } catch (\Exception $e) {
                 $this->logger->log(Logger::ERROR, 'Failed to post production, message:  ' . $e->getMessage());
-                $this->logger->log(Logger::ERROR, 'xml is: ' . $productionXml->toNative());
                 return null;
             }
 
