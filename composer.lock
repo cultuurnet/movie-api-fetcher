@@ -838,12 +838,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cultuurnet/transform-entry-store.git",
-                "reference": "45a090acfd45c31a8abb79778898db22d899977f"
+                "reference": "a55c63ba47c1dad59f0ca8a8572f733330fa722d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cultuurnet/transform-entry-store/zipball/45a090acfd45c31a8abb79778898db22d899977f",
-                "reference": "45a090acfd45c31a8abb79778898db22d899977f",
+                "url": "https://api.github.com/repos/cultuurnet/transform-entry-store/zipball/a55c63ba47c1dad59f0ca8a8572f733330fa722d",
+                "reference": "a55c63ba47c1dad59f0ca8a8572f733330fa722d",
                 "shasum": ""
             },
             "require": {
@@ -874,7 +874,7 @@
                 "Apache-2.0"
             ],
             "description": "library to store data from external partners that is transformed to work with Entry API",
-            "time": "2018-10-01T09:36:23+00:00"
+            "time": "2018-10-01T13:20:31+00:00"
         },
         {
             "name": "cultuurnet/udb3",

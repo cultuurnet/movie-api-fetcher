@@ -123,14 +123,14 @@ class Formatter implements FormatterInterface
     public function formatProduction(StringLiteral $externalIdProduction)
     {
         $relevents = $this->repository->getCdbids($externalIdProduction);
-
         $imageId = null;
-        if (isset($relatedevents) && count($relevents) > 0) {
-            $firstEvent = new UUID($relevents[0]);
+        if (isset($relevents) && count($relevents) > 0) {
+            $firstEvent = new UUID($relevents[0]['cdbid_event']);
             $firstEventExternalId = $this->repository->getExternalId($firstEvent);
             $imageId = $this->repository->getImageId($firstEventExternalId);
         }
         $themeId = $this->repository->getThemeId($externalIdProduction);
+        $description = $this->repository->getDescription($externalIdProduction);
 
         $dom = new DOMDocument('1.0', 'utf-8');
         $cdbxml = $dom->createElement('cdbxml');
@@ -277,10 +277,12 @@ class Formatter implements FormatterInterface
             $productionDetail->appendChild($media);
         }
 
-        $shortdescription = $dom->createElement('shortdescription');
-        $shortdescriptionValue = $dom->createTextNode($this->repository->getDescription($externalIdProduction));
-        $shortdescription->appendChild($shortdescriptionValue);
-        $productionDetail->appendChild($shortdescription);
+        if (isset($description) && strlen($description->toNative())) {
+            $shortdescription = $dom->createElement('shortdescription');
+            $shortdescriptionValue = $dom->createTextNode($description);
+            $shortdescription->appendChild($shortdescriptionValue);
+            $productionDetail->appendChild($shortdescription);
+        }
 
         $title = $dom->createElement('title');
         $titleValue = $dom->createTextNode($this->repository->getName($externalIdProduction)->toNative());
