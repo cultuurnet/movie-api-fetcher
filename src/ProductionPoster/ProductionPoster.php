@@ -26,7 +26,7 @@ class ProductionPoster implements ProductionPosterInterface
     {
         foreach ($this->sapi2Urls as $sapi2Url) {
             $client = new Client();
-            $uri = (string) $this->sapi2Url;
+            $uri = (string) $sapi2Url;
 
             $request = $client->post(
                 $uri,
@@ -62,8 +62,6 @@ class ProductionPoster implements ProductionPosterInterface
 
             $this->logger->log(Logger::DEBUG, 'Posted production ' . $productionCdid);
         }
-        
-
 
         return true;
     }
