@@ -37,7 +37,8 @@ class DateFactory implements DateFactoryInterface
     {
         foreach ($timeList as $info) {
             $format = $this->getFormat($info['format']);
-            $this->timeTableList[$info['tid']][$format][$day][] = array($info['time'], $this->getEndDate($info['time']));
+            $utcTime = $this->getUtcTime($day, $info['time']);
+            $this->timeTableList[$info['tid']][$format][$day][] = array($utcTime, $this->getEndDate($utcTime));
         }
     }
 
@@ -49,6 +50,15 @@ class DateFactory implements DateFactoryInterface
         } catch (\Exception $ex) {
 
         }
+        return $dt->format('H:i:s');
+    }
+
+    private function getUtcTime($day, $time)
+    {
+        $timeZoneBrussels = new \DateTimeZone('Europe/Brussels');
+        $timeZoneUtc = new \DateTimeZone('UTC');
+        $dt = \DateTime::createFromFormat('Y-m-d H:i:s', $day . ' ' . $time, $timeZoneBrussels);
+        $dt->setTimezone($timeZoneUtc);
         return $dt->format('H:i:s');
     }
 
