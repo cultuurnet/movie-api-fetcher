@@ -2,6 +2,7 @@
 
 namespace CultuurNet\MovieApiFetcher\EntryPoster;
 
+use CultuurNet\TransformEntryStore\ValueObjects\AgeRange\AgeRange;
 use CultuurNet\TransformEntryStore\ValueObjects\BookingInfo\BookingInfo;
 use ValueObjects\Identity\UUID;
 use ValueObjects\StringLiteral\StringLiteral;
@@ -145,10 +146,10 @@ interface EntryPosterInterface
 
     /**
      * @param UUID $cdbid
-     * @param StringLiteral $typicalAgeRange
+     * @param AgeRange $typicalAgeRange
      * @return string
      */
-    public function updateAgeRange(UUID $cdbid, StringLiteral $typicalAgeRange);
+    public function updateAgeRange(UUID $cdbid, AgeRange $typicalAgeRange);
 
     /**
      * @param UUID $cdbid

@@ -2,6 +2,7 @@
 
 namespace CultuurNet\MovieApiFetcher\EntryPoster;
 
+use CultuurNet\TransformEntryStore\ValueObjects\AgeRange\AgeRange;
 use CultuurNet\TransformEntryStore\ValueObjects\BookingInfo\BookingInfo;
 use Guzzle\Http\Client;
 use Monolog\Logger;
@@ -631,10 +632,11 @@ class EntryPoster implements EntryPosterInterface
     /**
      * @inheritdoc
      */
-    public function updateAgeRange(UUID $cdbid, StringLiteral $typicalAgeRange)
+    public function updateAgeRange(UUID $cdbid, AgeRange $typicalAgeRange)
     {
         $client = new Client();
         $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/typicalAgeRange';
+        $body = '{"typicalAgeRange": "' . $typicalAgeRange->getAgeFrom()->toNative() . '-' . $typicalAgeRange->getAgeTo()->toNative() . '"}';
 
         $request = $client->put(
             $uri,

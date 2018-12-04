@@ -11,9 +11,11 @@ use CultuurNet\MovieApiFetcher\Term\TermFactoryInterface;
 use CultuurNet\MovieApiFetcher\Theater\TheaterFactoryInterface;
 use CultuurNet\MovieApiFetcher\Url\UrlFactoryInterface;
 use CultuurNet\TransformEntryStore\Stores\RepositoryInterface;
+use CultuurNet\TransformEntryStore\ValueObjects\AgeRange\AgeRange;
 use CultuurNet\TransformEntryStore\ValueObjects\Language\LanguageCode;
 use Monolog\Logger;
 use ValueObjects\Identity\UUID;
+use ValueObjects\Number\Integer;
 use ValueObjects\StringLiteral\StringLiteral;
 
 class Parser implements ParserInterface
@@ -128,6 +130,11 @@ class Parser implements ParserInterface
 
         if (isset($genres)) {
             foreach ($genres as $genre) {
+                if ($genre == '619') {
+                    $ageFrom = Integer::fromNative(6);
+                    $ageTo = Integer::fromNative(99);
+                    $ageRange = new AgeRange($ageFrom, $ageTo);
+                }
                 $cnetId = $this->termFactory->mapTerm($genre);
             }
         }
@@ -223,6 +230,9 @@ class Parser implements ParserInterface
                     if (isset($cnetId)) {
                         $this->repository->saveThemeId($externalId, new StringLiteral($cnetId));
                     }
+                    if (isset($ageRange)) {
+                        $this->repository->saveAgeRange($externalId, $ageRange);
+                    }
                     $this->repository->saveLocationCdbid($externalId, $location);
 
                     $jsonMovie = $this->formatter->formatEvent($externalId);
@@ -240,6 +250,9 @@ class Parser implements ParserInterface
                         $this->entryPoster->addLabel($cdbid, new StringLiteral(Parser::UIV_MOVIE_KEYWORD));
                         if (isset($description)) {
                             $this->entryPoster->updateDescription($cdbid, new StringLiteral($description));
+                        }
+                        if (isset($ageRange)) {
+                            $this->entryPoster->updateAgeRange($cdbid, $ageRange);
                         }
 
                         $price = $this->getPrice($filmScreeningTheater, $priceMatrix, $length);
