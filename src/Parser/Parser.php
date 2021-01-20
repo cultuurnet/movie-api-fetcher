@@ -278,6 +278,7 @@ class Parser implements ParserInterface
             }
         }
 
+
         $productionCdbid = $this->repository->getProductionCdbid($externalIdProduction);
         if (isset($productionCdbid)) {
 

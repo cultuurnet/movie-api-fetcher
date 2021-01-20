@@ -86,10 +86,7 @@ class EntryPoster implements EntryPosterInterface
         $bodyResponse = $response->getBody();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
-        $commandId =  $resp['commandId'];
-        $this->logger->log(Logger::DEBUG, 'Updated name for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
-
-        return $commandId;
+        $this->logger->log(Logger::DEBUG, 'Updated name for ' . $cdbid->toNative() . '.');
     }
 
     /**
@@ -117,10 +114,7 @@ class EntryPoster implements EntryPosterInterface
         $bodyResponse = $response->getBody();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
-        $commandId =  $resp['commandId'];
-        $this->logger->log(Logger::DEBUG, 'Updated description for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
-
-        return $commandId;
+        $this->logger->log(Logger::DEBUG, 'Updated description for ' . $cdbid->toNative() . '.');
     }
 
     /**
@@ -162,10 +156,7 @@ class EntryPoster implements EntryPosterInterface
         $bodyResponse = $response->getBody();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
-        $commandId =  $resp['commandId'];
-        $this->logger->log(Logger::DEBUG, 'Updated eventType for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
-
-        return $commandId;
+        $this->logger->log(Logger::DEBUG, 'Updated eventType for ' . $cdbid->toNative() . '.');
     }
 
     /**
@@ -190,10 +181,7 @@ class EntryPoster implements EntryPosterInterface
         $bodyResponse = $response->getBody();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
-        $commandId =  $resp['commandId'];
-        $this->logger->log(Logger::DEBUG, 'Updated eventTheme for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
-
-        return $commandId;
+        $this->logger->log(Logger::DEBUG, 'Updated eventTheme for ' . $cdbid->toNative() . '.');
     }
 
     /**
@@ -219,11 +207,8 @@ class EntryPoster implements EntryPosterInterface
         $bodyResponse = $response->getBody();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
-        $commandId =  $resp['commandId'];
-        $this->logger->log(Logger::DEBUG, 'Updated calendar for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
+        $this->logger->log(Logger::DEBUG, 'Updated calendar for ' . $cdbid->toNative() . '.');
         $this->logger->log(Logger::DEBUG, $calendar->toNative());
-
-        return $commandId;
     }
 
     /**
@@ -248,10 +233,7 @@ class EntryPoster implements EntryPosterInterface
         $bodyResponse = $response->getBody();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
-        $commandId =  $resp['commandId'];
-        $this->logger->log(Logger::DEBUG, 'Updated location for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
-
-        return $commandId;
+        $this->logger->log(Logger::DEBUG, 'Updated location for ' . $cdbid->toNative() . '.');
     }
 
     /**
@@ -321,10 +303,7 @@ class EntryPoster implements EntryPosterInterface
         $bodyResponse = $response->getBody();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
-        $commandId =  $resp['commandId'];
-        $this->logger->log(Logger::DEBUG, 'Added location for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
-
-        return $commandId;
+        $this->logger->log(Logger::DEBUG, 'Added location for ' . $cdbid->toNative() . '. ');
     }
 
     /**
@@ -353,10 +332,7 @@ class EntryPoster implements EntryPosterInterface
         $bodyResponse = $response->getBody();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
-        $commandId =  $resp['commandId'];
-        $this->logger->log(Logger::DEBUG, 'Updated image for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
-
-        return $commandId;
+        $this->logger->log(Logger::DEBUG, 'Updated image for ' . $cdbid->toNative() . '. ');
     }
 
     /**
@@ -381,10 +357,7 @@ class EntryPoster implements EntryPosterInterface
         $bodyResponse = $response->getBody();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
-        $commandId =  $resp['commandId'];
-        $this->logger->log(Logger::DEBUG, 'Deleted image for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
-
-        return $commandId;
+        $this->logger->log(Logger::DEBUG, 'Deleted image for ' . $cdbid->toNative() . '.');
     }
 
     /**
@@ -412,10 +385,7 @@ class EntryPoster implements EntryPosterInterface
         $bodyResponse = $response->getBody();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
-        $commandId =  $resp['commandId'];
-        $this->logger->log(Logger::DEBUG, 'Selected mainImage for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
-
-        return $commandId;
+        $this->logger->log(Logger::DEBUG, 'Selected mainImage for ' . $cdbid->toNative() . '.');
     }
 
     /**
@@ -443,10 +413,7 @@ class EntryPoster implements EntryPosterInterface
         $bodyResponse = $response->getBody();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
-        $commandId =  $resp['commandId'];
-        $this->logger->log(Logger::DEBUG, 'Updated targetAudience for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
-
-        return $commandId;
+        $this->logger->log(Logger::DEBUG, 'Updated targetAudience for ' . $cdbid->toNative() . '.');
     }
 
     /**
@@ -479,10 +446,7 @@ class EntryPoster implements EntryPosterInterface
         $bodyResponse = $response->getBody();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
-        $commandId =  $resp['commandId'];
-        $this->logger->log(Logger::DEBUG, 'Updated bookingInfo for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
-
-        return $commandId;
+        $this->logger->log(Logger::DEBUG, 'Updated bookingInfo for ' . $cdbid->toNative() . '.');
     }
 
     /**
@@ -508,11 +472,8 @@ class EntryPoster implements EntryPosterInterface
         $bodyResponse = $response->getBody();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
-        $commandId =  $resp['commandId'];
-        $this->logger->log(Logger::DEBUG, 'Updated contactPoint for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
+        $this->logger->log(Logger::DEBUG, 'Updated contactPoint for ' . $cdbid->toNative() . '.');
         $this->logger->log(Logger::DEBUG, $contactPoint->toNative());
-
-        return $commandId;
     }
 
     /**
@@ -537,10 +498,7 @@ class EntryPoster implements EntryPosterInterface
         $bodyResponse = $response->getBody();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
-        $commandId =  $resp['commandId'];
-        $this->logger->log(Logger::DEBUG, 'Added label for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
-
-        return $commandId;
+        $this->logger->log(Logger::DEBUG, 'Added label for ' . $cdbid->toNative() . '.');
     }
 
     /**
@@ -565,10 +523,7 @@ class EntryPoster implements EntryPosterInterface
         $bodyResponse = $response->getBody();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
-        $commandId =  $resp['commandId'];
-        $this->logger->log(Logger::DEBUG, 'Deleted label for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
-
-        return $commandId;
+        $this->logger->log(Logger::DEBUG, 'Deleted label for ' . $cdbid->toNative() . '.');
     }
 
     /**
@@ -593,10 +548,7 @@ class EntryPoster implements EntryPosterInterface
         $bodyResponse = $response->getBody();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
-        $commandId =  $resp['commandId'];
-        $this->logger->log(Logger::DEBUG, 'Updated organizer for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
-
-        return $commandId;
+        $this->logger->log(Logger::DEBUG, 'Updated organizer for ' . $cdbid->toNative() . '. ');
     }
 
     /**
@@ -622,11 +574,8 @@ class EntryPoster implements EntryPosterInterface
         $bodyResponse = $response->getBody();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
-        $commandId =  $resp['commandId'];
-        $this->logger->log(Logger::DEBUG, 'Updated priceInfo for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
+        $this->logger->log(Logger::DEBUG, 'Updated priceInfo for ' . $cdbid->toNative() . '.');
         $this->logger->log(Logger::DEBUG, $priceInfo->toNative());
-
-        return $commandId;
     }
 
     /**
@@ -653,11 +602,8 @@ class EntryPoster implements EntryPosterInterface
         $bodyResponse = $response->getBody();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
-        $commandId =  $resp['commandId'];
-        $this->logger->log(Logger::DEBUG, 'Updated typicalAgeRange for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
+        $this->logger->log(Logger::DEBUG, 'Updated typicalAgeRange for ' . $cdbid->toNative() . '.');
         $this->logger->log(Logger::DEBUG, $typicalAgeRange->toNative());
-
-        return $commandId;
     }
 
     /**
@@ -682,10 +628,7 @@ class EntryPoster implements EntryPosterInterface
         $bodyResponse = $response->getBody();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
-        $commandId =  $resp['commandId'];
-        $this->logger->log(Logger::DEBUG, 'Deleted typicalAgeRange for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
-
-        return $commandId;
+        $this->logger->log(Logger::DEBUG, 'Deleted typicalAgeRange for ' . $cdbid->toNative() . '. ');
     }
 
     /**
@@ -711,11 +654,76 @@ class EntryPoster implements EntryPosterInterface
         $bodyResponse = $response->getBody();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
-        $commandId =  $resp['commandId'];
-        $this->logger->log(Logger::DEBUG, 'Updated facilities for ' . $cdbid->toNative() . '. commandId is ' . $commandId);
+        $this->logger->log(Logger::DEBUG, 'Updated facilities for ' . $cdbid->toNative() . '.');
         $this->logger->log(Logger::DEBUG, $facilities->toNative());
+    }
 
-        return $commandId;
+    /**
+     * @inheritdoc
+     */
+    public function linkProduction(StringLiteral $title, UUID $eventId)
+    {
+        $client = new Client();
+        $uri = (string) $this->url . 'productions/?name=' . $title->toNative() . '&start=0&limit=15';
+
+        $request = $client->get(
+            $uri,
+            [
+                'Authorization' => 'Bearer ' . $this->token,
+                'x-api-key' => $this->apiKey,
+            ],
+            []
+        );
+
+        $response = $request->send();
+
+        $bodyResponse = $response->getBody();
+
+        $resp = json_decode(utf8_encode($bodyResponse), true);
+        $totalItems = $resp["totalItems"];
+
+        if ($totalItems > 0) {
+            $productionId = $resp["member"][0]["production_id"];
+            echo $productionId;
+            echo PHP_EOL;
+            if (!in_array($eventId->toNative(), $resp["member"][0]["events"])) {
+
+                $clientPutter = new Client();
+
+                $putUri = (string) $this->url . 'productions/' . $productionId . '/events/' . $eventId->toNative();
+
+                $putRequest = $clientPutter->put(
+                    $putUri,
+                    [
+                        'Authorization' => 'Bearer ' . $this->token,
+                        'x-api-key' => $this->apiKey,
+                    ],
+                    []
+                );
+                $putResponse = $putRequest->send();
+                $this->logger->log(Logger::DEBUG, 'Linked event ' . $eventId->toNative() . ' to production ' . $productionId . '.');
+            } else {
+                $this->logger->log(Logger::DEBUG, $eventId->toNative() . '  already linked to production.');
+            }
+        } else {
+            $postClient = new Client();
+            $postUri = (string) $this->url . 'productions/';
+
+            $postRequest = $postClient->post(
+                $postUri,
+                [
+                    'Authorization' => 'Bearer ' . $this->token,
+                    'x-api-key' => $this->apiKey,
+                ],
+                []
+            );
+            $postRequest->setBody('{"name":"TestTTT","eventIds":["8d016a92-c6c8-42f5-9eaf-15fbb24c6a36","5144bcab-d7e0-4763-bd45-edc15fea97c6"]}');
+            $postResponse = $postRequest->send();
+        }
+
+        //$this->logger->log(Logger::DEBUG, 'Updated facilities for ' . $cdbid->toNative() . '.');
+
+
     }
 
     /**
@@ -740,10 +748,7 @@ class EntryPoster implements EntryPosterInterface
         $bodyResponse = $response->getBody();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
-        $commandId =  $resp['commandId'];
-        $this->logger->log(Logger::DEBUG, 'Published event ' . $cdbid->toNative() . '. commandId is ' . $commandId);
-
-        return $commandId;
+        $this->logger->log(Logger::DEBUG, 'Published event ' . $cdbid->toNative() . '.');
     }
 
     private function downloadFile($fileLocation)

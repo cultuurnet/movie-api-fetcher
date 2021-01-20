@@ -117,8 +117,19 @@ class Formatter implements FormatterInterface
     }
 
     /**
-     * @param StringLiteral $externalIdProduction
-     * @return StringLiteral
+     * @inheritDoc
+     */
+    public function formatJsonProduction(StringLiteral $name, StringLiteral $externalIdProduction) {
+        $relevents = $this->repository->getCdbids($externalIdProduction);
+        $arr = array();
+        $arr['name'] = $name->toNative();
+        $arr['eventIds'] = $relevents;
+
+        return new StringLiteral(json_encode($arr));
+    }
+
+    /**
+     * @inheritDoc
      */
     public function formatProduction(StringLiteral $externalIdProduction)
     {
