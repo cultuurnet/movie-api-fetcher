@@ -11,8 +11,10 @@ kinepolis:
 
 publiq:
   authentication:
+    token_provider: https://jwt-acc.uitdatabank.be/
     token: foo
     api_key: bar
+    refresh: foobar
   url: https://io-acc.uitdatabank.be/
   # http://jwtprovider-acc.uitdatabank.be/culturefeed/oauth/connect?destination=oob
 

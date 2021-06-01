@@ -16,44 +16,50 @@ interface EntryPosterInterface
     public function postMovie(StringLiteral $jsonMovie);
 
     /**
+     * @param StringLiteral $jsonProduction
+     * @return UUID
+     */
+    public function postProduction(StringLiteral $jsonProduction);
+
+    /**
      * @param UUID $cdbid
      * @param StringLiteral $type
-     * @return string
+     * @return void
      */
     public function updateEventType(UUID $cdbid, StringLiteral $type);
 
     /**
      * @param UUID $cdbid
      * @param StringLiteral $theme
-     * @return string
+     * @return void
      */
     public function updateEventTheme(UUID $cdbid, StringLiteral $theme);
 
     /**
      * @param UUID $cdbid
      * @param StringLiteral $calendar
-     * @return string
+     * @return void
      */
     public function updateCalendar(UUID $cdbid, StringLiteral $calendar);
 
     /**
      * @param UUID $cdbid
      * @param UUID $locationId
-     * @return string
+     * @return void
      */
     public function updateLocation(UUID $cdbid, UUID $locationId);
 
     /**
      * @param UUID $cdbid
      * @param StringLiteral $name
-     * @return string
+     * @return void
      */
     public function updateName(UUID $cdbid, StringLiteral $name);
 
     /**
      * @param UUID $cdbid
      * @param StringLiteral $description
-     * @return string
+     * @return void
      */
     public function updateDescription(UUID $cdbid, StringLiteral $description);
 
@@ -68,7 +74,7 @@ interface EntryPosterInterface
     /**
      * @param UUID $cdbid
      * @param UUID $mediaObjectId
-     * @return string
+     * @return void
      */
     public function addImage(UUID $cdbid, UUID $mediaObjectId);
 
@@ -77,96 +83,103 @@ interface EntryPosterInterface
      * @param UUID $mediaObjectId
      * @param StringLiteral $description
      * @param StringLiteral $copyrightHolder
-     * @return string
+     * @return void
      */
     public function updateImage(UUID $cdbid, UUID $mediaObjectId, StringLiteral $description, StringLiteral $copyrightHolder);
 
     /**
      * @param UUID $cdbid
      * @param UUID $mediaObjectId
-     * @return string
+     * @return void
      */
     public function deleteImage(UUID $cdbid, UUID $mediaObjectId);
 
     /**
      * @param UUID $cdbid
      * @param UUID $mediaObjectId
-     * @return string
+     * @return void
      */
     public function setMainImage(UUID $cdbid, UUID $mediaObjectId);
 
     /**
      * @param UUID $cdbid
      * @param $audience
-     * @return string
+     * @return void
      */
     public function updateTargetAudience(UUID $cdbid, $audience);
 
     /**
      * @param UUID $cdbid
      * @param BookingInfo $bookingInfo
-     * @return string
+     * @return void
      */
     public function updateBookingInfo(UUID $cdbid, BookingInfo $bookingInfo);
 
     /**
      * @param UUID $cdbid
      * @param StringLiteral $contactPoint
-     * @return string
+     * @return void
      */
     public function updateContactInfo(UUID $cdbid, StringLiteral $contactPoint);
 
     /**
      * @param UUID $cdbid
      * @param StringLiteral $label
-     * @return string
+     * @return void
      */
     public function addLabel(UUID $cdbid, StringLiteral $label);
 
     /**
      * @param UUID $cdbid
      * @param StringLiteral $label
-     * @return string
+     * @return void
      */
     public function deleteLabel(UUID $cdbid, StringLiteral $label);
 
     /**
      * @param UUID $cdbid
      * @param UUID $organizerId
-     * @return string
+     * @return void
      */
     public function updateOrganizer(UUID $cdbid, UUID $organizerId);
 
     /**
      * @param UUID $cdbid
      * @param StringLiteral $priceInfo
-     * @return string
+     * @return void
      */
     public function updatePriceInfo(UUID $cdbid, StringLiteral $priceInfo);
 
     /**
      * @param UUID $cdbid
      * @param AgeRange $typicalAgeRange
-     * @return string
+     * @return void
      */
     public function updateAgeRange(UUID $cdbid, AgeRange $typicalAgeRange);
 
     /**
      * @param UUID $cdbid
-     * @return string
+     * @return void
      */
     public function deleteAgeRange(UUID $cdbid);
 
     /**
      * @param UUID $cdbid
      * @param StringLiteral $facilities
-     * @return string
+     * @return void
      */
     public function updateFacilities(UUID $cdbid, StringLiteral $facilities);
 
     /**
      * @param UUID $cdbid
-     * @return string
+     * @return void
      */
     public function publishEvent(UUID $cdbid);
+
+    /**
+     * @param StringLiteral $name
+     * @param UUID $eventId
+     * @return void
+     */
+    public function linkProduction(StringLiteral $name, UUID $eventId);
 }

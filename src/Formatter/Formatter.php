@@ -117,8 +117,7 @@ class Formatter implements FormatterInterface
     }
 
     /**
-     * @param StringLiteral $externalIdProduction
-     * @return StringLiteral
+     * @inheritDoc
      */
     public function formatProduction(StringLiteral $externalIdProduction)
     {
@@ -309,6 +308,28 @@ class Formatter implements FormatterInterface
         $cdbxml->appendChild($production);
 
         return new StringLiteral(trim($dom->saveXml()));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function formatProductionJson(StringLiteral $externalIdProduction)
+    {
+        $relevents = $this->repository->getCdbids($externalIdProduction);
+        $titleValue = $this->repository->getName($externalIdProduction)->toNative();
+
+        $productionInfo = [];
+        $productionInfo['name'] = $titleValue;
+        $eventIds = array();
+
+        if(isset($relevents)) {
+            foreach ($relevents as $relevent) {
+                $eventIds[] = $relevent['cdbid_event'];
+            }
+        }
+        $productionInfo['eventIds'] = $eventIds;
+        $productionJson = json_encode($productionInfo);
+        return new StringLiteral($productionJson);
     }
 
     /**

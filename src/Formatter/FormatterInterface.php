@@ -29,4 +29,10 @@ interface FormatterInterface
      * @return StringLiteral
      */
     public function formatProduction(StringLiteral $externalIdProduction);
+
+    /**
+     * @param StringLiteral $externalIdProduction
+     * @return StringLiteral
+     */
+    public function formatProductionJson(StringLiteral $externalIdProduction);
 }

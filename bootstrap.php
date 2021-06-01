@@ -281,7 +281,8 @@ $app['date_factory'] = $app->share(
 $app['entry_poster'] = $app->share(
     function (Application $app) {
         return new EntryPoster(
-            $app['config']['publiq']['authentication']['token'],
+            $app['config']['publiq']['authentication']['token_provider'],
+            $app['config']['publiq']['authentication']['refresh'],
             $app['config']['publiq']['authentication']['api_key'],
             $app['config']['publiq']['url'],
             $app['config']['files_folder'],
