@@ -252,6 +252,7 @@ class Parser implements ParserInterface
                             $this->entryPoster->updateDescription($cdbid, new StringLiteral($description));
                         }
                         if (isset($ageRange)) {
+                            var_dump($ageRange);
                             $this->entryPoster->updateAgeRange($cdbid, $ageRange);
                         }
 
@@ -293,6 +294,8 @@ class Parser implements ParserInterface
             }
         }
         $productionXml = $this->formatter->formatProduction($externalIdProduction);
+        $producionJson = $this->formatter->formatProductionJson($externalIdProduction);
+        $this->entryPoster->postProduction($producionJson);
         $this->productionPoster->postProduction($productionXml);
     }
 

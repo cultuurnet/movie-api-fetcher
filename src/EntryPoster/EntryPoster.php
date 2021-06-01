@@ -62,6 +62,94 @@ class EntryPoster implements EntryPosterInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function postProduction(StringLiteral $jsonProduction)
+    {
+        $production = json_decode($jsonProduction->toNative(), true);
+        $name = $production['name'];
+
+        $client = new Client();
+        $uri = (string) $this->url  . 'productions/?name=' . $name . '&start=0&limit=15';
+
+        $request = $client->get(
+            $uri,
+            [
+                'Authorization' => 'Bearer ' . $this->token,
+                'x-api-key' => $this->apiKey,
+            ],
+            []
+        );
+
+        $response = $request->send();
+
+        $bodyResponse = $response->getBody();
+
+        $resp = json_decode(utf8_encode($bodyResponse), true);
+
+        $totalItems = $resp["totalItems"];
+
+        if ($totalItems > 0) {
+            $productionId = $resp["member"][0]["production_id"];
+
+            foreach ($production['eventIds'] as $eventId) {
+                if (!in_array($eventId, $resp["member"][0]["events"])) {
+
+                    $clientPutter = new Client();
+
+                    $uri = $this->url . 'productions/' . $productionId . '/events/' . $eventId;
+
+                    $request = $clientPutter->put(
+                        $uri,
+                        [
+                            'Authorization' => 'Bearer ' . $this->token,
+                            'x-api-key' => $this->apiKey,
+                        ],
+                        []
+                    );
+                    try {
+                        $response = $request->send();
+                        $bodyResponse = $response->getBody();
+
+                        $resp = utf8_encode($bodyResponse);
+                        $this->logger->log(Logger::DEBUG, 'Linked to production ' . $eventId . ' ' . $resp);
+                    } catch (\Exception $e) {
+                        $this->logger->log(Logger::ERROR, 'Failed to link production, message:  ' . $e->getMessage());
+                        $this->logger->log(Logger::DEBUG, $eventId);
+                    }
+                } else {
+                    $this->logger->log(Logger::DEBUG, 'Event already linked ' . $eventId);
+                }
+            }
+        } elseif (sizeof($production['eventIds']) > 1) {
+            $postClient = new Client();
+            $postUri = (string) $this->url . 'productions/';
+            $postRequest = $postClient->post(
+                $postUri,
+                [
+                    'Authorization' => 'Bearer ' . $this->token,
+                    'x-api-key' => $this->apiKey,
+                ],
+                []
+            );
+
+            $postRequest->setBody($jsonProduction->toNative());
+
+            try {
+                $response = $postRequest->send();
+                $this->logger->log(Logger::DEBUG, 'Can\'t make production for ' . $name);
+            } catch (\Exception $e) {
+                echo 'error' . PHP_EOL;
+                echo $e->getMessage();
+            }
+        } else {
+            $this->logger->log(Logger::DEBUG, 'Can\'t make production for ' . $name);
+        }
+
+        // return new UUID($cdbid);
+    }
+
+    /**
     * @inheritdoc
     */
     public function updateName(UUID $cdbid, StringLiteral $name)
@@ -119,14 +207,16 @@ class EntryPoster implements EntryPosterInterface
 
     /**
      * EntryPoster constructor.
-     * @param $token
+     * @param $token_provider
+     * @param $refresh
      * @param $apiKey
      * @param $url
      * @param $filesFolder
      * @param Logger $logger
      */
-    public function __construct($token, $apiKey, $url, $filesFolder, $logger)
+    public function __construct($token_provider, $refresh, $apiKey, $url, $filesFolder, $logger)
     {
+        $token = $this->getToken($token_provider, $refresh, $apiKey);
         $this->token = $token;
         $this->apiKey = $apiKey;
         $this->url = $url;
@@ -596,14 +686,14 @@ class EntryPoster implements EntryPosterInterface
             []
         );
 
-        $request->setBody($typicalAgeRange->toNative());
+        $request->setBody($body);
         $response = $request->send();
 
         $bodyResponse = $response->getBody();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $this->logger->log(Logger::DEBUG, 'Updated typicalAgeRange for ' . $cdbid->toNative() . '.');
-        $this->logger->log(Logger::DEBUG, $typicalAgeRange->toNative());
+        $this->logger->log(Logger::DEBUG, (string) $typicalAgeRange);
     }
 
     /**
@@ -757,5 +847,19 @@ class EntryPoster implements EntryPosterInterface
         $savedFile = $this->filesFolder . $fileName;
         file_put_contents($savedFile, file_get_contents($fileLocation));
         return $savedFile;
+    }
+
+    private function getToken($token_provider, $refresh, $apiKey)
+    {
+        $client = new Client();
+        $uri = $token_provider . 'refresh?apiKey=' . $apiKey . '&refresh=' . $refresh;
+
+        $request = $client->get(
+            $uri
+        );
+
+        $response = $request->send();
+        $bodyResponse = $response->getBody();
+        return (string) $bodyResponse;
     }
 }

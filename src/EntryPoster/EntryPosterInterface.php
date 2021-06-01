@@ -16,6 +16,12 @@ interface EntryPosterInterface
     public function postMovie(StringLiteral $jsonMovie);
 
     /**
+     * @param StringLiteral $jsonProduction
+     * @return UUID
+     */
+    public function postProduction(StringLiteral $jsonProduction);
+
+    /**
      * @param UUID $cdbid
      * @param StringLiteral $type
      * @return void

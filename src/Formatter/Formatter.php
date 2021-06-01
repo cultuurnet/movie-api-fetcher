@@ -119,18 +119,6 @@ class Formatter implements FormatterInterface
     /**
      * @inheritDoc
      */
-    public function formatJsonProduction(StringLiteral $name, StringLiteral $externalIdProduction) {
-        $relevents = $this->repository->getCdbids($externalIdProduction);
-        $arr = array();
-        $arr['name'] = $name->toNative();
-        $arr['eventIds'] = $relevents;
-
-        return new StringLiteral(json_encode($arr));
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function formatProduction(StringLiteral $externalIdProduction)
     {
         $relevents = $this->repository->getCdbids($externalIdProduction);
@@ -320,6 +308,28 @@ class Formatter implements FormatterInterface
         $cdbxml->appendChild($production);
 
         return new StringLiteral(trim($dom->saveXml()));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function formatProductionJson(StringLiteral $externalIdProduction)
+    {
+        $relevents = $this->repository->getCdbids($externalIdProduction);
+        $titleValue = $this->repository->getName($externalIdProduction)->toNative();
+
+        $productionInfo = [];
+        $productionInfo['name'] = $titleValue;
+        $eventIds = array();
+
+        if(isset($relevents)) {
+            foreach ($relevents as $relevent) {
+                $eventIds[] = $relevent['cdbid_event'];
+            }
+        }
+        $productionInfo['eventIds'] = $eventIds;
+        $productionJson = json_encode($productionInfo);
+        return new StringLiteral($productionJson);
     }
 
     /**
