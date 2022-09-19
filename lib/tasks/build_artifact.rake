@@ -20,9 +20,9 @@ task :build_artifact do |task|
     -x 'Rakefile' -x 'Gemfile*' -x 'lib' -x 'vendor/bundle' -x '.bundle' -x 'Jenkinsfile' \
     -x .travis.yml -x pkg -x config.yml.dist \
     --prefix /var/www/movie-api-fetcher \
-    --config-files /var/www/move-api-fetcher/config.yml \
-    --config-files /var/www/move-api-fetcher/kinepolis_theaters.yml \
-    --config-files /var/www/move-api-fetcher/kinepolis_terms.yml \
+    --config-files /var/www/movie-api-fetcher/config.yml \
+    --config-files /var/www/movie-api-fetcher/kinepolis_theaters.yml \
+    --config-files /var/www/movie-api-fetcher/kinepolis_terms.yml \
     --deb-user www-data --deb-group www-data \
     --description '#{description}' --url '#{source}' --vendor '#{vendor}' \
     --license '#{license}' -m '#{maintainer}' \
