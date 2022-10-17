@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+
+    parameters {
+      choice(name: 'ENVIRONMENT', choices: ['testing', 'production'], description: 'Environment to run Movie API Fetcher in')
+    }
+
+    triggers {
+        parameterizedCron('''
+            H 2 * * * %ENVIRONMENT=testing
+            H 3 * * * %ENVIRONMENT=production
+        ''')
+    }
+
+    stages {
+        stage('Fetch movies') {
+            steps {
+                script {
+                    if (params.ENVIRONMENT == 'testing') {
+                        SERVER = 'udb3-web-test03'
+                    }
+                    if (params.ENVIRONMENT == 'production') {
+                        SERVER = 'udb3-web-prod03'
+                    }
+                }
+                runRemoteSshCommand nodeName: "${SERVER}", timeout: 1200, remoteCommand: "sudo /var/www/movie-api-fetcher/bin/app.php apifetcher"
+            }
+        }
+    }
+}
