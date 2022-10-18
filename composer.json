@@ -45,5 +45,18 @@
         "branch-alias": {
             "dev-master": "0.x-dev"
         }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "phpstan": "vendor/bin/phpstan analyse",
+        "migrate": "vendor/bin/doctrine-dbal migrations:migrate --no-interaction",
+        "ci": [
+            "composer phpstan",
+            "composer test",
+            "composer cs"
+        ],
+        "cs": "php-cs-fixer fix -v --diff --dry-run",
+        "cs-fix": "php-cs-fixer fix -v --diff",
+        "rector": "vendor/bin/rector process --dry-run"
     }
 }
