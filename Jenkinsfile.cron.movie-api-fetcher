@@ -38,7 +38,7 @@ pipeline {
         failure {
             emailext to: "infra@publiq.be",
             subject: "Jenkins build:${currentBuild.currentResult}: ${env.JOB_NAME}",
-            body:"The Movie API Fetcher job on ${SERVER} did not complete successfully.\nSee attached log for more info.",
+            body:"The Movie API Fetcher job on ${SERVER} did not complete successfully.\nSee attached log for more info.\nJob URL: ${BUILD_URL}",
             attachLog: true
         }
 
