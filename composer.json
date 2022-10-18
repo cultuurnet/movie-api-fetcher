@@ -2,7 +2,10 @@
     "name": "cultuurnet/movie-api-fetcher",
     "config": {
         "platform": {
-            "php": "7.1"
+            "php": "7.4"
+        },
+        "allow-plugins": {
+            "ocramius/package-versions": true
         }
     },
     "description": "fetch data from Kinepolis API",
