@@ -111,6 +111,7 @@ class Fetcher implements FetcherInterface
             [
                 'content-type' => 'application/json',
                 'Authorization' => $token,
+                'User-Agent' => 'Kinepolis-Publiq',
             ],
             []
         );
@@ -133,6 +134,7 @@ class Fetcher implements FetcherInterface
             [
                 'content-type' => 'application/json',
                 'Authorization' => $token,
+                'User-Agent' => 'Kinepolis-Publiq',
             ],
             []
         );
