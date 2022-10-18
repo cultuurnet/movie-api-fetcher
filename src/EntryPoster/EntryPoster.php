@@ -77,6 +77,7 @@ class EntryPoster implements EntryPosterInterface
             [
                 'Authorization' => 'Bearer ' . $this->token,
                 'x-api-key' => $this->apiKey,
+                'User-Agent' => 'Kinepolis-Publiq',
             ],
             []
         );
@@ -761,6 +762,7 @@ class EntryPoster implements EntryPosterInterface
             [
                 'Authorization' => 'Bearer ' . $this->token,
                 'x-api-key' => $this->apiKey,
+                'User-Agent' => 'Kinepolis-Publiq',
             ],
             []
         );

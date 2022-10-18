@@ -18,6 +18,7 @@ class PriceFactory implements PriceFactoryInterface
             [
                 'content-type' => 'application/json',
                 'Authorization' => $token,
+                'User-Agent' => 'Kinepolis-Publiq',
             ],
             []
         );
@@ -44,6 +45,7 @@ class PriceFactory implements PriceFactoryInterface
             [
                 'content-type' => 'application/json',
                 'Authorization' => $token,
+                'User-Agent' => 'Kinepolis-Publiq',
             ],
             []
         );

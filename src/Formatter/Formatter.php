@@ -388,6 +388,7 @@ class Formatter implements FormatterInterface
             $this->url . 'place/' . $location,
             [
                 'content-type' => 'application/json',
+                'User-Agent' => 'Kinepolis-Publiq',
             ],
             []
         );
