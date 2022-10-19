@@ -18,10 +18,10 @@ pipeline {
             }
             steps {
                 script {
-                    if (params.ENVIRONMENT == 'testing') {
+                    if (ENVIRONMENT == 'testing') {
                         SERVER = 'udb3-web-test03'
                     }
-                    if (params.ENVIRONMENT == 'production') {
+                    if (ENVIRONMENT == 'production') {
                         SERVER = 'udb3-web-prod03'
                     }
                 }
