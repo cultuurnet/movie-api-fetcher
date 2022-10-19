@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    parameters {
-      choice(name: 'ENVIRONMENT', choices: ['testing', 'production'], description: 'Environment to run Movie API Fetcher in')
-    }
-
     triggers {
         parameterizedCron('''
             H 2 * * * %ENVIRONMENT=testing
@@ -14,6 +10,12 @@ pipeline {
 
     stages {
         stage('Fetch movies') {
+            input {
+                message 'Please enter the environment'
+                parameters {
+                    choice(name: 'ENVIRONMENT', choices: ['testing', 'production'], description: 'Environment to run Movie API Fetcher in')
+                }
+            }
             steps {
                 script {
                     if (params.ENVIRONMENT == 'testing') {
