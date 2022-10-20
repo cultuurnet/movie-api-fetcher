@@ -3,8 +3,8 @@ pipeline {
 
     triggers {
         parameterizedCron('''
-            H 2 * * * %ENVIRONMENT=testing
-            H 3 * * * %ENVIRONMENT=production
+            H 2 * * 1 %ENVIRONMENT=testing
+            H 3 * * 1 %ENVIRONMENT=production
         ''')
     }
 
