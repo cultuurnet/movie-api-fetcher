@@ -43,7 +43,7 @@ class EntryPoster implements EntryPosterInterface
             return null;
         }
 
-        $bodyResponse = $response->getBody();
+        $bodyResponse = $response->getBody()->getContents();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $cdbid =  $resp['eventId'];
@@ -72,7 +72,7 @@ class EntryPoster implements EntryPosterInterface
 
         $response = $client->send($request);
 
-        $bodyResponse = $response->getBody();
+        $bodyResponse = $response->getBody()->getContents();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
 
@@ -94,7 +94,7 @@ class EntryPoster implements EntryPosterInterface
                     );
                     try {
                         $response = $client->send($request);
-                        $bodyResponse = $response->getBody();
+                        $bodyResponse = $response->getBody()->getContents();
 
                         $resp = utf8_encode($bodyResponse);
                         $this->logger->log(Logger::DEBUG, 'Linked to production ' . $eventId . ' ' . $resp);
@@ -147,7 +147,7 @@ class EntryPoster implements EntryPosterInterface
 
         $response = $client->send($request);
 
-        $bodyResponse = $response->getBody();
+        $bodyResponse = $response->getBody()->getContents();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $this->logger->log(Logger::DEBUG, 'Updated name for ' . $cdbid->toNative() . '.');
@@ -170,7 +170,7 @@ class EntryPoster implements EntryPosterInterface
 
         $response = $client->send($request);
 
-        $bodyResponse = $response->getBody();
+        $bodyResponse = $response->getBody()->getContents();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $this->logger->log(Logger::DEBUG, 'Updated description for ' . $cdbid->toNative() . '.');
@@ -199,7 +199,7 @@ class EntryPoster implements EntryPosterInterface
 
         $response = $client->send($request);
 
-        $bodyResponse = $response->getBody();
+        $bodyResponse = $response->getBody()->getContents();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $this->logger->log(Logger::DEBUG, 'Updated eventType for ' . $cdbid->toNative() . '.');
@@ -218,7 +218,7 @@ class EntryPoster implements EntryPosterInterface
 
         $response = $client->send($request);
 
-        $bodyResponse = $response->getBody();
+        $bodyResponse = $response->getBody()->getContents();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $this->logger->log(Logger::DEBUG, 'Updated eventTheme for ' . $cdbid->toNative() . '.');
@@ -238,7 +238,7 @@ class EntryPoster implements EntryPosterInterface
 
         $response = $client->send($request);
 
-        $bodyResponse = $response->getBody();
+        $bodyResponse = $response->getBody()->getContents();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $this->logger->log(Logger::DEBUG, 'Updated calendar for ' . $cdbid->toNative() . '.');
@@ -258,7 +258,7 @@ class EntryPoster implements EntryPosterInterface
 
         $response = $client->send($request);
 
-        $bodyResponse = $response->getBody();
+        $bodyResponse = $response->getBody()->getContents();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $this->logger->log(Logger::DEBUG, 'Updated location for ' . $cdbid->toNative() . '.');
@@ -320,7 +320,7 @@ class EntryPoster implements EntryPosterInterface
 
         $response = $client->send($request);
 
-        $bodyResponse = $response->getBody();
+        $bodyResponse = $response->getBody()->getContents();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $this->logger->log(Logger::DEBUG, 'Added location for ' . $cdbid->toNative() . '. ');
@@ -344,7 +344,7 @@ class EntryPoster implements EntryPosterInterface
 
         $response = $client->send($request);
 
-        $bodyResponse = $response->getBody();
+        $bodyResponse = $response->getBody()->getContents();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $this->logger->log(Logger::DEBUG, 'Updated image for ' . $cdbid->toNative() . '. ');
@@ -363,7 +363,7 @@ class EntryPoster implements EntryPosterInterface
 
         $response = $client->send($request);
 
-        $bodyResponse = $response->getBody();
+        $bodyResponse = $response->getBody()->getContents();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $this->logger->log(Logger::DEBUG, 'Deleted image for ' . $cdbid->toNative() . '.');
@@ -386,7 +386,7 @@ class EntryPoster implements EntryPosterInterface
 
         $response = $client->send($request);
 
-        $bodyResponse = $response->getBody();
+        $bodyResponse = $response->getBody()->getContents();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $this->logger->log(Logger::DEBUG, 'Selected mainImage for ' . $cdbid->toNative() . '.');
@@ -409,7 +409,7 @@ class EntryPoster implements EntryPosterInterface
 
         $response = $client->send($request);
 
-        $bodyResponse = $response->getBody();
+        $bodyResponse = $response->getBody()->getContents();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $this->logger->log(Logger::DEBUG, 'Updated targetAudience for ' . $cdbid->toNative() . '.');
@@ -437,7 +437,7 @@ class EntryPoster implements EntryPosterInterface
 
         $response = $client->send($request);
 
-        $bodyResponse = $response->getBody();
+        $bodyResponse = $response->getBody()->getContents();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $this->logger->log(Logger::DEBUG, 'Updated bookingInfo for ' . $cdbid->toNative() . '.');
@@ -457,7 +457,7 @@ class EntryPoster implements EntryPosterInterface
 
         $response = $client->send($request);
 
-        $bodyResponse = $response->getBody();
+        $bodyResponse = $response->getBody()->getContents();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $this->logger->log(Logger::DEBUG, 'Updated contactPoint for ' . $cdbid->toNative() . '.');
@@ -477,7 +477,7 @@ class EntryPoster implements EntryPosterInterface
 
         $response = $client->send($request);
 
-        $bodyResponse = $response->getBody();
+        $bodyResponse = $response->getBody()->getContents();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $this->logger->log(Logger::DEBUG, 'Added label for ' . $cdbid->toNative() . '.');
@@ -496,7 +496,7 @@ class EntryPoster implements EntryPosterInterface
 
         $response = $client->send($request);
 
-        $bodyResponse = $response->getBody();
+        $bodyResponse = $response->getBody()->getContents();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $this->logger->log(Logger::DEBUG, 'Deleted label for ' . $cdbid->toNative() . '.');
@@ -515,7 +515,7 @@ class EntryPoster implements EntryPosterInterface
 
         $response = $client->send($request);
 
-        $bodyResponse = $response->getBody();
+        $bodyResponse = $response->getBody()->getContents();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $this->logger->log(Logger::DEBUG, 'Updated organizer for ' . $cdbid->toNative() . '. ');
@@ -535,7 +535,7 @@ class EntryPoster implements EntryPosterInterface
 
         $response = $client->send($request);
 
-        $bodyResponse = $response->getBody();
+        $bodyResponse = $response->getBody()->getContents();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $this->logger->log(Logger::DEBUG, 'Updated priceInfo for ' . $cdbid->toNative() . '.');
@@ -556,7 +556,7 @@ class EntryPoster implements EntryPosterInterface
 
         $response = $client->send($request);
 
-        $bodyResponse = $response->getBody();
+        $bodyResponse = $response->getBody()->getContents();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $this->logger->log(Logger::DEBUG, 'Updated typicalAgeRange for ' . $cdbid->toNative() . '.');
@@ -576,7 +576,7 @@ class EntryPoster implements EntryPosterInterface
 
         $response = $client->send($request);
 
-        $bodyResponse = $response->getBody();
+        $bodyResponse = $response->getBody()->getContents();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $this->logger->log(Logger::DEBUG, 'Deleted typicalAgeRange for ' . $cdbid->toNative() . '. ');
@@ -596,7 +596,7 @@ class EntryPoster implements EntryPosterInterface
 
         $response = $client->send($request);
 
-        $bodyResponse = $response->getBody();
+        $bodyResponse = $response->getBody()->getContents();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $this->logger->log(Logger::DEBUG, 'Updated facilities for ' . $cdbid->toNative() . '.');
@@ -617,7 +617,7 @@ class EntryPoster implements EntryPosterInterface
 
         $response = $client->send($request);
 
-        $bodyResponse = $response->getBody();
+        $bodyResponse = $response->getBody()->getContents();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $totalItems = $resp['totalItems'];
@@ -673,7 +673,7 @@ class EntryPoster implements EntryPosterInterface
         );
 
         $response = $client->send($request);
-        $bodyResponse = $response->getBody();
+        $bodyResponse = $response->getBody()->getContents();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
         $this->logger->log(Logger::DEBUG, 'Published event ' . $cdbid->toNative() . '.');
@@ -698,8 +698,7 @@ class EntryPoster implements EntryPosterInterface
         );
 
         $response = $client->send($request);
-        $bodyResponse = $response->getBody();
-        return (string) $bodyResponse;
+        return $response->getBody()->getContents();
     }
 
     private function getHeaders(): array
