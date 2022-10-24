@@ -6,7 +6,8 @@ namespace CultuurNet\MovieApiFetcher\Formatter;
 
 use CultuurNet\TransformEntryStore\Stores\RepositoryInterface;
 use DOMDocument;
-use Guzzle\Http\Client;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
 use ValueObjects\Identity\UUID;
 
 class Formatter implements FormatterInterface
@@ -352,8 +353,6 @@ class Formatter implements FormatterInterface
                 return 'Filmmusical';
             case '1.7.12.0.0':
                 return 'Animatie en kinderfilms';
-            case '1.7.14.0.0':
-                return 'Meerdere filmgenres';
             case '1.7.15.0.0':
                 return 'Thriller';
             default:
@@ -364,18 +363,18 @@ class Formatter implements FormatterInterface
     private function getAddress($location)
     {
         $client = new Client();
-        $request = $client->get(
+        $request = new Request(
+            'GET',
             $this->url . 'place/' . $location,
             [
                 'content-type' => 'application/json',
                 'User-Agent' => 'Kinepolis-Publiq',
-            ],
-            []
+            ]
         );
 
-        $response = $request->send();
+        $response = $client->send($request);
 
-        $body  = $response->getBody();
+        $body  = $response->getBody()->getContents();
 
         $place = json_decode($body, true);
 

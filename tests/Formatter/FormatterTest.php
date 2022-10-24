@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace CultuurNet\MovieApiFetcher\Formatter;
 
 use CultuurNet\TransformEntryStore\Stores\RepositoryInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_MockObject_MockObject;
 
 class FormatterTest extends TestCase
 {
     private Formatter $formatter;
 
     /**
-     * @var RepositoryInterface|PHPUnit_Framework_MockObject_MockObject
+     * @var RepositoryInterface|MockObject
      */
     private $repository;
 

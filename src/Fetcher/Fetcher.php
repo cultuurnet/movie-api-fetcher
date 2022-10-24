@@ -8,7 +8,8 @@ use CultuurNet\MovieApiFetcher\Authentication\AuthenticationInterface;
 use CultuurNet\MovieApiFetcher\Parser\ParserInterface;
 use CultuurNet\MovieApiFetcher\Price\PriceFactoryInterface;
 use CultuurNet\MovieApiFetcher\Url\UrlFactoryInterface;
-use Guzzle\Http\Client;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
 use Monolog\Logger;
 
 class Fetcher implements FetcherInterface
@@ -74,19 +75,19 @@ class Fetcher implements FetcherInterface
     public function getMovies($token)
     {
         $client = new Client();
-        $request = $client->get(
+        $request = new Request(
+            'GET',
             (string) $this->urlFactory->generateMoviesUrl(),
             [
                 'content-type' => 'application/json',
                 'Authorization' => $token,
                 'User-Agent' => 'Kinepolis-Publiq',
-            ],
-            []
+            ]
         );
 
-        $response = $request->send();
+        $response = $client->send($request);
 
-        $body  = $response->getBody();
+        $body  = $response->getBody()->getContents();
 
         return json_decode($body, true);
     }
@@ -97,19 +98,19 @@ class Fetcher implements FetcherInterface
     public function getMovieDetail($token, $mid)
     {
         $client = new Client();
-        $request = $client->get(
+        $request = new Request(
+            'GET',
             (string) $this->urlFactory->generateMovieDetailUrl($mid),
             [
                 'content-type' => 'application/json',
                 'Authorization' => $token,
                 'User-Agent' => 'Kinepolis-Publiq',
-            ],
-            []
+            ]
         );
 
-        $response = $request->send();
+        $response = $client->send($request);
 
-        $body  = $response->getBody();
+        $body  = $response->getBody()->getContents();
 
         return json_decode($body, true);
     }

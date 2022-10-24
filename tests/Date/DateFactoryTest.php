@@ -8,16 +8,13 @@ use PHPUnit\Framework\TestCase;
 
 class DateFactoryTest extends TestCase
 {
-    /**
-     * @var DateFactory
-     */
-    private $dateFactory;
+    private DateFactory $dateFactory;
 
     private $dates;
 
     private $length;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->dateFactory = new DateFactory();
         $this->dates = [

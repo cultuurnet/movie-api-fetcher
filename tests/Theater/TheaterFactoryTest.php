@@ -9,12 +9,9 @@ use ValueObjects\Identity\UUID;
 
 class TheaterFactoryTest extends TestCase
 {
-    /**
-     * @var TheaterFactory
-     */
-    private $theaterFactory;
+    private TheaterFactory $theaterFactory;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $theaters = [
             'DECA' => [

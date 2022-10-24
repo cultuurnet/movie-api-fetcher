@@ -11,12 +11,9 @@ class UrlFactoryTest extends TestCase
 {
     private string $baseUrl;
 
-    /**
-     * @var UrlFactory
-     */
-    private $urlFactory;
+    private UrlFactory $urlFactory;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->baseUrl = 'https://kinepolis.dev/nl/';
 

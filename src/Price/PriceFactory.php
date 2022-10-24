@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace CultuurNet\MovieApiFetcher\Price;
 
-use Guzzle\Http\Client;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
 use ValueObjects\Web\Url;
 
 class PriceFactory implements PriceFactoryInterface
@@ -15,19 +16,19 @@ class PriceFactory implements PriceFactoryInterface
     public function getPriceMatrix(Url $theatreUrl, $token)
     {
         $client = new Client();
-        $request = $client->get(
+        $request = new Request(
+            'GET',
             (string) $theatreUrl,
             [
                 'content-type' => 'application/json',
                 'Authorization' => $token,
                 'User-Agent' => 'Kinepolis-Publiq',
-            ],
-            []
+            ]
         );
 
-        $response = $request->send();
+        $response = $client->send($request);
 
-        $body  = $response->getBody();
+        $body  = $response->getBody()->getContents();
         $theatres = json_decode($body, true);
 
         $priceMatrix = [];
@@ -42,19 +43,19 @@ class PriceFactory implements PriceFactoryInterface
     private function getPricesForTheatre(Url $theatreUrl, $token, $tid)
     {
         $client = new Client();
-        $request = $client->get(
+        $request = new Request(
+            'GET',
             (string) $theatreUrl . '/' . $tid,
             [
                 'content-type' => 'application/json',
                 'Authorization' => $token,
                 'User-Agent' => 'Kinepolis-Publiq',
-            ],
-            []
+            ]
         );
 
-        $response = $request->send();
+        $response = $client->send($request);
 
-        $body  = $response->getBody();
+        $body  = $response->getBody()->getContents();
         $theatre = json_decode($body, true);
 
         $tariffs = $theatre['theatres'][0]['tariffs'];
