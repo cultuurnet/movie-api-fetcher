@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CultuurNet\MovieApiFetcher\Formatter;
 
 use CultuurNet\TransformEntryStore\Stores\RepositoryInterface;
 use DOMDocument;
 use Guzzle\Http\Client;
-use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\Identity\UUID;
 
 class Formatter implements FormatterInterface
@@ -23,7 +24,7 @@ class Formatter implements FormatterInterface
     /**
      * @inheritdoc
      */
-    public function formatEvent($externalId)
+    public function formatEvent($externalId): string
     {
         $name = $this->repository->getName($externalId);
         $typeId = $this->repository->getTypeId($externalId);
@@ -34,21 +35,21 @@ class Formatter implements FormatterInterface
         sort($calendar);
         $playCount = count($calendar);
 
-        $arr = array();
+        $arr = [];
         $arr['mainLanguage'] = 'nl';
-        $arr['name'] = $name->toNative();
+        $arr['name'] = $name;
 
-        $arr['type']['id'] = $typeId->toNative();
+        $arr['type']['id'] = $typeId;
         $arr['type']['label'] = 'Film';
         $arr['type']['domain'] = 'eventtype';
 
         if (isset($themeId)) {
-            $arr['theme']['id'] = $themeId->toNative();
+            $arr['theme']['id'] = $themeId;
             $arr['theme']['label'] = $this->getThemeName($themeId);
             $arr['theme']['domain'] = 'theme';
         }
 
-        $arr['location']['id'] = $locationId->toNative();
+        $arr['location']['id'] = $locationId;
         $arr['location']['name'] = $address['name'];
         $arr['location']['address']['addressCountry'] = $address['addressCountry'];
         $arr['location']['address']['addressLocality'] = $address['addressLocality'];
@@ -65,19 +66,19 @@ class Formatter implements FormatterInterface
         //$arr['startDate'] = $this->formatStart($calendar[0]);
         //$arr['endDate'] = $this->formatEnd($calendar[$playCount - 1]);
 
-        return new StringLiteral(json_encode($arr));
+        return json_encode($arr);
     }
 
     /**
      * @inheritdoc
      */
-    public function formatCalendar($externalId)
+    public function formatCalendar($externalId): string
     {
         $calendar = $this->repository->getCalendar($externalId);
         sort($calendar);
         $playCount = count($calendar);
 
-        $arr = array();
+        $arr = [];
 
         $arr['calendarType'] = 'multiple';
 
@@ -89,21 +90,18 @@ class Formatter implements FormatterInterface
         $arr['startDate'] = $this->formatStart($calendar[0]);
         $arr['endDate'] = $this->formatEnd($calendar[$playCount - 1]);
 
-        return new StringLiteral(json_encode($arr));
+        return json_encode($arr);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function formatPrice($externalId)
+    public function formatPrice($externalId): string
     {
         $price = $this->repository->getPrice($externalId);
         $count = count($price);
 
-        $arr = array();
+        $arr = [];
 
         for ($i = 0; $i < $count; $i++) {
-            $tarif = array();
+            $tarif = [];
 
             $tarif['category'] = $price[$i]['is_base_price'] == 1 ? 'base' : 'tariff';
             $tarif['name']['nl'] = $price[$i]['name'] == 'base' ? 'Basistarief' : $price[$i]['name'];
@@ -113,13 +111,10 @@ class Formatter implements FormatterInterface
             $arr[] = $tarif;
         }
 
-        return new StringLiteral(json_encode($arr));
+        return json_encode($arr);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function formatProduction(StringLiteral $externalIdProduction)
+    public function formatProduction(string $externalIdProduction): string
     {
         $relevents = $this->repository->getCdbids($externalIdProduction);
         $imageId = null;
@@ -173,7 +168,7 @@ class Formatter implements FormatterInterface
         $production->appendChild($cdbidProduction);
 
         $externalid = $dom->createAttribute('externalid');
-        $externalidValue = $dom->createTextNode($externalIdProduction->toNative());
+        $externalidValue = $dom->createTextNode($externalIdProduction);
         $externalid->appendChild($externalidValue);
         $production->appendChild($externalid);
 
@@ -205,10 +200,10 @@ class Formatter implements FormatterInterface
         $categorytype->appendChild($categorytypeValue);
 
         if (isset($themeId)) {
-            $categorytheme = $dom->createElement('category');
+            $categoryTheme = $dom->createElement('category');
 
             $catidTheme = $dom->createAttribute('catid');
-            $catidThemeValue = $dom->createTextNode($themeId->toNative());
+            $catidThemeValue = $dom->createTextNode($themeId);
             $catidTheme->appendChild($catidThemeValue);
 
             $themeType = $dom->createAttribute('type');
@@ -217,14 +212,14 @@ class Formatter implements FormatterInterface
 
             $categorythemeValue = $dom->createTextNode($this->getThemeName($themeId));
 
-            $categorytheme->appendChild($catidTheme);
-            $categorytheme->appendChild($themeType);
-            $categorytheme->appendChild($categorythemeValue);
+            $categoryTheme->appendChild($catidTheme);
+            $categoryTheme->appendChild($themeType);
+            $categoryTheme->appendChild($categorythemeValue);
         }
 
         $categories->appendChild($categorytype);
-        if (isset($themeId)) {
-            $categories->appendChild($categorytheme);
+        if (isset($themeId, $categoryTheme)) {
+            $categories->appendChild($categoryTheme);
         }
 
         $production->appendChild($categories);
@@ -276,7 +271,7 @@ class Formatter implements FormatterInterface
             $productionDetail->appendChild($media);
         }
 
-        if (isset($description) && strlen($description->toNative())) {
+        if (isset($description) && strlen($description)) {
             $shortdescription = $dom->createElement('shortdescription');
             $shortdescriptionValue = $dom->createTextNode($description);
             $shortdescription->appendChild($shortdescriptionValue);
@@ -284,7 +279,7 @@ class Formatter implements FormatterInterface
         }
 
         $title = $dom->createElement('title');
-        $titleValue = $dom->createTextNode($this->repository->getName($externalIdProduction)->toNative());
+        $titleValue = $dom->createTextNode($this->repository->getName($externalIdProduction));
         $title->appendChild($titleValue);
         $productionDetail->appendChild($title);
 
@@ -307,34 +302,29 @@ class Formatter implements FormatterInterface
 
         $cdbxml->appendChild($production);
 
-        return new StringLiteral(trim($dom->saveXml()));
+        return trim($dom->saveXml());
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function formatProductionJson(StringLiteral $externalIdProduction)
+    public function formatProductionJson(string $externalIdProduction): string
     {
         $relevents = $this->repository->getCdbids($externalIdProduction);
-        $titleValue = $this->repository->getName($externalIdProduction)->toNative();
+        $titleValue = $this->repository->getName($externalIdProduction);
 
         $productionInfo = [];
         $productionInfo['name'] = $titleValue;
-        $eventIds = array();
+        $eventIds = [];
 
-        if(isset($relevents)) {
+        if (isset($relevents)) {
             foreach ($relevents as $relevent) {
                 $eventIds[] = $relevent['cdbid_event'];
             }
         }
         $productionInfo['eventIds'] = $eventIds;
-        $productionJson = json_encode($productionInfo);
-        return new StringLiteral($productionJson);
+        return json_encode($productionInfo);
     }
 
     /**
      * Formatter constructor.
-     * @param RepositoryInterface $repository
      * @param $url
      */
     public function __construct(RepositoryInterface $repository, $url)
@@ -343,39 +333,29 @@ class Formatter implements FormatterInterface
         $this->url = $url;
     }
 
-    private function getThemeName($cnetId)
+    private function getThemeName($cnetId): string
     {
         switch ($cnetId) {
             case '1.7.1.0.0':
                 return 'Documentaires en reportages';
-                break;
             case '1.7.2.0.0':
                 return 'Actie en avontuur';
-                break;
             case '1.7.3.0.0':
                 return 'Komedie';
-                break;
             case '1.7.4.0.0':
                 return 'Drama';
-                break;
             case '1.7.6.0.0':
                 return 'Griezelfilm of horror';
-                break;
             case '1.7.7.0.0':
                 return 'Science fiction';
-                break;
             case '1.7.10.0.0':
                 return 'Filmmusical';
-                break;
             case '1.7.12.0.0':
                 return 'Animatie en kinderfilms';
-                break;
             case '1.7.14.0.0':
                 return 'Meerdere filmgenres';
-                break;
             case '1.7.15.0.0':
                 return 'Thriller';
-                break;
             default:
                 return 'Meerdere filmgenres';
         }
@@ -399,7 +379,7 @@ class Formatter implements FormatterInterface
 
         $place = json_decode($body, true);
 
-        $address = array();
+        $address = [];
 
         if (isset($place['name']['nl'])) {
             $address['name'] = $place['name']['nl'];
@@ -426,7 +406,7 @@ class Formatter implements FormatterInterface
         return $playTime['date'] . 'T' . $playTime['time_start'] . '+00:00';
     }
 
-    private function formatEnd($playTime)
+    private function formatEnd($playTime): string
     {
         $dateString = $playTime['date'];
         if ($playTime['time_end'] < $playTime['time_start']) {
@@ -438,12 +418,12 @@ class Formatter implements FormatterInterface
         return $dateString . 'T' . $playTime['time_end'] . '+00:00';
     }
 
-    private function formatImageName(StringLiteral $imageId)
+    private function formatImageName(string $imageId)
     {
-        return (string) $imageId . '.jpeg';
+        return $imageId . '.jpeg';
     }
 
-    private function formatImageUrl(StringLiteral $imageId)
+    private function formatImageUrl(string $imageId)
     {
         return $this->url . 'images/' . $this->formatImageName($imageId);
     }

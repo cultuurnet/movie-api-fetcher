@@ -1,25 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CultuurNet\MovieApiFetcher\Date;
 
 class DateFactory implements DateFactoryInterface
 {
-    /**
-     * @var array
-     */
-    private $timeTableList;
+    private array $timeTableList;
 
-    /**
-     * @var
-     */
     private $length;
 
-    /**
-     * @inheritdoc
-     */
     public function processDates($dates, $length)
     {
-        $this->timeTableList = array();
+        $this->timeTableList = [];
         $this->length = $length;
 
         if (isset($dates)) {
@@ -38,7 +31,7 @@ class DateFactory implements DateFactoryInterface
         foreach ($timeList as $info) {
             $format = $this->getFormat($info['format']);
             $utcTime = $this->getUtcTime($day, $info['time']);
-            $this->timeTableList[$info['tid']][$format][$day][] = array($utcTime, $this->getEndDate($utcTime));
+            $this->timeTableList[$info['tid']][$format][$day][] = [$utcTime, $this->getEndDate($utcTime)];
         }
     }
 
@@ -48,7 +41,6 @@ class DateFactory implements DateFactoryInterface
         try {
             $dt->add(new \DateInterval('PT' . $this->length . 'M'));
         } catch (\Exception $ex) {
-
         }
         return $dt->format('H:i:s');
     }
@@ -64,7 +56,7 @@ class DateFactory implements DateFactoryInterface
 
     private function getFormat($formatArray)
     {
-        $formats3D = array(
+        $formats3D = [
             52,
             53,
             54,
@@ -78,7 +70,7 @@ class DateFactory implements DateFactoryInterface
             1093,
             1145,
             1147,
-        );
+        ];
         $is3D = array_intersect($formatArray, $formats3D);
         if (!isset($formatArray) || empty($formatArray) || empty($is3D)) {
             return '2D';

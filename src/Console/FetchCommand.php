@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CultuurNet\MovieApiFetcher\Console;
 
 use CultuurNet\MovieApiFetcher\Fetcher\FetcherInterface;
@@ -9,14 +11,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class FetchCommand extends Command
 {
-    /**
-     * @var FetcherInterface
-     */
-    protected $fetcher;
+    protected FetcherInterface $fetcher;
 
     /**
      * FetchCommand constructor.
-     * @param FetcherInterface $fetcher
      */
     public function __construct(FetcherInterface $fetcher)
     {
@@ -24,18 +22,17 @@ class FetchCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('apifetcher')
             ->setDescription('Start querying the Kinepolis API.');
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-            $this->fetcher->start();
+        $this->fetcher->start();
+
+        return 0;
     }
 }

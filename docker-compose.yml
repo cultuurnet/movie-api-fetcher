@@ -1,0 +1,42 @@
+version: "3.5"
+
+services:
+
+  php:
+    build: docker/php
+    container_name: php.moviefetcher
+    volumes:
+      - .:/var/www/html:cached
+    working_dir: /var/www/html
+    command: php -S 0.0.0.0:8000 -t web
+    ports:
+      - "8000:8000"
+    networks:
+      moviefetcher:
+        aliases:
+          - php.moviefetcher.dev
+
+  mysql:
+    image: 'mysql/mysql-server:8.0'
+    container_name: mysql.moviefetcher
+    environment:
+      - MYSQL_ROOT_PASSWORD=docker
+      - MYSQL_DATABASE=kinepolis
+      - MYSQL_USER=docker
+      - MYSQL_PASSWORD=docker
+    volumes:
+      - 'mf-mysql:/var/lib/mysql'
+    networks:
+      moviefetcher:
+        aliases:
+          - mysql.moviefetcher.dev
+    ports:
+      - "3306:3306"
+
+networks:
+  moviefetcher:
+    driver: bridge
+
+volumes:
+  mf-mysql:
+    driver: local

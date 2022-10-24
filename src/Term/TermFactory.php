@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CultuurNet\MovieApiFetcher\Term;
 
 class TermFactory implements TermFactoryInterface

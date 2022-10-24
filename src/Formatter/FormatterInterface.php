@@ -1,38 +1,27 @@
 <?php
 
-namespace CultuurNet\MovieApiFetcher\Formatter;
+declare(strict_types=1);
 
-use ValueObjects\StringLiteral\StringLiteral;
+namespace CultuurNet\MovieApiFetcher\Formatter;
 
 interface FormatterInterface
 {
     /**
      * @param $externalId
-     * @return StringLiteral
      */
-    public function formatEvent($externalId);
+    public function formatEvent($externalId): string;
 
     /**
      * @param $externalId
-     * @return StringLiteral
      */
-    public function formatCalendar($externalId);
+    public function formatCalendar($externalId): string;
 
     /**
      * @param $externalId
-     * @return StringLiteral
      */
-    public function formatPrice($externalId);
+    public function formatPrice($externalId): string;
 
-    /**
-     * @param StringLiteral $externalIdProduction
-     * @return StringLiteral
-     */
-    public function formatProduction(StringLiteral $externalIdProduction);
+    public function formatProduction(string $externalIdProduction): string;
 
-    /**
-     * @param StringLiteral $externalIdProduction
-     * @return StringLiteral
-     */
-    public function formatProductionJson(StringLiteral $externalIdProduction);
+    public function formatProductionJson(string $externalIdProduction): string;
 }

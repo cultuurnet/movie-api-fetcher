@@ -1,24 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CultuurNet\MovieApiFetcher\Fetcher;
 
 interface FetcherInterface
 {
-    /**
-     * @return void
-     */
-    public function start();
+    public function start(): void;
 
-    /**
-     * @param $token
-     * @return mixed
-     */
     public function getMovies($token);
 
-    /**
-     * @param $token
-     * @param $mid
-     * @return mixed
-     */
     public function getMovieDetail($token, $mid);
 }

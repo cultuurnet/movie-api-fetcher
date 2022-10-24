@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CultuurNet\MovieApiFetcher\Parser;
 
 use CultuurNet\MovieApiFetcher\Date\DateFactoryInterface;
 use CultuurNet\MovieApiFetcher\EntryPoster\EntryPosterInterface;
 use CultuurNet\MovieApiFetcher\Formatter\FormatterInterface;
 use CultuurNet\MovieApiFetcher\Identification\IdentificationFactoryInterface;
-use CultuurNet\MovieApiFetcher\ProductionPoster\ProductionPosterInterface;
 use CultuurNet\MovieApiFetcher\Term\TermFactoryInterface;
 use CultuurNet\MovieApiFetcher\Theater\TheaterFactoryInterface;
 use CultuurNet\MovieApiFetcher\Url\UrlFactoryInterface;
@@ -16,83 +17,36 @@ use CultuurNet\TransformEntryStore\ValueObjects\Language\LanguageCode;
 use Monolog\Logger;
 use ValueObjects\Identity\UUID;
 use ValueObjects\Number\Integer;
-use ValueObjects\StringLiteral\StringLiteral;
 
 class Parser implements ParserInterface
 {
-    const KINEPOLIS_COPYRIGHT = 'Kinepolis';
-    const MOVIE_TYPE_ID = '0.50.6.0.0';
-    const UIV_MOVIE_KEYWORD = 'UiTinVlaanderenFilm';
+    public const KINEPOLIS_COPYRIGHT = 'Kinepolis';
+    public const MOVIE_TYPE_ID = '0.50.6.0.0';
+    public const UIV_MOVIE_KEYWORD = 'UiTinVlaanderenFilm';
 
-    /**
-     * @var DateFactoryInterface
-     */
-    private $dateFactory;
+    private DateFactoryInterface $dateFactory;
 
-    /**
-     * @var EntryPosterInterface
-     */
-    private $entryPoster;
+    private EntryPosterInterface $entryPoster;
 
-    /**
-     * @var FormatterInterface
-     */
-    private $formatter;
+    private FormatterInterface $formatter;
 
-    /**
-     * @var IdentificationFactoryInterface
-     */
-    private $identificationFactory;
+    private IdentificationFactoryInterface $identificationFactory;
 
-    /**
-     * @var ProductionPosterInterface
-     */
-    private $productionPoster;
+    private TermFactoryInterface $termFactory;
 
-    /**
-     * @var TermFactoryInterface
-     */
-    private $termFactory;
+    private TheaterFactoryInterface $theaterFactory;
 
-    /**
-     * @var TheaterFactoryInterface
-     */
-    private $theaterFactory;
+    private UrlFactoryInterface $urlFactory;
 
-    /**
-     * @var UrlFactoryInterface
-     */
-    private $urlFactory;
+    private RepositoryInterface $repository;
 
-    /**
-     * @var RepositoryInterface
-     */
-    private $repository;
+    private Logger $logger;
 
-    /**
-     * @var
-     */
-    private $logger;
-
-    /**
-     * Parser constructor.
-     * @param DateFactoryInterface $dateFactory
-     * @param EntryPosterInterface $entryPoster
-     * @param FormatterInterface $formatter
-     * @param IdentificationFactoryInterface $identificationFactory
-     * @param ProductionPosterInterface $productionPoster
-     * @param TermFactoryInterface $termFactory
-     * @param TheaterFactoryInterface $theaterFactory
-     * @param UrlFactoryInterface $urlFactory
-     * @param RepositoryInterface $repository
-     * @param Logger $logger
-     */
     public function __construct(
         DateFactoryInterface $dateFactory,
         EntryPosterInterface $entryPoster,
         FormatterInterface $formatter,
         IdentificationFactoryInterface $identificationFactory,
-        ProductionPosterInterface $productionPoster,
         TermFactoryInterface $termFactory,
         TheaterFactoryInterface $theaterFactory,
         UrlFactoryInterface $urlFactory,
@@ -103,7 +57,6 @@ class Parser implements ParserInterface
         $this->entryPoster = $entryPoster;
         $this->formatter = $formatter;
         $this->identificationFactory = $identificationFactory;
-        $this->productionPoster = $productionPoster;
         $this->termFactory = $termFactory;
         $this->theaterFactory = $theaterFactory;
         $this->urlFactory = $urlFactory;
@@ -112,9 +65,9 @@ class Parser implements ParserInterface
     }
 
     /**
-     * @inheritdoc
+     * @param array[] $movie
      */
-    public function process($movie, $priceMatrix)
+    public function process($movie, $priceMatrix): void
     {
         $movieData = $movie['movies'][0];
         $mid = $movieData['mid'];
@@ -159,13 +112,13 @@ class Parser implements ParserInterface
                 $cdbid = $this->repository->getCdbid($externalId);
                 if (isset($cdbid)) {
                     if ($this->repository->getName($externalId) !== $movieTitle) {
-                        $this->repository->updateName($externalId, new StringLiteral($movieTitle));
-                        $this->entryPoster->updateName($cdbid, new StringLiteral($movieTitle));
+                        $this->repository->updateName($externalId, $movieTitle);
+                        $this->entryPoster->updateName($cdbid, $movieTitle);
                     }
 
                     if ($this->repository->getDescription($externalId) !== $description) {
-                        $this->repository->updateDescription($externalId, new StringLiteral($description));
-                        $this->entryPoster->updateDescription($cdbid, new StringLiteral($description));
+                        $this->repository->updateDescription($externalId, $description);
+                        $this->entryPoster->updateDescription($cdbid, $description);
                     }
 
                     if ($this->repository->getLocationCdbid($externalId) !== $location) {
@@ -178,7 +131,7 @@ class Parser implements ParserInterface
                         foreach ($hours as $hour) {
                             $timeStart = $hour[0];
                             $timeEnd = $hour[1];
-                            $newDate = array();
+                            $newDate = [];
                             $newDate['date'] = $day;
                             $newDate['time_start'] = $timeStart;
                             $newDate['time_end'] = $timeEnd;
@@ -222,13 +175,13 @@ class Parser implements ParserInterface
                         }
                     }
 
-                    $this->repository->saveName($externalId, new StringLiteral($movieTitle));
+                    $this->repository->saveName($externalId, $movieTitle);
                     if (isset($description)) {
-                        $this->repository->saveDescription($externalId, new StringLiteral($description));
+                        $this->repository->saveDescription($externalId, $description);
                     }
-                    $this->repository->saveTypeId($externalId, new StringLiteral(PARSER::MOVIE_TYPE_ID));
+                    $this->repository->saveTypeId($externalId, self::MOVIE_TYPE_ID);
                     if (isset($cnetId)) {
-                        $this->repository->saveThemeId($externalId, new StringLiteral($cnetId));
+                        $this->repository->saveThemeId($externalId, $cnetId);
                     }
                     if (isset($ageRange)) {
                         $this->repository->saveAgeRange($externalId, $ageRange);
@@ -242,17 +195,16 @@ class Parser implements ParserInterface
                         $this->repository->saveCdbid($externalId, $cdbid);
                         $this->entryPoster->publishEvent($cdbid);
 
-                        $mediaId = $this->entryPoster->addMediaObject((string) $image, new StringLiteral($movieTitle), $this->getDefaultCopyright());
+                        $mediaId = $this->entryPoster->addMediaObject((string) $image, $movieTitle, $this->getDefaultCopyright());
                         $this->entryPoster->addImage($cdbid, $mediaId);
-                        $this->repository->saveImage($externalId, $mediaId, new StringLiteral($movieTitle), $this->getDefaultCopyright(), LanguageCode::NL());
+                        $this->repository->saveImage($externalId, $mediaId, $movieTitle, $this->getDefaultCopyright(), LanguageCode::NL);
 
-                        $this->repository->addLabel($externalId, new StringLiteral(Parser::UIV_MOVIE_KEYWORD));
-                        $this->entryPoster->addLabel($cdbid, new StringLiteral(Parser::UIV_MOVIE_KEYWORD));
+                        $this->repository->addLabel($externalId, self::UIV_MOVIE_KEYWORD);
+                        $this->entryPoster->addLabel($cdbid, self::UIV_MOVIE_KEYWORD);
                         if (isset($description)) {
-                            $this->entryPoster->updateDescription($cdbid, new StringLiteral($description));
+                            $this->entryPoster->updateDescription($cdbid, $description);
                         }
                         if (isset($ageRange)) {
-                            var_dump($ageRange);
                             $this->entryPoster->updateAgeRange($cdbid, $ageRange);
                         }
 
@@ -282,33 +234,30 @@ class Parser implements ParserInterface
 
         $productionCdbid = $this->repository->getProductionCdbid($externalIdProduction);
         if (isset($productionCdbid)) {
-
         } else {
             $productionCdbid = UUID::generateAsString();
             $this->repository->saveProductionCdbid($externalIdProduction, new UUID($productionCdbid));
-            $this->repository->saveName($externalIdProduction, new StringLiteral($title));
-            $this->repository->saveDescription($externalIdProduction, new StringLiteral($description));
-            $this->repository->saveTypeId($externalIdProduction, new StringLiteral(PARSER::MOVIE_TYPE_ID));
+            $this->repository->saveName($externalIdProduction, $title);
+            $this->repository->saveDescription($externalIdProduction, $description);
+            $this->repository->saveTypeId($externalIdProduction, self::MOVIE_TYPE_ID);
             if (isset($cnetId)) {
-                $this->repository->saveThemeId($externalIdProduction, new StringLiteral($cnetId));
+                $this->repository->saveThemeId($externalIdProduction, $cnetId);
             }
         }
-        $productionXml = $this->formatter->formatProduction($externalIdProduction);
         $producionJson = $this->formatter->formatProductionJson($externalIdProduction);
         $this->entryPoster->postProduction($producionJson);
-        $this->productionPoster->postProduction($productionXml);
     }
 
-    private function getDefaultCopyright()
+    private function getDefaultCopyright(): string
     {
-        return new StringLiteral(Parser::KINEPOLIS_COPYRIGHT);
+        return self::KINEPOLIS_COPYRIGHT;
     }
 
     private function getPrice($tid, $priceMatrix, $length)
     {
         $theatrePrices =  $priceMatrix[$tid];
 
-        $moviePrice = array();
+        $moviePrice = [];
         if ($length >= 135 && isset($theatrePrices['long_movies'])) {
             $moviePrice['base'] = $theatrePrices['base'] + $theatrePrices['long_movies'];
             $moviePrice['Kortingstarief'] = $theatrePrices['Kortingstarief'] + $theatrePrices['long_movies'];

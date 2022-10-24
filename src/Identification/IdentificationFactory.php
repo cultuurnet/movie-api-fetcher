@@ -1,25 +1,25 @@
 <?php
 
-namespace CultuurNet\MovieApiFetcher\Identification;
+declare(strict_types=1);
 
-use ValueObjects\StringLiteral\StringLiteral;
+namespace CultuurNet\MovieApiFetcher\Identification;
 
 class IdentificationFactory implements IdentificationFactoryInterface
 {
     /**
      * @inheritdoc
      */
-    public function generateMovieProductionId($mid)
+    public function generateMovieProductionId($mid): string
     {
-        return new StringLiteral('Kinepolis:' . 'm' . $mid);
+        return 'Kinepolis:' . 'm' . $mid;
     }
 
     /**
      * @inheritdoc
      */
-    public function generateMovieId($mid, $tid, $version)
+    public function generateMovieId($mid, $tid, $version): string
     {
         $v = $version === '3D' ? 'v3D' : '';
-        return new StringLiteral('Kinepolis:' . 't' . $tid . 'm' . $mid . $v);
+        return 'Kinepolis:' . 't' . $tid . 'm' . $mid . $v;
     }
 }

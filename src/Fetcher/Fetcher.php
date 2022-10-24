@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CultuurNet\MovieApiFetcher\Fetcher;
 
 use CultuurNet\MovieApiFetcher\Authentication\AuthenticationInterface;
@@ -8,58 +10,29 @@ use CultuurNet\MovieApiFetcher\Price\PriceFactoryInterface;
 use CultuurNet\MovieApiFetcher\Url\UrlFactoryInterface;
 use Guzzle\Http\Client;
 use Monolog\Logger;
-use ValueObjects\StringLiteral\StringLiteral;
 
 class Fetcher implements FetcherInterface
 {
-    /**
-     * @var StringLiteral
-     */
-    private $client;
+    private string $client;
 
-    /**
-     * @var StringLiteral
-     */
-    private $secret;
+    private string $secret;
 
-    /**
-     * @var AuthenticationInterface
-     */
-    private $authentication;
+    private AuthenticationInterface $authentication;
 
-    /**
-     * @var UrlFactoryInterface
-     */
-    private $urlFactory;
+    private UrlFactoryInterface $urlFactory;
 
-    /**
-     * @var ParserInterface
-     */
-    private $parser;
+    private ParserInterface $parser;
 
-    /**
-     * @var PriceFactoryInterface
-     */
-    private $priceFactory;
+    private PriceFactoryInterface $priceFactory;
 
-    /**
-     * @var Logger
-     */
-    private $logger;
+    private Logger $logger;
 
     /**
      * Fetcher constructor.
-     * @param StringLiteral $client
-     * @param StringLiteral $secret
-     * @param AuthenticationInterface $authentication
-     * @param UrlFactoryInterface $urlFactory
-     * @param ParserInterface $parser
-     * @param PriceFactoryInterface $priceFactory
-     * @param Logger $logger
      */
     public function __construct(
-        StringLiteral $client,
-        StringLiteral $secret,
+        string $client,
+        string $secret,
         AuthenticationInterface $authentication,
         UrlFactoryInterface $urlFactory,
         ParserInterface $parser,
@@ -75,10 +48,7 @@ class Fetcher implements FetcherInterface
         $this->logger = $logger;
     }
 
-    /**
-     * @return void
-     */
-    public function start()
+    public function start(): void
     {
         $token = $this->authentication->getToken($this->client, $this->secret);
         $body = $this->getMovies($token);
@@ -100,9 +70,7 @@ class Fetcher implements FetcherInterface
         $this->logger->log(Logger::DEBUG, 'Fetched all movies');
     }
 
-    /**
-     * @inheritdoc
-     */
+
     public function getMovies($token)
     {
         $client = new Client();

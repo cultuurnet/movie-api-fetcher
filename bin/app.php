@@ -15,7 +15,7 @@ $app->register(
     [
         'console.name'              => 'apifetcher',
         'console.version'           => '1.0.0',
-        'console.project_directory' => __DIR__.'/..'
+        'console.project_directory' => __DIR__ . '/..',
     ]
 );
 
@@ -27,7 +27,7 @@ $consoleApp->add(
 );
 
 $consoleApp->add(
-        new InstallCommand()
+    new InstallCommand()
 );
 
 $consoleApp->run();

@@ -9,7 +9,6 @@ use CultuurNet\MovieApiFetcher\Formatter\Formatter;
 use CultuurNet\MovieApiFetcher\Identification\IdentificationFactory;
 use CultuurNet\MovieApiFetcher\Parser\Parser;
 use CultuurNet\MovieApiFetcher\Price\PriceFactory;
-use CultuurNet\MovieApiFetcher\ProductionPoster\ProductionPoster;
 use CultuurNet\MovieApiFetcher\Term\TermFactory;
 use CultuurNet\MovieApiFetcher\Theater\TheaterFactory;
 use CultuurNet\MovieApiFetcher\Url\UrlFactory;
@@ -33,7 +32,6 @@ use CultuurNet\TransformEntryStore\Stores\Doctrine\SchemaTargetAudienceConfigura
 use CultuurNet\TransformEntryStore\Stores\Doctrine\SchemaThemeConfigurator;
 use CultuurNet\TransformEntryStore\Stores\Doctrine\SchemaTypeConfigurator;
 use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreAgeRangeDBALRepository;
-use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreBookingInfoDBALRepository;
 use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreCalendarDBALRepository;
 use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreContactPointDBALRepository;
 use CultuurNet\TransformEntryStore\Stores\Doctrine\StoreDescriptionDBALRepository;
@@ -56,7 +54,6 @@ use Doctrine\DBAL\Migrations\Configuration\YamlConfiguration;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
 use Silex\Application;
-use ValueObjects\StringLiteral\StringLiteral;
 use ValueObjects\Web\Url;
 
 $app = new Application();
@@ -102,79 +99,79 @@ $app['database.installer'] = $app->share(
         );
 
         $installer->addSchemaConfigurator(
-            new SchemaAgeRangeConfigurator(new StringLiteral('age_range'))
+            new SchemaAgeRangeConfigurator('age_range')
         );
 
         $installer->addSchemaConfigurator(
-            new SchemaBookingInfoConfigurator(new StringLiteral('booking_info'))
+            new SchemaBookingInfoConfigurator('booking_info')
         );
 
         $installer->addSchemaConfigurator(
-            new SchemaCalendarConfigurator(new StringLiteral('calendar'))
+            new SchemaCalendarConfigurator('calendar')
         );
 
         $installer->addSchemaConfigurator(
-            new SchemaContactPointEmailConfigurator(new StringLiteral('email'))
+            new SchemaContactPointEmailConfigurator('email')
         );
 
         $installer->addSchemaConfigurator(
-            new SchemaContactPointPhoneConfigurator(new StringLiteral('phone'))
+            new SchemaContactPointPhoneConfigurator('phone')
         );
 
         $installer->addSchemaConfigurator(
-            new SchemaContactPointUrlConfigurator(new StringLiteral('url'))
+            new SchemaContactPointUrlConfigurator('url')
         );
 
         $installer->addSchemaConfigurator(
-            new SchemaDescriptionConfigurator(new StringLiteral('description'))
+            new SchemaDescriptionConfigurator('description')
         );
 
         $installer->addSchemaConfigurator(
-            new SchemaEventProductionConfigurator(new StringLiteral('event_production'))
+            new SchemaEventProductionConfigurator('event_production')
         );
 
         $installer->addSchemaConfigurator(
-            new SchemaImageConfigurator(new StringLiteral('image'))
+            new SchemaImageConfigurator('image')
         );
 
         $installer->addSchemaConfigurator(
-            new SchemaLabelConfigurator(new StringLiteral('label'))
+            new SchemaLabelConfigurator('label')
         );
 
         $installer->addSchemaConfigurator(
-            new SchemaLocationConfigurator(new StringLiteral('location'))
+            new SchemaLocationConfigurator('location')
         );
 
         $installer->addSchemaConfigurator(
-            new SchemaNameConfigurator(new StringLiteral('name'))
+            new SchemaNameConfigurator('name')
         );
 
         $installer->addSchemaConfigurator(
-            new SchemaOrganizerConfigurator(new StringLiteral('organizer'))
+            new SchemaOrganizerConfigurator('organizer')
         );
 
         $installer->addSchemaConfigurator(
-            new SchemaPriceInfoConfigurator(new StringLiteral('price_info'))
+            new SchemaPriceInfoConfigurator('price_info')
         );
 
         $installer->addSchemaConfigurator(
-            new SchemaProductionConfigurator(new StringLiteral('production'))
+            new SchemaProductionConfigurator('production')
         );
 
         $installer->addSchemaConfigurator(
-            new SchemaRelationConfigurator(new StringLiteral('relation'))
+            new SchemaRelationConfigurator('relation')
         );
 
         $installer->addSchemaConfigurator(
-            new SchemaTargetAudienceConfigurator(new StringLiteral('target_audience'))
+            new SchemaTargetAudienceConfigurator('target_audience')
         );
 
         $installer->addSchemaConfigurator(
-            new SchemaThemeConfigurator(new StringLiteral('theme'))
+            new SchemaThemeConfigurator('theme')
         );
 
         $installer->addSchemaConfigurator(
-            new SchemaTypeConfigurator(new StringLiteral('type'))
+            new SchemaTypeConfigurator('type')
         );
 
         return $installer;
@@ -248,7 +245,7 @@ $app['logger_production'] = $app->share(
 $app['url_factory'] = $app->share(
     function (Application $app) {
         return new UrlFactory(
-            new StringLiteral($app['config']['kinepolis']['url'])
+            $app['config']['kinepolis']['url']
         );
     }
 );
@@ -306,35 +303,11 @@ $app['identification_factory'] = $app->share(
     }
 );
 
-
-
-$app['production_poster'] = $app->share(
-    function (Application $app) {
-        $sapi2Urls = array();
-        foreach ($app['config']['sapi2']['urls'] as $sapi2Url) {
-            $sapi2Urls[] = Url::fromNative($sapi2Url);
-        }
-        return new ProductionPoster(
-            $app['logger_production'],
-            $sapi2Urls
-        );
-    }
-);
-
 $app['dbal_store.age_range'] = $app->share(
     function (Application $app) {
         return new StoreAgeRangeDBALRepository(
             $app['dbal_connection'],
-            new StringLiteral('age_range')
-        );
-    }
-);
-
-$app['dbal_store.booking_info'] = $app->share(
-    function (Application $app) {
-        return new StoreBookingInfoDBALRepository(
-            $app['dbal_connection'],
-            new StringLiteral('booking_info')
+            'age_range'
         );
     }
 );
@@ -343,7 +316,7 @@ $app['dbal_store.calendar'] = $app->share(
     function (Application $app) {
         return new StoreCalendarDBALRepository(
             $app['dbal_connection'],
-            new StringLiteral('calendar')
+            'calendar'
         );
     }
 );
@@ -352,7 +325,7 @@ $app['dbal_store.contact_point'] = $app->share(
     function (Application $app) {
         return new StoreContactPointDBALRepository(
             $app['dbal_connection'],
-            new StringLiteral('contact_point')
+            'contact_point'
         );
     }
 );
@@ -361,7 +334,7 @@ $app['dbal_store.description'] = $app->share(
     function (Application $app) {
         return new StoreDescriptionDBALRepository(
             $app['dbal_connection'],
-            new StringLiteral('description')
+            'description'
         );
     }
 );
@@ -370,7 +343,7 @@ $app['dbal_store.event_production'] = $app->share(
     function (Application $app) {
         return new StoreEventProductionDBALRepository(
             $app['dbal_connection'],
-            new StringLiteral('event_production')
+            'event_production'
         );
     }
 );
@@ -379,7 +352,7 @@ $app['dbal_store.image'] = $app->share(
     function (Application $app) {
         return new StoreImageDBALRepository(
             $app['dbal_connection'],
-            new StringLiteral('image')
+            'image'
         );
     }
 );
@@ -388,7 +361,7 @@ $app['dbal_store.label'] = $app->share(
     function (Application $app) {
         return new StoreLabelDBALRepository(
             $app['dbal_connection'],
-            new StringLiteral('label')
+            'label'
         );
     }
 );
@@ -397,7 +370,7 @@ $app['dbal_store.location'] = $app->share(
     function (Application $app) {
         return new StoreLocationDBALRepository(
             $app['dbal_connection'],
-            new StringLiteral('location')
+            'location'
         );
     }
 );
@@ -406,7 +379,7 @@ $app['dbal_store.name'] = $app->share(
     function (Application $app) {
         return new StoreNameDBALRepository(
             $app['dbal_connection'],
-            new StringLiteral('name')
+            'name'
         );
     }
 );
@@ -415,7 +388,7 @@ $app['dbal_store.organizer'] = $app->share(
     function (Application $app) {
         return new StoreOrganizerDBALRepository(
             $app['dbal_connection'],
-            new StringLiteral('organizer')
+            'organizer'
         );
     }
 );
@@ -424,7 +397,7 @@ $app['dbal_store.price_info'] = $app->share(
     function (Application $app) {
         return new StorePriceDBALRepository(
             $app['dbal_connection'],
-            new StringLiteral('price_info')
+            'price_info'
         );
     }
 );
@@ -433,7 +406,7 @@ $app['dbal_store.production'] = $app->share(
     function (Application $app) {
         return new StoreProductionDBALRepository(
             $app['dbal_connection'],
-            new StringLiteral('production')
+            'production'
         );
     }
 );
@@ -442,7 +415,7 @@ $app['dbal_store.relation'] = $app->share(
     function (Application $app) {
         return new StoreRelationDBALRepository(
             $app['dbal_connection'],
-            new StringLiteral('relation')
+            'relation'
         );
     }
 );
@@ -451,7 +424,7 @@ $app['dbal_store.target_audience'] = $app->share(
     function (Application $app) {
         return new StoreTargetAudienceDBALRepository(
             $app['dbal_connection'],
-            new StringLiteral('target_audience')
+            'target_audience'
         );
     }
 );
@@ -460,7 +433,7 @@ $app['dbal_store.theme'] = $app->share(
     function (Application $app) {
         return new StoreThemeDBALRepository(
             $app['dbal_connection'],
-            new StringLiteral('theme')
+            'theme'
         );
     }
 );
@@ -469,7 +442,7 @@ $app['dbal_store.type'] = $app->share(
     function (Application $app) {
         return new StoreTypeDBALRepository(
             $app['dbal_connection'],
-            new StringLiteral('type')
+            'type'
         );
     }
 );
@@ -478,7 +451,6 @@ $app['repository'] = $app->share(
     function (Application $app) {
         return new StoreRepository(
             $app['dbal_store.age_range'],
-            $app['dbal_store.booking_info'],
             $app['dbal_store.calendar'],
             $app['dbal_store.contact_point'],
             $app['dbal_store.description'],
@@ -505,7 +477,6 @@ $app['parser'] = $app->share(
             $app['entry_poster'],
             $app['formatter'],
             $app['identification_factory'],
-            $app['production_poster'],
             $app['terms'],
             $app['theaters'],
             $app['url_factory'],
@@ -525,8 +496,8 @@ $app['price_factory'] = $app->share(
 $app['fetcher'] = $app->share(
     function (Application $app) {
         return new Fetcher(
-            new StringLiteral($app['config']['kinepolis']['authentication']['key']),
-            new StringLiteral($app['config']['kinepolis']['authentication']['secret']),
+            $app['config']['kinepolis']['authentication']['key'],
+            $app['config']['kinepolis']['authentication']['secret'],
             $app['authentication'],
             $app['url_factory'],
             $app['parser'],
