@@ -1,14 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CultuurNet\MovieApiFetcher\Price;
 
 use ValueObjects\Web\Url;
 
 interface PriceFactoryInterface
 {
-
     /**
-     * @param Url $theatreUrl
      * @param $token
      * @return array
      */

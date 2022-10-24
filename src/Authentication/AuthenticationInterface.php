@@ -1,15 +1,10 @@
 <?php
 
-namespace CultuurNet\MovieApiFetcher\Authentication;
+declare(strict_types=1);
 
-use ValueObjects\StringLiteral\StringLiteral;
+namespace CultuurNet\MovieApiFetcher\Authentication;
 
 interface AuthenticationInterface
 {
-    /**
-     * @param StringLiteral $key
-     * @param StringLiteral $secret
-     * @return StringLiteral
-     */
-    public function getToken(StringLiteral $key, StringLiteral $secret);
+    public function getToken(string $key, string $secret): string;
 }

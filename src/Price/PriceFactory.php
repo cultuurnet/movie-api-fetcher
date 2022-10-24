@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CultuurNet\MovieApiFetcher\Price;
 
 use Guzzle\Http\Client;
@@ -28,7 +30,7 @@ class PriceFactory implements PriceFactoryInterface
         $body  = $response->getBody();
         $theatres = json_decode($body, true);
 
-        $priceMatrix = array();
+        $priceMatrix = [];
         foreach ($theatres['theatres'] as $theatre) {
             $prices = $this->getPricesForTheatre($theatreUrl, $token, $theatre['tid']);
             $priceMatrix[$theatre['tid']] = $prices;
@@ -56,9 +58,9 @@ class PriceFactory implements PriceFactoryInterface
         $theatre = json_decode($body, true);
 
         $tariffs = $theatre['theatres'][0]['tariffs'];
-        $parsedTariffs = array();
+        $parsedTariffs = [];
         foreach ($tariffs[0]['tarifs'] as $tarif) {
-            $price = floatval(str_replace(',', '.', str_replace('€ ', '', $tarif[0])));
+            $price = (float) (str_replace(',', '.', str_replace('€ ', '', $tarif[0])));
 
             if ($tarif[1] == 'Normaal tarief') {
                 $parsedTariffs['base'] = $price;

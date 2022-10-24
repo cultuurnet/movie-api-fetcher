@@ -1,16 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CultuurNet\MovieApiFetcher\Url;
 
-use ValueObjects\StringLiteral\StringLiteral;
+use PHPUnit\Framework\TestCase;
 use ValueObjects\Web\Url;
 
-class UrlFactoryTest extends \PHPUnit_Framework_TestCase
+class UrlFactoryTest extends TestCase
 {
-    /**
-     * @var StringLiteral
-     */
-    private $baseUrl;
+    private string $baseUrl;
 
     /**
      * @var UrlFactory
@@ -19,7 +18,7 @@ class UrlFactoryTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->baseUrl = new StringLiteral('https://kinepolis.dev/nl/');
+        $this->baseUrl = 'https://kinepolis.dev/nl/';
 
         $this->urlFactory = new UrlFactory($this->baseUrl);
     }
@@ -72,11 +71,11 @@ class UrlFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function itGeneratesAMediaUrl()
     {
-        $mediaLink = new StringLiteral('/test.jpg');
+        $mediaLink = '/test.jpg';
         $url = $this->urlFactory->generateMediaUrl($mediaLink);
 
         $expectedUrl = Url::fromNative(
-            $this->baseUrl . 'sites/kinepolis.be.nl/files' . $mediaLink->toNative()
+            $this->baseUrl . 'sites/kinepolis.be.nl/files' . $mediaLink
         );
 
         $this->assertEquals($expectedUrl, $url);

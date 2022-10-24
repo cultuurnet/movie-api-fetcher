@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CultuurNet\MovieApiFetcher;
 
 use CultuurNet\TransformEntryStore\Doctrine\DBAL\SchemaConfiguratorInterface;

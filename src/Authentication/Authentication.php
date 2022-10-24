@@ -1,22 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CultuurNet\MovieApiFetcher\Authentication;
 
 use CultuurNet\MovieApiFetcher\Url\UrlFactoryInterface;
 use Guzzle\Http\Client;
-use ValueObjects\StringLiteral\StringLiteral;
 
 class Authentication implements AuthenticationInterface
 {
-    /**
-     * @var UrlFactoryInterface
-     */
-    private $urlFactory;
+    private UrlFactoryInterface $urlFactory;
 
-    /**
-     * @inheritdoc
-     */
-    public function getToken(StringLiteral $key, StringLiteral $secret)
+    public function getToken(string $key, string $secret): string
     {
         $client = new Client();
         $uri = (string) $this->urlFactory->generateTokenUrl();
@@ -37,9 +32,7 @@ class Authentication implements AuthenticationInterface
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
 
-        $tokenBearer = 'Bearer ' . $resp['token'];
-
-        return $tokenBearer;
+        return 'Bearer ' . $resp['token'];
     }
 
 
@@ -48,13 +41,8 @@ class Authentication implements AuthenticationInterface
         $this->urlFactory = $urlFactory;
     }
 
-    /**
-     * @param StringLiteral $key
-     * @param StringLiteral $secret
-     * @return string
-     */
-    private function generatePostBody(StringLiteral $key, StringLiteral $secret)
+    private function generatePostBody(string $key, string $secret): string
     {
-        return '{ "client": "' . $key->toNative() . '", "secret": "' . $secret->toNative() . '" }';
+        return '{ "client": "' . $key . '", "secret": "' . $secret . '" }';
     }
 }

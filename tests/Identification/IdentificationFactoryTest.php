@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CultuurNet\MovieApiFetcher\Identification;
 
-use ValueObjects\StringLiteral\StringLiteral;
+use PHPUnit\Framework\TestCase;
 
-class IdentificationFactoryTest extends \PHPUnit_Framework_TestCase
+class IdentificationFactoryTest extends TestCase
 {
     /**
      * @var IdentificationFactory
@@ -21,7 +23,7 @@ class IdentificationFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testGenerateMovieProductionId()
     {
-        $expected = new StringLiteral('Kinepolis:m63210');
+        $expected = 'Kinepolis:m63210';
         $this->assertEquals(
             $expected,
             $actual = $this->identificationFactory->generateMovieProductionId('63210')
@@ -33,7 +35,7 @@ class IdentificationFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testGenerateMovieId()
     {
-        $expected = new StringLiteral('Kinepolis:tDECAm63210');
+        $expected = 'Kinepolis:tDECAm63210';
         $this->assertEquals(
             $expected,
             $this->identificationFactory->generateMovieId('63210', 'DECA', '2D')

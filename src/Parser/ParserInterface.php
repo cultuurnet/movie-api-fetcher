@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CultuurNet\MovieApiFetcher\Parser;
 
 interface ParserInterface
 {
     /**
      * @param array[] $movie
-     * @return string[]
      */
-    public function process($movie, $priceMatrix);
+    public function process($movie, $priceMatrix): void;
 }

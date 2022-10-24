@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CultuurNet\MovieApiFetcher\Term;
 
-class TermFactoryTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class TermFactoryTest extends TestCase
 {
     /**
      * @var TermFactory
@@ -11,11 +15,11 @@ class TermFactoryTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $terms = array(
+        $terms = [
             636 => '1.7.6.0.0',
             634 => '1.7.7.0.0',
             635 => '1.7.15.0.0',
-        );
+        ];
 
         $this->termFactory = new TermFactory($terms);
     }
