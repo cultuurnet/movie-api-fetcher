@@ -29,7 +29,7 @@ class Authentication implements AuthenticationInterface
 
         $response = $client->send($request);
 
-        $bodyResponse = $response->getBody();
+        $bodyResponse = $response->getBody()->getContents();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
 
