@@ -6,7 +6,8 @@ namespace CultuurNet\MovieApiFetcher\EntryPoster;
 
 use CultuurNet\TransformEntryStore\ValueObjects\AgeRange\AgeRange;
 use CultuurNet\TransformEntryStore\ValueObjects\BookingInfo\BookingInfo;
-use Guzzle\Http\Client;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
 use Monolog\Logger;
 use ValueObjects\Identity\UUID;
 
@@ -25,21 +26,17 @@ class EntryPoster implements EntryPosterInterface
     public function postMovie(string $jsonMovie): ?UUID
     {
         $client = new Client();
-        $uri = (string) $this->url . 'events/';
+        $uri = $this->url . 'events/';
 
-        $request = $client->post(
+        $request = new Request(
+            'POST',
             $uri,
-            [
-                'Authorization' => 'Bearer ' . $this->token,
-                'x-api-key' => $this->apiKey,
-            ],
-            []
+            $this->getHeaders(),
+            $jsonMovie
         );
 
-        $request->setBody($jsonMovie);
-
         try {
-            $response = $request->send();
+            $response = $client->send($request);
         } catch (\Exception $e) {
             $this->logger->log(Logger::ERROR, 'Failed to post movie, message:  ' . $e->getMessage());
             $this->logger->log(Logger::DEBUG, $jsonMovie);
@@ -62,19 +59,18 @@ class EntryPoster implements EntryPosterInterface
         $name = $production['name'];
 
         $client = new Client();
-        $uri = (string) $this->url . 'productions/?name=' . $name . '&start=0&limit=15';
+        $uri = $this->url . 'productions/?name=' . $name . '&start=0&limit=15';
 
-        $request = $client->get(
+        $request = new Request(
+            'GET',
             $uri,
             [
                 'Authorization' => 'Bearer ' . $this->token,
                 'x-api-key' => $this->apiKey,
-                'User-Agent' => 'Kinepolis-Publiq',
-            ],
-            []
+            ]
         );
 
-        $response = $request->send();
+        $response = $client->send($request);
 
         $bodyResponse = $response->getBody();
 
@@ -91,16 +87,13 @@ class EntryPoster implements EntryPosterInterface
 
                     $uri = $this->url . 'productions/' . $productionId . '/events/' . $eventId;
 
-                    $request = $clientPutter->put(
+                    $request = new Request(
+                        'PUT',
                         $uri,
-                        [
-                            'Authorization' => 'Bearer ' . $this->token,
-                            'x-api-key' => $this->apiKey,
-                        ],
-                        []
+                        $this->getHeaders()
                     );
                     try {
-                        $response = $request->send();
+                        $response = $client->send($request);
                         $bodyResponse = $response->getBody();
 
                         $resp = utf8_encode($bodyResponse);
@@ -115,20 +108,16 @@ class EntryPoster implements EntryPosterInterface
             }
         } elseif (sizeof($production['eventIds']) > 1) {
             $postClient = new Client();
-            $postUri = (string) $this->url . 'productions/';
-            $postRequest = $postClient->post(
+            $postUri = $this->url . 'productions/';
+            $postRequest = new Request(
+                'POST',
                 $postUri,
-                [
-                    'Authorization' => 'Bearer ' . $this->token,
-                    'x-api-key' => $this->apiKey,
-                ],
-                []
+                $this->getHeaders(),
+                $jsonProduction
             );
 
-            $postRequest->setBody($jsonProduction);
-
             try {
-                $response = $postRequest->send();
+                $response = $postClient->send($postRequest);
                 $this->logger->log(Logger::DEBUG, 'Can\'t make production for ' . $name);
             } catch (\Exception $e) {
                 echo 'error' . PHP_EOL;
@@ -144,21 +133,19 @@ class EntryPoster implements EntryPosterInterface
     public function updateName(UUID $cdbid, string $name): void
     {
         $client = new Client();
-        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/name/nl';
+        $uri = $this->url . 'events/' . $cdbid->toNative() . '/name/nl';
 
-        $request = $client->put(
-            $uri,
-            [
-                'Authorization' => 'Bearer ' . $this->token,
-                'x-api-key' => $this->apiKey,
-            ],
-            []
-        );
         $requestBody = [];
         $requestBody['name'] = $name;
 
-        $request->setBody(json_encode($requestBody));
-        $response = $request->send();
+        $request = new Request(
+            'PUT',
+            $uri,
+            $this->getHeaders(),
+            json_encode($requestBody)
+        );
+
+        $response = $client->send($request);
 
         $bodyResponse = $response->getBody();
 
@@ -169,21 +156,19 @@ class EntryPoster implements EntryPosterInterface
     public function updateDescription(UUID $cdbid, string $description): void
     {
         $client = new Client();
-        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/description/nl';
+        $uri = $this->url . 'events/' . $cdbid->toNative() . '/description/nl';
 
-        $request = $client->put(
-            $uri,
-            [
-                'Authorization' => 'Bearer ' . $this->token,
-                'x-api-key' => $this->apiKey,
-            ],
-            []
-        );
         $requestBody = [];
         $requestBody['description'] = $description;
 
-        $request->setBody(json_encode($requestBody));
-        $response = $request->send();
+        $request = new Request(
+            'PUT',
+            $uri,
+            $this->getHeaders(),
+            json_encode($requestBody)
+        );
+
+        $response = $client->send($request);
 
         $bodyResponse = $response->getBody();
 
@@ -204,18 +189,15 @@ class EntryPoster implements EntryPosterInterface
     public function updateEventType(UUID $cdbid, string $type): void
     {
         $client = new Client();
-        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/type/' . $type;
+        $uri = $this->url . 'events/' . $cdbid->toNative() . '/type/' . $type;
 
-        $request = $client->put(
+        $request = new Request(
+            'PUT',
             $uri,
-            [
-                'Authorization' => 'Bearer ' . $this->token,
-                'x-api-key' => $this->apiKey,
-            ],
-            []
+            $this->getHeaders(),
         );
 
-        $response = $request->send();
+        $response = $client->send($request);
 
         $bodyResponse = $response->getBody();
 
@@ -226,18 +208,15 @@ class EntryPoster implements EntryPosterInterface
     public function updateEventTheme(UUID $cdbid, string $theme): void
     {
         $client = new Client();
-        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/theme/' . $theme;
+        $uri = $this->url . 'events/' . $cdbid->toNative() . '/theme/' . $theme;
 
-        $request = $client->put(
+        $request = new Request(
+            'PUT',
             $uri,
-            [
-                'Authorization' => 'Bearer ' . $this->token,
-                'x-api-key' => $this->apiKey,
-            ],
-            []
+            $this->getHeaders()
         );
 
-        $response = $request->send();
+        $response = $client->send($request);
 
         $bodyResponse = $response->getBody();
 
@@ -248,19 +227,16 @@ class EntryPoster implements EntryPosterInterface
     public function updateCalendar(UUID $cdbid, string $calendar): void
     {
         $client = new Client();
-        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/calendar';
+        $uri = $this->url . 'events/' . $cdbid->toNative() . '/calendar';
 
-        $request = $client->put(
+        $request = new Request(
+            'PUT',
             $uri,
-            [
-                'Authorization' => 'Bearer ' . $this->token,
-                'x-api-key' => $this->apiKey,
-            ],
-            []
+            $this->getHeaders(),
+            $calendar
         );
 
-        $request->setBody($calendar);
-        $response = $request->send();
+        $response = $client->send($request);
 
         $bodyResponse = $response->getBody();
 
@@ -272,18 +248,15 @@ class EntryPoster implements EntryPosterInterface
     public function updateLocation(UUID $cdbid, UUID $locationId): void
     {
         $client = new Client();
-        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/location/' . $locationId->toNative();
+        $uri = $this->url . 'events/' . $cdbid->toNative() . '/location/' . $locationId->toNative();
 
-        $request = $client->put(
+        $request = new Request(
+            'PUT',
             $uri,
-            [
-                'Authorization' => 'Bearer ' . $this->token,
-                'x-api-key' => $this->apiKey,
-            ],
-            []
+            $this->getHeaders()
         );
 
-        $response = $request->send();
+        $response = $client->send($request);
 
         $bodyResponse = $response->getBody();
 
@@ -333,21 +306,19 @@ class EntryPoster implements EntryPosterInterface
     public function addImage(UUID $cdbid, UUID $mediaObjectId): void
     {
         $client = new Client();
-        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/images/';
+        $uri = $this->url . 'events/' . $cdbid->toNative() . '/images/';
 
-        $request = $client->post(
-            $uri,
-            [
-                'Authorization' => 'Bearer ' . $this->token,
-                'x-api-key' => $this->apiKey,
-            ],
-            []
-        );
         $requestBody = [];
         $requestBody['mediaObjectId'] = $mediaObjectId->toNative();
 
-        $request->setBody(json_encode($requestBody));
-        $response = $request->send();
+        $request = new Request(
+            'POST',
+            $uri,
+            $this->getHeaders(),
+            json_encode($requestBody)
+        );
+
+        $response = $client->send($request);
 
         $bodyResponse = $response->getBody();
 
@@ -358,22 +329,20 @@ class EntryPoster implements EntryPosterInterface
     public function updateImage(UUID $cdbid, UUID $mediaObjectId, string $description, string $copyrightHolder): void
     {
         $client = new Client();
-        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/images/' . $mediaObjectId->toNative();
+        $uri = $this->url . 'events/' . $cdbid->toNative() . '/images/' . $mediaObjectId->toNative();
 
-        $request = $client->put(
-            $uri,
-            [
-                'Authorization' => 'Bearer ' . $this->token,
-                'x-api-key' => $this->apiKey,
-            ],
-            []
-        );
         $requestBody = [];
         $requestBody['description'] = $description;
         $requestBody['copyrightHolder'] = $copyrightHolder;
 
-        $request->setBody(json_encode($requestBody));
-        $response = $request->send();
+        $request = new Request(
+            'PUT',
+            $uri,
+            $this->getHeaders(),
+            json_encode($requestBody)
+        );
+
+        $response = $client->send($request);
 
         $bodyResponse = $response->getBody();
 
@@ -384,18 +353,15 @@ class EntryPoster implements EntryPosterInterface
     public function deleteImage(UUID $cdbid, UUID $mediaObjectId): void
     {
         $client = new Client();
-        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/images/' . $mediaObjectId->toNative();
+        $uri = $this->url . 'events/' . $cdbid->toNative() . '/images/' . $mediaObjectId->toNative();
 
-        $request = $client->delete(
+        $request = new Request(
+            'DELETE',
             $uri,
-            [
-                'Authorization' => 'Bearer ' . $this->token,
-                'x-api-key' => $this->apiKey,
-            ],
-            []
+            $this->getHeaders()
         );
 
-        $response = $request->send();
+        $response = $client->send($request);
 
         $bodyResponse = $response->getBody();
 
@@ -406,21 +372,19 @@ class EntryPoster implements EntryPosterInterface
     public function setMainImage(UUID $cdbid, UUID $mediaObjectId): void
     {
         $client = new Client();
-        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/images/main';
+        $uri = $this->url . 'events/' . $cdbid->toNative() . '/images/main';
 
-        $request = $client->put(
-            $uri,
-            [
-                'Authorization' => 'Bearer ' . $this->token,
-                'x-api-key' => $this->apiKey,
-            ],
-            []
-        );
         $requestBody = [];
         $requestBody['mediaObjectId'] = $mediaObjectId->toNative();
 
-        $request->setBody(json_encode($requestBody));
-        $response = $request->send();
+        $request = new Request(
+            'PUT',
+            $uri,
+            $this->getHeaders(),
+            json_encode($requestBody)
+        );
+
+        $response = $client->send($request);
 
         $bodyResponse = $response->getBody();
 
@@ -428,27 +392,22 @@ class EntryPoster implements EntryPosterInterface
         $this->logger->log(Logger::DEBUG, 'Selected mainImage for ' . $cdbid->toNative() . '.');
     }
 
-    /**
-     * @inheritdoc
-     */
     public function updateTargetAudience(UUID $cdbid, $audience): void
     {
         $client = new Client();
-        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/audience';
+        $uri = $this->url . 'events/' . $cdbid->toNative() . '/audience';
 
-        $request = $client->put(
-            $uri,
-            [
-                'Authorization' => 'Bearer ' . $this->token,
-                'x-api-key' => $this->apiKey,
-            ],
-            []
-        );
         $requestBody = [];
         $requestBody['audience'] = $audience;
 
-        $request->setBody(json_encode($requestBody));
-        $response = $request->send();
+        $request = new Request(
+            'PUT',
+            $uri,
+            $this->getHeaders(),
+            json_encode($requestBody)
+        );
+
+        $response = $client->send($request);
 
         $bodyResponse = $response->getBody();
 
@@ -459,16 +418,8 @@ class EntryPoster implements EntryPosterInterface
     public function updateBookingInfo(UUID $cdbid, BookingInfo $bookingInfo): void
     {
         $client = new Client();
-        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/bookingInfo';
+        $uri = $this->url . 'events/' . $cdbid->toNative() . '/bookingInfo';
 
-        $request = $client->put(
-            $uri,
-            [
-                'Authorization' => 'Bearer ' . $this->token,
-                'x-api-key' => $this->apiKey,
-            ],
-            []
-        );
         $requestBody = [];
         $requestBody['bookingInfo']['url'] = $bookingInfo;
         $requestBody['bookingInfo']['urlLabel'] = $bookingInfo;
@@ -477,8 +428,14 @@ class EntryPoster implements EntryPosterInterface
         $requestBody['bookingInfo']['availabilityStarts'] = $bookingInfo;
         $requestBody['bookingInfo']['availabilityEnds'] = $bookingInfo;
 
-        $request->setBody(json_encode($requestBody));
-        $response = $request->send();
+        $request = new Request(
+            'PUT',
+            $uri,
+            $this->getHeaders(),
+            json_encode($requestBody)
+        );
+
+        $response = $client->send($request);
 
         $bodyResponse = $response->getBody();
 
@@ -489,19 +446,16 @@ class EntryPoster implements EntryPosterInterface
     public function updateContactInfo(UUID $cdbid, string $contactPoint): void
     {
         $client = new Client();
-        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/contactPoint';
+        $uri = $this->url . 'events/' . $cdbid->toNative() . '/contactPoint';
 
-        $request = $client->put(
+        $request = new Request(
+            'PUT',
             $uri,
-            [
-                'Authorization' => 'Bearer ' . $this->token,
-                'x-api-key' => $this->apiKey,
-            ],
-            []
+            $this->getHeaders(),
+            $contactPoint
         );
 
-        $request->setBody($contactPoint);
-        $response = $request->send();
+        $response = $client->send($request);
 
         $bodyResponse = $response->getBody();
 
@@ -513,18 +467,15 @@ class EntryPoster implements EntryPosterInterface
     public function addLabel(UUID $cdbid, string $label): void
     {
         $client = new Client();
-        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/labels/' . $label;
+        $uri = $this->url . 'events/' . $cdbid->toNative() . '/labels/' . $label;
 
-        $request = $client->put(
+        $request = new Request(
+            'PUT',
             $uri,
-            [
-                'Authorization' => 'Bearer ' . $this->token,
-                'x-api-key' => $this->apiKey,
-            ],
-            []
+            $this->getHeaders()
         );
 
-        $response = $request->send();
+        $response = $client->send($request);
 
         $bodyResponse = $response->getBody();
 
@@ -535,18 +486,15 @@ class EntryPoster implements EntryPosterInterface
     public function deleteLabel(UUID $cdbid, string $label): void
     {
         $client = new Client();
-        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/labels/' . $label;
+        $uri = $this->url . 'events/' . $cdbid->toNative() . '/labels/' . $label;
 
-        $request = $client->delete(
+        $request = new Request(
+            'DELETE',
             $uri,
-            [
-                'Authorization' => 'Bearer ' . $this->token,
-                'x-api-key' => $this->apiKey,
-            ],
-            []
+            $this->getHeaders()
         );
 
-        $response = $request->send();
+        $response = $client->send($request);
 
         $bodyResponse = $response->getBody();
 
@@ -557,18 +505,15 @@ class EntryPoster implements EntryPosterInterface
     public function updateOrganizer(UUID $cdbid, UUID $organizerId): void
     {
         $client = new Client();
-        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/organizer/' . $organizerId->toNative();
+        $uri = $this->url . 'events/' . $cdbid->toNative() . '/organizer/' . $organizerId->toNative();
 
-        $request = $client->put(
+        $request = new Request(
+            'PUT',
             $uri,
-            [
-                'Authorization' => 'Bearer ' . $this->token,
-                'x-api-key' => $this->apiKey,
-            ],
-            []
+            $this->getHeaders(),
         );
 
-        $response = $request->send();
+        $response = $client->send($request);
 
         $bodyResponse = $response->getBody();
 
@@ -579,19 +524,16 @@ class EntryPoster implements EntryPosterInterface
     public function updatePriceInfo(UUID $cdbid, string $priceInfo): void
     {
         $client = new Client();
-        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/priceInfo';
+        $uri = $this->url . 'events/' . $cdbid->toNative() . '/priceInfo';
 
-        $request = $client->put(
+        $request = new Request(
+            'PUT',
             $uri,
-            [
-                'Authorization' => 'Bearer ' . $this->token,
-                'x-api-key' => $this->apiKey,
-            ],
-            []
+            $this->getHeaders(),
+            $priceInfo
         );
 
-        $request->setBody($priceInfo);
-        $response = $request->send();
+        $response = $client->send($request);
 
         $bodyResponse = $response->getBody();
 
@@ -603,20 +545,16 @@ class EntryPoster implements EntryPosterInterface
     public function updateAgeRange(UUID $cdbid, AgeRange $typicalAgeRange): void
     {
         $client = new Client();
-        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/typicalAgeRange';
+        $uri = $this->url . 'events/' . $cdbid->toNative() . '/typicalAgeRange';
         $body = '{"typicalAgeRange": "' . $typicalAgeRange->getAgeFrom() . '-' . $typicalAgeRange->getAgeTo() . '"}';
 
-        $request = $client->put(
+        $request = new Request(
             $uri,
-            [
-                'Authorization' => 'Bearer ' . $this->token,
-                'x-api-key' => $this->apiKey,
-            ],
-            []
+            $this->getHeaders(),
+            $body
         );
 
-        $request->setBody($body);
-        $response = $request->send();
+        $response = $client->send($request);
 
         $bodyResponse = $response->getBody();
 
@@ -628,18 +566,15 @@ class EntryPoster implements EntryPosterInterface
     public function deleteAgeRange(UUID $cdbid): void
     {
         $client = new Client();
-        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/typicalAgeRange';
+        $uri = $this->url . 'events/' . $cdbid->toNative() . '/typicalAgeRange';
 
-        $request = $client->delete(
+        $request = new Request(
+            'DELETE',
             $uri,
-            [
-                'Authorization' => 'Bearer ' . $this->token,
-                'x-api-key' => $this->apiKey,
-            ],
-            []
+            $this->getHeaders()
         );
 
-        $response = $request->send();
+        $response = $client->send($request);
 
         $bodyResponse = $response->getBody();
 
@@ -650,19 +585,16 @@ class EntryPoster implements EntryPosterInterface
     public function updateFacilities(UUID $cdbid, string $facilities): void
     {
         $client = new Client();
-        $uri = (string) $this->url . 'events/' . $cdbid->toNative() . '/facilities';
+        $uri = $this->url . 'events/' . $cdbid->toNative() . '/facilities';
 
-        $request = $client->put(
+        $request = new Request(
+            'PUT',
             $uri,
-            [
-                'Authorization' => 'Bearer ' . $this->token,
-                'x-api-key' => $this->apiKey,
-            ],
-            []
+            $this->getHeaders(),
+            $facilities
         );
 
-        $request->setBody($facilities);
-        $response = $request->send();
+        $response = $client->send($request);
 
         $bodyResponse = $response->getBody();
 
@@ -675,19 +607,15 @@ class EntryPoster implements EntryPosterInterface
     public function linkProduction(string $title, UUID $eventId): void
     {
         $client = new Client();
-        $uri = (string) $this->url . 'productions/?name=' . $title . '&start=0&limit=15';
+        $uri = $this->url . 'productions/?name=' . $title . '&start=0&limit=15';
 
-        $request = $client->get(
+        $request = new Request(
+            'GET',
             $uri,
-            [
-                'Authorization' => 'Bearer ' . $this->token,
-                'x-api-key' => $this->apiKey,
-                'User-Agent' => 'Kinepolis-Publiq',
-            ],
-            []
+            $this->getHeaders(),
         );
 
-        $response = $request->send();
+        $response = $client->send($request);
 
         $bodyResponse = $response->getBody();
 
@@ -701,35 +629,29 @@ class EntryPoster implements EntryPosterInterface
             if (!in_array($eventId->toNative(), $resp['member'][0]['events'])) {
                 $clientPutter = new Client();
 
-                $putUri = (string) $this->url . 'productions/' . $productionId . '/events/' . $eventId->toNative();
+                $putUri = $this->url . 'productions/' . $productionId . '/events/' . $eventId->toNative();
 
-                $putRequest = $clientPutter->put(
+                $putRequest = new Request(
+                    'PUT',
                     $putUri,
-                    [
-                        'Authorization' => 'Bearer ' . $this->token,
-                        'x-api-key' => $this->apiKey,
-                    ],
-                    []
+                    $this->getHeaders()
                 );
-                $putResponse = $putRequest->send();
+                $putResponse = $clientPutter->send($putRequest);
                 $this->logger->log(Logger::DEBUG, 'Linked event ' . $eventId->toNative() . ' to production ' . $productionId . '.');
             } else {
                 $this->logger->log(Logger::DEBUG, $eventId->toNative() . '  already linked to production.');
             }
         } else {
             $postClient = new Client();
-            $postUri = (string) $this->url . 'productions/';
+            $postUri = $this->url . 'productions/';
 
-            $postRequest = $postClient->post(
+            $postRequest = new Request(
+                'POST',
                 $postUri,
-                [
-                    'Authorization' => 'Bearer ' . $this->token,
-                    'x-api-key' => $this->apiKey,
-                ],
-                []
+                $this->getHeaders(),
+                '{"name":"TestTTT","eventIds":["8d016a92-c6c8-42f5-9eaf-15fbb24c6a36","5144bcab-d7e0-4763-bd45-edc15fea97c6"]}'
             );
-            $postRequest->setBody('{"name":"TestTTT","eventIds":["8d016a92-c6c8-42f5-9eaf-15fbb24c6a36","5144bcab-d7e0-4763-bd45-edc15fea97c6"]}');
-            $postResponse = $postRequest->send();
+            $postResponse = $postClient->send($postRequest);
         }
 
         //$this->logger->log(Logger::DEBUG, 'Updated facilities for ' . $cdbid->toNative() . '.');
@@ -738,19 +660,19 @@ class EntryPoster implements EntryPosterInterface
     public function publishEvent(UUID $cdbid): void
     {
         $client = new Client();
-        $uri = (string) $this->url . 'event/' . $cdbid->toNative();
+        $uri = $this->url . 'event/' . $cdbid->toNative();
 
-        $request = $client->patch(
+        $request = new Request(
+            'PATCH',
             $uri,
             [
                 'Authorization' => 'Bearer ' . $this->token,
                 'x-api-key' => $this->apiKey,
                 'content-type' => 'application/ld+json;domain-model=Publish',
             ],
-            []
         );
 
-        $response = $request->send();
+        $response = $client->send($request);
         $bodyResponse = $response->getBody();
 
         $resp = json_decode(utf8_encode($bodyResponse), true);
@@ -770,12 +692,21 @@ class EntryPoster implements EntryPosterInterface
         $client = new Client();
         $uri = $token_provider . 'refresh?apiKey=' . $apiKey . '&refresh=' . $refresh;
 
-        $request = $client->get(
+        $request = new Request(
+            'GET',
             $uri
         );
 
-        $response = $request->send();
+        $response = $client->send($request);
         $bodyResponse = $response->getBody();
         return (string) $bodyResponse;
+    }
+
+    private function getHeaders(): array
+    {
+        return [
+            'Authorization' => 'Bearer ' . $this->token,
+            'x-api-key' => $this->apiKey,
+        ];
     }
 }

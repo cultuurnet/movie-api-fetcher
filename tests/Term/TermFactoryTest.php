@@ -13,7 +13,7 @@ class TermFactoryTest extends TestCase
      */
     private $termFactory;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $terms = [
             636 => '1.7.6.0.0',

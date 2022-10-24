@@ -8,12 +8,9 @@ use PHPUnit\Framework\TestCase;
 
 class IdentificationFactoryTest extends TestCase
 {
-    /**
-     * @var IdentificationFactory
-     */
-    private $identificationFactory;
+    private IdentificationFactory $identificationFactory;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->identificationFactory = new IdentificationFactory();
     }

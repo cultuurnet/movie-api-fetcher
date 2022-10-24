@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace CultuurNet\MovieApiFetcher\Authentication;
 
 use CultuurNet\MovieApiFetcher\Url\UrlFactoryInterface;
-use Guzzle\Http\Client;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
 
 class Authentication implements AuthenticationInterface
 {
@@ -17,16 +18,16 @@ class Authentication implements AuthenticationInterface
         $uri = (string) $this->urlFactory->generateTokenUrl();
         $postBody = $this->generatePostBody($key, $secret);
 
-        $request = $client->post(
+        $request = new Request(
+            'POST',
             $uri,
             [
                 'content-type' => 'application/json',
             ],
-            []
+            $postBody
         );
 
-        $request->setBody($postBody);
-        $response = $request->send();
+        $response = $client->send($request);
 
         $bodyResponse = $response->getBody();
 
