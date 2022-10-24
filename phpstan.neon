@@ -1,0 +1,13 @@
+parameters:
+	level: 4
+	paths:
+		- app
+		- src
+		- tests
+		- bootstrap.php
+		- web/index.php
+	bootstrapFiles:
+		- tests/bootstrap.php
+	scanFiles:
+		- vendor/gridonic/princexml-php/lib/prince.php
+	excludePaths:
