@@ -20,6 +20,7 @@
         "monolog/monolog": "~1.11",
         "cultuurnet/valueobjects": "~3.0",
         "cultuurnet/culturefeed-php": "~1.6",
+        "guzzle/guzzle": "~3.8",
         "ext-dom": "*"
     },
     "require-dev": {
