@@ -20,11 +20,8 @@ class TermFactory implements TermFactoryInterface
         $this->terms = $terms;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function mapTerm($kinepolisTeid)
+    public function mapTerm($kinepolisTeid): ?string
     {
-        return $this->terms[$kinepolisTeid];
+        return $this->terms[$kinepolisTeid] ?? null;
     }
 }
