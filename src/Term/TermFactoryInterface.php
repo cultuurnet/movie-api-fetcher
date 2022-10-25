@@ -10,5 +10,5 @@ interface TermFactoryInterface
      * @param $kinepolisTeid
      * @return string
      */
-    public function mapTerm($kinepolisTeid);
+    public function mapTerm($kinepolisTeid): ?string;
 }

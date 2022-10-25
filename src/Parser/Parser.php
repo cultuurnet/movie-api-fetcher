@@ -16,7 +16,6 @@ use CultuurNet\TransformEntryStore\ValueObjects\AgeRange\AgeRange;
 use CultuurNet\TransformEntryStore\ValueObjects\Language\LanguageCode;
 use Monolog\Logger;
 use ValueObjects\Identity\UUID;
-use ValueObjects\Number\Integer;
 
 class Parser implements ParserInterface
 {
@@ -84,15 +83,17 @@ class Parser implements ParserInterface
         if (isset($genres)) {
             foreach ($genres as $genre) {
                 if ($genre == '619') {
-                    $ageFrom = Integer::fromNative(6);
-                    $ageTo = Integer::fromNative(99);
+                    $ageFrom = 6;
+                    $ageTo = 99;
                     $ageRange = new AgeRange($ageFrom, $ageTo);
                 }
-                $cnetId = $this->termFactory->mapTerm($genre);
+                if ($this->termFactory->mapTerm($genre) !== null) {
+                    $cnetId = $this->termFactory->mapTerm($genre);
+                }
             }
         }
 
-        if (!isset($length) || empty($length)) {
+        if (empty($length)) {
             $this->logger->log(Logger::WARNING, $title . ' ' . $mid . ' does not have a length. Will set end equal to start');
             $length = 0;
         }
@@ -197,7 +198,7 @@ class Parser implements ParserInterface
 
                         $mediaId = $this->entryPoster->addMediaObject((string) $image, $movieTitle, $this->getDefaultCopyright());
                         $this->entryPoster->addImage($cdbid, $mediaId);
-                        $this->repository->saveImage($externalId, $mediaId, $movieTitle, $this->getDefaultCopyright(), LanguageCode::NL);
+                        $this->repository->saveImage($externalId, $mediaId, $movieTitle, $this->getDefaultCopyright(), LanguageCode::fromNative('nl'));
 
                         $this->repository->addLabel($externalId, self::UIV_MOVIE_KEYWORD);
                         $this->entryPoster->addLabel($cdbid, self::UIV_MOVIE_KEYWORD);
