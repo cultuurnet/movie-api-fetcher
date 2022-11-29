@@ -83,7 +83,7 @@ class EntryPoster implements EntryPosterInterface
 
             foreach ($production['eventIds'] as $eventId) {
 
-                if (!in_array($eventId === $resp['member'][0]['events'])) {
+                if ($eventId === $resp['member'][0]['events']) {
                     $uri = $this->url . 'productions/' . $productionId . '/events/' . $eventId;
 
                     $request = new Request(
