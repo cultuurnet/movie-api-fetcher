@@ -8,7 +8,7 @@ interface FetcherInterface
 {
     public function start(): void;
 
-    public function getMovies($token);
+    public function getMovies($token, bool $isDebug);
 
-    public function getMovieDetail($token, $mid);
+    public function getMovieDetail($token, $mid, bool $isDebug);
 }

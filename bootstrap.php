@@ -68,7 +68,7 @@ $app->register(new YamlConfigServiceProvider($appConfigLocation . '/kinepolis_th
 /**
  * Turn debug on or off.
  */
-$app['debug'] = $app['config']['debug'] === true;
+$app['debug'] = false;
 
 $app['dbal_connection'] = $app->share(
     function (Application $app) {
@@ -502,7 +502,8 @@ $app['fetcher'] = $app->share(
             $app['url_factory'],
             $app['parser'],
             $app['price_factory'],
-            $app['logger_fetcher']
+            $app['logger_fetcher'],
+            $app['debug']
         );
     }
 );

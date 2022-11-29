@@ -12,7 +12,7 @@ class Authentication implements AuthenticationInterface
 {
     private UrlFactoryInterface $urlFactory;
 
-    public function getToken(string $key, string $secret): string
+    public function getToken(string $key, string $secret, bool $isDebug): string
     {
         $client = new Client();
         $uri = (string) $this->urlFactory->generateTokenUrl();
@@ -23,6 +23,7 @@ class Authentication implements AuthenticationInterface
             $uri,
             [
                 'content-type' => 'application/json',
+                'User-Agent' => 'Kinepolis-Publiq',
             ],
             $postBody
         );

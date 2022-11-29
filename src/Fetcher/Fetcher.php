@@ -28,6 +28,8 @@ class Fetcher implements FetcherInterface
 
     private Logger $logger;
 
+    private bool $isDebug;
+
     /**
      * Fetcher constructor.
      */
@@ -38,7 +40,8 @@ class Fetcher implements FetcherInterface
         UrlFactoryInterface $urlFactory,
         ParserInterface $parser,
         PriceFactoryInterface $priceFactory,
-        Logger $logger
+        Logger $logger,
+        bool $isDebug
     ) {
         $this->client = $client;
         $this->secret = $secret;
@@ -47,32 +50,38 @@ class Fetcher implements FetcherInterface
         $this->parser = $parser;
         $this->priceFactory = $priceFactory;
         $this->logger = $logger;
+        $this->isDebug = $isDebug;
     }
 
     public function start(): void
     {
-        $token = $this->authentication->getToken($this->client, $this->secret);
-        $body = $this->getMovies($token);
+        $token = $this->authentication->getToken($this->client, $this->secret, $this->isDebug);
+        $body = $this->getMovies($token, $this->isDebug);
 
         $movies = $body['movies'];
         $this->logger->log(Logger::DEBUG, 'Found  ' . count($movies) . ' movies.');
         $theatreUrl = $this->urlFactory->generateTheatreUrl();
-        $priceMatrix = $this->priceFactory->getPriceMatrix($theatreUrl, $token);
+        $priceMatrix = $this->priceFactory->getPriceMatrix($theatreUrl, $token, $this->isDebug);
         foreach ($movies as $movie) {
             $mid = $movie['mid'];
+            if ($mid !== 21285) {
+                return;
+            }
             $this->logger->log(Logger::DEBUG, 'Will parse movie  ' . $mid);
-            $movieDetail = $this->getMovieDetail($token, $mid);
+            $movieDetail = $this->getMovieDetail($token, $mid, $this->isDebug);
             try {
                 $this->parser->process($movieDetail, $priceMatrix);
             } catch (\Exception $e) {
+                var_dump($e->getTraceAsString());
                 $this->logger->log(Logger::ERROR, 'Failed to Process movie ' . $e->getMessage());
             }
         }
+        var_dump('sdf');
         $this->logger->log(Logger::DEBUG, 'Fetched all movies');
     }
 
 
-    public function getMovies($token)
+    public function getMovies($token, bool $isDebug)
     {
         $client = new Client();
         $request = new Request(
@@ -95,7 +104,7 @@ class Fetcher implements FetcherInterface
     /**
      * @inheritdoc
      */
-    public function getMovieDetail($token, $mid)
+    public function getMovieDetail($token, $mid, bool $isDebug)
     {
         $client = new Client();
         $request = new Request(

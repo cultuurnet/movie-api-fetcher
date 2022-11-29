@@ -10,52 +10,52 @@ use ValueObjects\Web\Url;
 
 class PriceFactory implements PriceFactoryInterface
 {
-    /**
-     * @inheritdoc
-     */
-    public function getPriceMatrix(Url $theatreUrl, $token)
+    public function getPriceMatrix(Url $theatreUrl, $token, $isDebug): array
     {
-        $client = new Client();
-        $request = new Request(
-            'GET',
-            (string) $theatreUrl,
-            [
-                'content-type' => 'application/json',
-                'Authorization' => $token,
-                'User-Agent' => 'Kinepolis-Publiq',
-            ]
-        );
+            $client = new Client();
+            $request = new Request(
+                'GET',
+                (string)$theatreUrl,
+                [
+                    'content-type' => 'application/json',
+                    'Authorization' => $token,
+                    'User-Agent' => 'Kinepolis-Publiq',
+                ]
+            );
 
-        $response = $client->send($request);
+            $response = $client->send($request);
 
-        $body  = $response->getBody()->getContents();
+            $body = $response->getBody()->getContents();
+
         $theatres = json_decode($body, true);
 
         $priceMatrix = [];
         foreach ($theatres['theatres'] as $theatre) {
-            $prices = $this->getPricesForTheatre($theatreUrl, $token, $theatre['tid']);
+            $prices = $this->getPricesForTheatre($theatreUrl, $token, $theatre['tid'], $isDebug);
             $priceMatrix[$theatre['tid']] = $prices;
         }
 
         return $priceMatrix;
     }
 
-    private function getPricesForTheatre(Url $theatreUrl, $token, $tid)
+    private function getPricesForTheatre(Url $theatreUrl, $token, $tid, $isDebug): array
     {
-        $client = new Client();
-        $request = new Request(
-            'GET',
-            (string) $theatreUrl . '/' . $tid,
-            [
-                'content-type' => 'application/json',
-                'Authorization' => $token,
-                'User-Agent' => 'Kinepolis-Publiq',
-            ]
-        );
 
-        $response = $client->send($request);
+            $client = new Client();
+            $request = new Request(
+                'GET',
+                (string)$theatreUrl . '/' . $tid,
+                [
+                    'content-type' => 'application/json',
+                    'Authorization' => $token,
+                    'User-Agent' => 'Kinepolis-Publiq',
+                ]
+            );
 
-        $body  = $response->getBody()->getContents();
+            $response = $client->send($request);
+
+            $body = $response->getBody()->getContents();
+
         $theatre = json_decode($body, true);
 
         $tariffs = $theatre['theatres'][0]['tariffs'];
