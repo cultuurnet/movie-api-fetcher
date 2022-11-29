@@ -173,13 +173,13 @@ class EntryPoster implements EntryPosterInterface
 
     public function __construct(string $token_provider, string $refresh, string $apiKey, string $url, string $filesFolder, Logger $logger)
     {
+        $this->client = new Client();
         $token = $this->getToken($token_provider, $refresh, $apiKey);
         $this->token = $token;
         $this->apiKey = $apiKey;
         $this->url = $url;
         $this->filesFolder = $filesFolder;
         $this->logger = $logger;
-        $this->client = new Client();
     }
 
     public function updateEventType(UUID $cdbid, string $type): void

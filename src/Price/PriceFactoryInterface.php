@@ -8,9 +8,5 @@ use ValueObjects\Web\Url;
 
 interface PriceFactoryInterface
 {
-    /**
-     * @param $token
-     * @return array
-     */
-    public function getPriceMatrix(Url $theatreUrl, $token);
+    public function getPriceMatrix(Url $theatreUrl, $token, bool $isDebug): array;
 }

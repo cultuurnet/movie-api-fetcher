@@ -6,5 +6,5 @@ namespace CultuurNet\MovieApiFetcher\Authentication;
 
 interface AuthenticationInterface
 {
-    public function getToken(string $key, string $secret): string;
+    public function getToken(string $key, string $secret, bool $isDebug): string;
 }
