@@ -27,6 +27,6 @@ class TheaterFactory implements TheaterFactoryInterface
      */
     public function mapTheater($kinepolisTid)
     {
-        return new UUID($this->theaters[$kinepolisTid]['cdbid']);
+        return new UUID($this->theaters['kinepolis_theaters'][$kinepolisTid]['cdbid']);
     }
 }
