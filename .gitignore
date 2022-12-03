@@ -1,6 +1,8 @@
 /vendor
 /build
+/files
 /log
 /config.yml
 .phpunit.result.cache
 .php_cs.cache
+kinepolis*yml
