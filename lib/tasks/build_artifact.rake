@@ -15,6 +15,8 @@ task :build_artifact do |task|
   FileUtils.mkdir_p('pkg')
   FileUtils.mkdir_p('log')
   FileUtils.touch('config.yml')
+  FileUtils.touch('kinepolis_theaters.yml')
+  FileUtils.touch('kinepolis_terms.yml')
 
   system("fpm -s dir -t deb -n #{artifact_name} -v #{version} -a all -p pkg \
     -x '.git*' -x .travis.yml -x pkg -x config.dist.yml \
