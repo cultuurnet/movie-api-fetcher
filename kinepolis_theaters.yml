@@ -1,0 +1,49 @@
+kinepolis_theaters:
+  # Kinepolis Antwerpen   
+  METRO:
+    cdbid: '5203712e-cd6d-45f7-9baa-12eba3252d2d'
+    external_id: 'ORG:0f69aaa1-f3cc-4d1d-980c-5f9f1d46f639'
+  #Kinepolis Brugge
+  KBRG:
+    cdbid: '0f1ff6ba-ef5d-476c-9675-268a10c9ecdd'
+    external_id: 'ORG:375f7cd5-a729-4017-aa1d-c1a132f9feee'
+  # Kinepolis Brussel
+  KBRU:
+    cdbid: '1963e2ca-a8aa-4f33-b8fd-7a0990aadbd1'
+    external_id: 'ORG:39bdf8ae-4333-419f-ab42-d476c5b3cc90'
+  # Kinepolis Gent
+  DECA:
+    cdbid: 'e9d3bd1c-ef93-4ea1-9d71-5058ab902823'
+    external_id: 'ORG:782e2efb-a6c6-400c-a91b-bccc90319109'
+  # Kinepolis Hasselt
+  KHAS:
+    cdbid: '8ac688db-8e51-45e3-95eb-c67c6061946c'
+    external_id: 'ORG:9a007849-e3c6-4091-a681-e1f6cb2f83e3'
+  # Kinepolis Imagibraine
+  KBRAI:
+    cdbid: 'f042cdb0-1b15-4299-a8a8-3d285921692d'
+    external_id: ''
+  # Kinepolis Kortrijk
+  KKOR:
+    cdbid: 'aa494524-944b-45cf-8668-ecd2e09f577a'
+    external_id: 'ORG:e77ffdd7-aabb-4e09-8b70-078def3e74a5'
+  # Kinepolis Leuven
+  SL:
+    cdbid: '84e94265-e84f-4b47-9c5a-26729f839b5b'
+    external_id: 'ORG:c9798ef8-0143-4566-afa2-c1a0f53abbd7'
+  # Kinepolis Liège
+  KLUIK:
+    cdbid: '1784a24c-6c28-4f16-8c89-17133439d1e2'
+    external_id: ''
+  # Kinepolis Oostende
+  KOOST: 
+    cdbid: '5945e33f-cd5c-4b9d-b690-523057b0a9cd'
+    external_id: 'ORG:c5542d47-5ba3-4002-bb08-9d69c9ac170b'
+  # Palace Liège
+  PAL:
+    cdbid: 'f9c65b36-c62b-49de-a072-6a1b3f1d5472'
+    external_id: ''
+  # Studio 100 Pop-up Theater
+  KOTB1:
+    cdbid: '7f15ca99-f0b1-4699-9556-8125a0e7b16a'
+    external_id: ''

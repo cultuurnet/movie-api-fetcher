@@ -6,6 +6,8 @@ RUN docker-php-ext-install mysqli pdo_mysql bcmath tidy sockets
 
 RUN docker-php-ext-configure intl && docker-php-ext-install intl
 
+RUN pecl install xdebug && docker-php-ext-enable xdebug
+
 RUN curl https://getcomposer.org/download/2.1.3/composer.phar -o /usr/local/bin/composer && chmod +x /usr/local/bin/composer
 
 RUN echo "memory_limit=4096M" > $PHP_INI_DIR/conf.d/memory-limit.ini
