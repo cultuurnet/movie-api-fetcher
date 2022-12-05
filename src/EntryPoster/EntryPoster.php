@@ -118,8 +118,6 @@ class EntryPoster implements EntryPosterInterface
                 $response = $this->client->send($postRequest);
                 $this->logger->log(Logger::DEBUG, 'Can\'t make production for ' . $name);
             } catch (\Exception $e) {
-                echo 'error' . PHP_EOL;
-                echo $e->getMessage();
             }
         } else {
             $this->logger->log(Logger::DEBUG, 'Can\'t make production for ' . $name);
@@ -603,8 +601,7 @@ class EntryPoster implements EntryPosterInterface
 
         if ($totalItems > 0) {
             $productionId = $resp['member'][0]['production_id'];
-            echo $productionId;
-            echo PHP_EOL;
+
             if (!in_array($eventId->toNative(), $resp['member'][0]['events'])) {
                 $putUri = $this->url . 'productions/' . $productionId . '/events/' . $eventId->toNative();
 
@@ -656,10 +653,32 @@ class EntryPoster implements EntryPosterInterface
 
     private function downloadFile($fileLocation): string
     {
-        $fileName = basename($fileLocation);
-        $savedFile = $this->filesFolder . $fileName;
-        file_put_contents($savedFile, file_get_contents($fileLocation));
+        $savedFile = $this->filesFolder . $this->filter_filename(basename($fileLocation));
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $fileLocation);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        $st = curl_exec($ch);
+        $fd = fopen($savedFile, 'w');
+        fwrite($fd, $st);
+        fclose($fd);
+
+        curl_close($ch);
         return $savedFile;
+    }
+
+    function filter_filename($name): string
+    {
+        // remove illegal file system characters https://en.wikipedia.org/wiki/Filename#Reserved_characters_and_words
+        $name = str_replace(array_merge(
+            array_map('chr', range(0, 31)),
+            array('<', '>', ':', '"', '/', '\\', '|', '?', '*')
+        ), '', $name);
+        // maximise filename length to 255 bytes http://serverfault.com/a/9548/44086
+        $ext = pathinfo($name, PATHINFO_EXTENSION);
+        $name= mb_strcut(pathinfo($name, PATHINFO_FILENAME), 0, 255 - ($ext ? strlen($ext) + 1 : 0), mb_detect_encoding($name)) . ($ext ? '.' . $ext : '');
+        return $name;
     }
 
     private function getToken($token_provider, $refresh, $apiKey): string

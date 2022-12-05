@@ -111,7 +111,8 @@ class Parser implements ParserInterface
                 }
 
                 $cdbid = $this->repository->getCdbid($externalId);
-                if (isset($cdbid)) {
+
+                if ($cdbid !== null) {
                     if ($this->repository->getName($externalId) !== $movieTitle) {
                         $this->repository->updateName($externalId, $movieTitle);
                         $this->entryPoster->updateName($cdbid, $movieTitle);
@@ -190,9 +191,10 @@ class Parser implements ParserInterface
                     $this->repository->saveLocationCdbid($externalId, $location);
 
                     $jsonMovie = $this->formatter->formatEvent($externalId);
+
                     $cdbid = $this->entryPoster->postMovie($jsonMovie);
 
-                    if (isset($cdbid)) {
+                    if ($cdbid !== null) {
                         $this->repository->saveCdbid($externalId, $cdbid);
                         $this->entryPoster->publishEvent($cdbid);
 

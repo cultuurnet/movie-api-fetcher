@@ -22,6 +22,6 @@ class TermFactory implements TermFactoryInterface
 
     public function mapTerm($kinepolisTeid): ?string
     {
-        return $this->terms[$kinepolisTeid] ?? null;
+        return $this->terms['kinepolis_terms'][$kinepolisTeid] ?? null;
     }
 }

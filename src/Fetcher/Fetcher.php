@@ -30,9 +30,6 @@ class Fetcher implements FetcherInterface
 
     private bool $isDebug;
 
-    /**
-     * Fetcher constructor.
-     */
     public function __construct(
         string $client,
         string $secret,
@@ -64,19 +61,14 @@ class Fetcher implements FetcherInterface
         $priceMatrix = $this->priceFactory->getPriceMatrix($theatreUrl, $token, $this->isDebug);
         foreach ($movies as $movie) {
             $mid = $movie['mid'];
-            if ($mid !== 21285) {
-                return;
-            }
             $this->logger->log(Logger::DEBUG, 'Will parse movie  ' . $mid);
             $movieDetail = $this->getMovieDetail($token, $mid, $this->isDebug);
             try {
                 $this->parser->process($movieDetail, $priceMatrix);
             } catch (\Exception $e) {
-                var_dump($e->getTraceAsString());
                 $this->logger->log(Logger::ERROR, 'Failed to Process movie ' . $e->getMessage());
             }
         }
-        var_dump('sdf');
         $this->logger->log(Logger::DEBUG, 'Fetched all movies');
     }
 

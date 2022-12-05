@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace CultuurNet\MovieApiFetcher\Console;
+namespace CultuurNet\TransformEntryStore\Console\Commands;
 
 use CultuurNet\MovieApiFetcher\Fetcher\FetcherInterface;
-use Knp\Command\Command;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -13,9 +13,6 @@ class FetchCommand extends Command
 {
     protected FetcherInterface $fetcher;
 
-    /**
-     * FetchCommand constructor.
-     */
     public function __construct(FetcherInterface $fetcher)
     {
         $this->fetcher = $fetcher;
@@ -32,7 +29,6 @@ class FetchCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->fetcher->start();
-
         return 0;
     }
 }

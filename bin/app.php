@@ -1,33 +1,31 @@
 #!/usr/bin/env php
 <?php
 
-use CultuurNet\MovieApiFetcher\Console\FetchCommand;
-use CultuurNet\MovieApiFetcher\Console\InstallCommand;
-use Knp\Provider\ConsoleServiceProvider;
+use CultuurNet\TransformEntryStore\Console\ConsoleServiceProvider;
+use League\Container\DefinitionContainerInterface;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\CommandLoader\CommandLoaderInterface;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-/** @var \Silex\Application $app */
-$app = require __DIR__ . '/../bootstrap.php';
+/** @var DefinitionContainerInterface $container */
+$container = require __DIR__ . '/../bootstrap.php';
+$container->addServiceProvider(new ConsoleServiceProvider());
 
-$app->register(
-    new ConsoleServiceProvider(),
-    [
-        'console.name'              => 'apifetcher',
-        'console.version'           => '1.0.0',
-        'console.project_directory' => __DIR__ . '/..',
-    ]
-);
 
-/** @var \Knp\Console\Application $consoleApp */
-$consoleApp = $app['console'];
+$consoleApp = new Application('apifetcher');
+$consoleApp->setCommandLoader($container->get(CommandLoaderInterface::class));
 
-$consoleApp->add(
+/*$consoleApp->add(
     new FetchCommand($app['fetcher'])
 );
 
 $consoleApp->add(
     new InstallCommand()
-);
+);*/
 
-$consoleApp->run();
+try {
+    $consoleApp->run();
+} catch (Exception $e) {
+    echo $e->getTraceAsString();
+}
