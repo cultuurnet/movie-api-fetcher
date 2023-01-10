@@ -10,12 +10,6 @@ pipeline {
 
     stages {
         stage('Fetch movies') {
-            input {
-                message 'Please enter the environment'
-                parameters {
-                    choice(name: 'ENVIRONMENT', choices: ['testing', 'production'], description: 'Environment to run Movie API Fetcher in')
-                }
-            }
             steps {
                 script {
                     if (ENVIRONMENT == 'testing') {
