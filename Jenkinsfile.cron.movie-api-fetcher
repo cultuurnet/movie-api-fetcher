@@ -1,13 +1,6 @@
 pipeline {
     agent any
 
-    triggers {
-        parameterizedCron('''
-            H 2 * * 1 %ENVIRONMENT=testing
-            H 3 * * 1 %ENVIRONMENT=production
-        ''')
-    }
-
     stages {
         stage('Fetch movies') {
             steps {
