@@ -35,7 +35,8 @@ final class EntryPosterServiceProvider extends AbstractServiceProvider
                         Logger::DEBUG
                         )
                     )
-                )
+                ),
+                $container->get('config')['filters']
             )
         );
     }

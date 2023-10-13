@@ -25,6 +25,8 @@ class EntryPoster implements EntryPosterInterface
 
     private Client $client;
 
+    private array $filters;
+
     public function postMovie(string $jsonMovie): ?UUID
     {
         $uri = $this->url . 'events/';
@@ -170,7 +172,7 @@ class EntryPoster implements EntryPosterInterface
         $this->logger->log(Logger::DEBUG, 'Updated description for ' . $cdbid->toNative() . '.');
     }
 
-    public function __construct(string $token_provider, string $refresh, string $apiKey, string $url, string $filesFolder, Logger $logger)
+    public function __construct(string $token_provider, string $refresh, string $apiKey, string $url, string $filesFolder, Logger $logger, array $filters = [])
     {
         $this->client = new Client();
         $token = $this->getToken($token_provider, $refresh, $apiKey);
@@ -179,6 +181,7 @@ class EntryPoster implements EntryPosterInterface
         $this->url = $url;
         $this->filesFolder = $filesFolder;
         $this->logger = $logger;
+        $this->filters = $filters;
     }
 
     public function updateEventType(UUID $cdbid, string $type): void
@@ -504,6 +507,9 @@ class EntryPoster implements EntryPosterInterface
 
     public function updatePriceInfo(UUID $cdbid, string $priceInfo): void
     {
+        if ($priceInfo === ''){
+            return;
+        }
         $uri = $this->url . 'events/' . $cdbid->toNative() . '/priceInfo';
 
         $request = new Request(
@@ -700,5 +706,10 @@ class EntryPoster implements EntryPosterInterface
             'Authorization' => 'Bearer ' . $this->token,
             'x-api-key' => $this->apiKey,
         ];
+    }
+
+    private function getSanitizedName(string $name): string
+    {
+        return str_replace($this->filters, '', $name);
     }
 }
