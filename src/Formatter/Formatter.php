@@ -97,6 +97,9 @@ class Formatter implements FormatterInterface
     public function formatPrice($externalId): string
     {
         $price = $this->repository->getPrice($externalId);
+        if ($price === null){
+            return '';
+        }
         $count = count($price);
 
         $arr = [];

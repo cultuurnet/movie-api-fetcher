@@ -504,6 +504,9 @@ class EntryPoster implements EntryPosterInterface
 
     public function updatePriceInfo(UUID $cdbid, string $priceInfo): void
     {
+        if ($priceInfo === ''){
+            return;
+        }
         $uri = $this->url . 'events/' . $cdbid->toNative() . '/priceInfo';
 
         $request = new Request(
